@@ -80,12 +80,30 @@ export default function Home() {
             </p>
             <div className="flex gap-6 mt-6 justify-center md:justify-start">
                {/* Github & LinkedIn Icons (Sama seperti sebelumnya) */}
-               <a href="https://github.com/USERNAME_GITHUB_KAMU" target="_blank" className="text-slate-400 hover:text-white hover:scale-110 transition"><svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.896-.014 3.293 0 .319.22.694.825.576C20.566 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-               <a href="https://linkedin.com/in/USERNAME_LINKEDIN_KAMU" target="_blank" className="text-slate-400 hover:text-blue-500 hover:scale-110 transition"><svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 21.227.792 22 1.771 22h20.451C23.2 22 24 21.227 24 20.271V1.729C24 .774 23.2 0 22.225 0z"/></svg></a>
+               <a href="https://github.com/SebastianObert" target="_blank" className="text-slate-400 hover:text-white hover:scale-110 transition"><svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.896-.014 3.293 0 .319.22.694.825.576C20.566 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+              
             </div>
+           {/* --- ACTION BUTTONS (Updated) --- */}
             <div className="flex gap-4 justify-center md:justify-start pt-6">
-              <button className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-full font-bold transition shadow-lg shadow-cyan-500/30">View My Works</button>
-              <button className="px-8 py-3 border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 rounded-full font-medium transition">Contact Me</button>
+              
+              {/* Tombol 1: Ke Projects */}
+              <a 
+                href="#projects" 
+                className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-full font-bold transition shadow-lg shadow-cyan-500/30 flex items-center gap-2"
+              >
+                View My Works
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+              </a>
+
+              {/* Tombol 2: Ke Contact (Paling Bawah) */}
+              <a 
+                href="#contact" 
+                className="px-8 py-3 border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 rounded-full font-medium transition flex items-center gap-2"
+              >
+                Contact Me
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+              </a>
+
             </div>
           </div>
           <div className="flex-1 flex justify-center relative group">
@@ -102,7 +120,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">Tech Stack</h2>
-            <p className="text-slate-400">Teknologi yang sering saya gunakan dalam berkarya</p>
+            <p className="text-slate-400">Technology that I often use in creating works</p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
             <SkillBadge icon="https://cdn.simpleicons.org/kotlin/7F52FF" name="Kotlin" />
@@ -149,7 +167,7 @@ export default function Home() {
             <div className="p-8 md:w-1/2 flex flex-col justify-center">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-orange-400 transition">Aegis Call</h3>
               <p className="text-slate-400 mb-6 text-sm leading-relaxed">
-                UI/UX Design untuk aplikasi darurat yang aksesibel. Dirancang dengan empati untuk situasi kritis.
+                Aegis Call is an integrated emergency response application prototype designed using a User-Centered Design approach to ensure ease of use, speed, and clarity in critical situations. The application consolidates multiple emergency services into a single platform, featuring direct emergency calls, media-based incident reporting, and real-time assistance tracking. With a strong focus on usability, accessibility, and user experience under extreme conditions, Aegis Call aims to reduce user panic and enable faster, more accurate, and well-coordinated emergency responses.
               </p>
                <div className="flex flex-wrap gap-2">
                  <span className="badge bg-orange-900/30 text-orange-300">Figma</span>
@@ -178,7 +196,7 @@ export default function Home() {
             <div className="p-6 flex-1">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition">JEBS</h3>
               <p className="text-slate-400 text-sm mb-4">
-                Game duel 1vs1 intens dengan mekanik pertahanan berbasis waktu.
+                JEBS is a third-person Action-RPG combat prototype that successfully delivers an intense, skill-based sword-fighting experience. The game emphasizes timing, precision, and mastery of defensive mechanics, particularly parry and posture management—over traditional health-based combat.
               </p>
                <div className="flex flex-wrap gap-2 mt-auto">
                  <span className="badge bg-purple-900/30 text-purple-300">Unity</span>
@@ -207,7 +225,7 @@ export default function Home() {
             <div className="p-6 flex-1">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition">Grow Community</h3>
               <p className="text-slate-400 text-sm mb-4">
-                Sistem manajemen data jemaat yang efisien dan terstruktur.
+                This application provides an integrated, secure, and efficient solution for managing children’s check-in and check-out activities in a church environment. By replacing manual processes with a centralized web-based system, it improves accuracy, enhances child safety through identity verification, and enables real-time attendance monitoring. The system streamlines operations for administrators and staff while offering transparency and peace of mind for parents, ultimately supporting a more organized, reliable, and trustworthy church activity management experience.
               </p>
                <div className="flex flex-wrap gap-2 mt-auto">
                  <span className="badge bg-blue-900/30 text-blue-300">PHP</span>
@@ -226,7 +244,7 @@ export default function Home() {
             {/* Image Container */}
             <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
                <Image 
-                 src="/aircare.png" 
+                 src="/Aircare.png" 
                  alt="AirCare App" 
                  fill 
                  className="object-cover group-hover:scale-105 transition duration-500"
@@ -236,7 +254,7 @@ export default function Home() {
             <div className="p-8 md:w-1/2 flex flex-col justify-center">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition">AirCare Mobile App</h3>
               <p className="text-slate-400 mb-6 text-sm leading-relaxed">
-                Aplikasi monitoring kualitas udara realtime. Solusi cerdas untuk kesehatan lingkungan berbasis Android.
+                AirCare is a mobile application designed to help users monitor and understand air quality around them in real time, with the main goal of supporting healthier daily decisions. By providing accurate AQI data based on the user’s location, storing air quality history, delivering smart notifications during hazardous conditions, and offering health recommendations, AirCare aims to increase environmental awareness and reduce health risks caused by air pollution. The application focuses on personal tracking, accessibility, and clarity, making air quality information easy to interpret and practically useful for everyday activities, especially for users living in urban environments.
               </p>
                <div className="flex flex-wrap gap-2">
                  <span className="badge">Kotlin</span>
@@ -267,7 +285,7 @@ export default function Home() {
                 <div className="p-8 md:w-3/5 relative z-10">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-teal-400 transition">Al-Jatim Web Platform</h3>
                     <p className="text-slate-400 mb-6 leading-relaxed">
-                        Platform web modern yang interaktif untuk informasi regional Jawa Timur. Dibangun dengan ekosistem React modern untuk performa tinggi.
+                       Al-Jatim is a web-based application designed to introduce and showcase East Java (Jawa Timur) through an informative and visually engaging digital platform. The main goal of this website is to provide users with clear and structured information about East Java’s geography, tourist destinations, cultural heritage, traditional cuisine, and iconic symbols in one accessible place. Built using React.js, the application aims to promote regional knowledge and cultural appreciation while delivering a modern, interactive, and user-friendly browsing experience.
                     </p>
                     <div className="flex flex-wrap gap-3">
                         <span className="badge bg-teal-900/30 text-teal-300">React.js</span>
@@ -359,7 +377,78 @@ export default function Home() {
             </div>
         </div>
       </section>
+      
+      {/* --- CONTACT SECTION (NEW) --- */}
+      <section id="contact" className="container mx-auto px-6 pt-24 pb-12 relative z-10 border-t border-slate-800/50">
+        <div className="text-center max-w-2xl mx-auto">
+           <h2 className="text-3xl font-bold text-white mb-6">Let's Connect</h2>
+           <p className="text-slate-400 mb-8">
+             Tertarik berkolaborasi atau sekadar ingin menyapa? Hubungi saya melalui platform di bawah ini.
+           </p>
 
+           {/* Social Media Links */}
+           <div className="flex flex-wrap justify-center gap-6">
+              
+              {/* 1. INSTAGRAM */}
+              <a 
+                href="https://instagram.com/sebasobet" 
+                target="_blank" 
+                className="group flex flex-col items-center gap-2"
+              >
+                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-pink-500 group-hover:shadow-lg group-hover:shadow-pink-500/20 transition duration-300">
+                  <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="Instagram" className="w-7 h-7" />
+                </div>
+                <span className="text-xs text-slate-500 group-hover:text-pink-400 transition">Instagram</span>
+              </a>
+
+              {/* 2. WHATSAPP */}
+              <a 
+                href="https://wa.me/6281314412184" // Ganti dengan nomor WA (format: 628...)
+                target="_blank" 
+                className="group flex flex-col items-center gap-2"
+              >
+                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-green-500 group-hover:shadow-lg group-hover:shadow-green-500/20 transition duration-300">
+                  <img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" className="w-7 h-7" />
+                </div>
+                <span className="text-xs text-slate-500 group-hover:text-green-400 transition">WhatsApp</span>
+              </a>
+
+              {/* 3. LINE */}
+              <a 
+                href="https://line.me/ti/p/~sebastianobert" 
+                target="_blank" 
+                className="group flex flex-col items-center gap-2"
+              >
+                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-green-400 group-hover:shadow-lg group-hover:shadow-green-400/20 transition duration-300">
+                  <img src="https://cdn.simpleicons.org/line/00C300" alt="LINE" className="w-7 h-7" />
+                </div>
+                <span className="text-xs text-slate-500 group-hover:text-green-300 transition">LINE</span>
+              </a>
+
+              {/* 4. LINKEDIN (Fixed with SVG) */}
+              <a 
+                href="https://www.linkedin.com/in/sebastian-obert-cen/" 
+                target="_blank" 
+                className="group flex flex-col items-center gap-2"
+              >
+                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition duration-300">
+                  {/* SVG Code Manual - Dijamin Muncul */}
+                  <svg 
+                    role="img" 
+                    viewBox="0 0 24 24" 
+                    className="w-7 h-7 fill-[#0A66C2]" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 21.227.792 22 1.771 22h20.451C23.2 22 24 21.227 24 20.271V1.729C24 .774 23.2 0 22.225 0z"/>
+                  </svg>
+                </div>
+                <span className="text-xs text-slate-500 group-hover:text-blue-400 transition">LinkedIn</span>
+              </a>
+
+           </div>
+        </div>
+      </section>
+      
       {/* --- FOOTER --- */}
       <footer className="bg-slate-950 py-12 border-t border-slate-900 text-center relative z-10">
         {/* Motto */}

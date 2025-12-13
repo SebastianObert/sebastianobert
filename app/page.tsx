@@ -106,27 +106,47 @@ export default function Home() {
 
             </div>
           </div>
+          {/* Foto Profil */}
           <div className="flex-1 flex justify-center relative group">
             <div className="absolute inset-0 bg-cyan-500 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition duration-500"></div>
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl z-10">
+            
+            {/*  
+                w-56 h-56 (Mobile)
+                md:w-72 md:h-72 (Desktop) 
+            */}
+            <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl z-10">
               <Image src="/profil_sebas.jpg" alt="Sebastian Obert" fill className="object-cover" priority />
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- SKILLS SECTION --- */}
+     {/* --- SKILLS SECTION (Mobile Optimized) --- */}
       <section id="skills" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">Tech Stack</h2>
             <p className="text-slate-400">Technology that I often use in creating works</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+          
+          {/* 
+             - Mobile: grid grid-cols-2 (2 kolom rapi)
+             - Desktop (md): flex flex-wrap (bebas ke tengah seperti semula)
+          */}
+          <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center md:gap-4 max-w-5xl mx-auto">
+            
             <SkillBadge icon="https://cdn.simpleicons.org/kotlin/7F52FF" name="Kotlin" />
             <SkillBadge icon="https://cdn.simpleicons.org/android/3DDC84" name="Android" />
             <SkillBadge icon="https://cdn.simpleicons.org/unity/white" name="Unity" />
-            <div className="skill-pill"><svg viewBox="0 0 128 128" className="w-6 h-6"><path fill="#9B4F96" d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm27.4 86.2h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1zm-42.6 7c-13.8 0-21.6-9.6-21.6-26.6s7.8-26.6 21.6-26.6c6.8 0 12.1 2.3 15.6 6.3l-6.8 6.5c-2.3-2.3-5.3-3.8-8.6-3.8-8.1 0-11.9 6.3-11.9 17.6s3.8 17.6 11.9 17.6c3.5 0 6.3-1.5 8.8-4l6.8 6.3c-3.8 4.6-9.1 6.8-15.8 6.8zm42.6-25.1h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1z"/></svg><span>C#</span></div>
+            
+            {/* C# Custom SVG */}
+            <div className="skill-pill">
+                <svg viewBox="0 0 128 128" className="w-6 h-6 flex-shrink-0">
+                    <path fill="#9B4F96" d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm27.4 86.2h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1zm-42.6 7c-13.8 0-21.6-9.6-21.6-26.6s7.8-26.6 21.6-26.6c6.8 0 12.1 2.3 15.6 6.3l-6.8 6.5c-2.3-2.3-5.3-3.8-8.6-3.8-8.1 0-11.9 6.3-11.9 17.6s3.8 17.6 11.9 17.6c3.5 0 6.3-1.5 8.8-4l6.8 6.3c-3.8 4.6-9.1 6.8-15.8 6.8zm42.6-25.1h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1z"/>
+                </svg>
+                <span>C#</span>
+            </div>
+
             <SkillBadge icon="https://cdn.simpleicons.org/nextdotjs/white" name="Next.js" />
             <SkillBadge icon="https://cdn.simpleicons.org/react/61DAFB" name="React" />
             <SkillBadge icon="https://cdn.simpleicons.org/tailwindcss/06B6D4" name="Tailwind" />
@@ -383,7 +403,7 @@ export default function Home() {
         <div className="text-center max-w-2xl mx-auto">
            <h2 className="text-3xl font-bold text-white mb-6">Let's Connect</h2>
            <p className="text-slate-400 mb-8">
-             Tertarik berkolaborasi atau sekadar ingin menyapa? Hubungi saya melalui platform di bawah ini.
+             Interested in collaborating or just want to say hello? Feel free to reach out to me through the platforms below.
            </p>
 
            {/* Social Media Links */}

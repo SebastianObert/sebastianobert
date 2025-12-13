@@ -29,7 +29,7 @@ export default function Home() {
             
             {/* Logo */}
             <h1 className="text-xl font-bold text-white tracking-tighter cursor-pointer z-50" onClick={() => window.scrollTo(0,0)}>
-              Sebastian<span className="text-cyan-400">.cen</span>
+              So<span className="text-cyan-400">C</span>
             </h1>
 
             {/* DESKTOP MENU (Hidden di HP) */}
@@ -270,7 +270,7 @@ export default function Home() {
             {/* Image Container */}
             <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
                <Image 
-                 src="/airCare.png" 
+                 src="/aircare_mobile.png" 
                  alt="AirCare App" 
                  fill 
                  className="object-cover group-hover:scale-105 transition duration-500"

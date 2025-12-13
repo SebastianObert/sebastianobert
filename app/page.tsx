@@ -29,7 +29,7 @@ export default function Home() {
             
             {/* Logo */}
             <h1 className="text-xl font-bold text-white tracking-tighter cursor-pointer z-50" onClick={() => window.scrollTo(0,0)}>
-              Sebastian<span className="text-cyan-400">.dev</span>
+              Sebastian<span className="text-cyan-400">.cen</span>
             </h1>
 
             {/* DESKTOP MENU (Hidden di HP) */}
@@ -121,45 +121,53 @@ export default function Home() {
         </div>
       </section>
 
-     {/* --- SKILLS SECTION (Mobile Optimized) --- */}
+{/* --- SKILLS SECTION (Updated with Security Tools) --- */}
       <section id="skills" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">Tech Stack</h2>
-            <p className="text-slate-400">Technology that I often use in creating works</p>
+            <p className="text-slate-400">Tools and technologies I have used in various projects</p>
           </div>
           
-          {/* 
-             - Mobile: grid grid-cols-2 (2 kolom rapi)
-             - Desktop (md): flex flex-wrap (bebas ke tengah seperti semula)
-          */}
           <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center md:gap-4 max-w-5xl mx-auto">
             
+            {/* Mobile & Game */}
             <SkillBadge icon="https://cdn.simpleicons.org/kotlin/7F52FF" name="Kotlin" />
             <SkillBadge icon="https://cdn.simpleicons.org/android/3DDC84" name="Android" />
             <SkillBadge icon="https://cdn.simpleicons.org/unity/white" name="Unity" />
-            
-            {/* C# Custom SVG */}
             <div className="skill-pill">
-                <svg viewBox="0 0 128 128" className="w-6 h-6 flex-shrink-0">
-                    <path fill="#9B4F96" d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm27.4 86.2h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1zm-42.6 7c-13.8 0-21.6-9.6-21.6-26.6s7.8-26.6 21.6-26.6c6.8 0 12.1 2.3 15.6 6.3l-6.8 6.5c-2.3-2.3-5.3-3.8-8.6-3.8-8.1 0-11.9 6.3-11.9 17.6s3.8 17.6 11.9 17.6c3.5 0 6.3-1.5 8.8-4l6.8 6.3c-3.8 4.6-9.1 6.8-15.8 6.8zm42.6-25.1h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1z"/>
-                </svg>
+                <svg viewBox="0 0 128 128" className="w-6 h-6 flex-shrink-0"><path fill="#9B4F96" d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm27.4 86.2h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1zm-42.6 7c-13.8 0-21.6-9.6-21.6-26.6s7.8-26.6 21.6-26.6c6.8 0 12.1 2.3 15.6 6.3l-6.8 6.5c-2.3-2.3-5.3-3.8-8.6-3.8-8.1 0-11.9 6.3-11.9 17.6s3.8 17.6 11.9 17.6c3.5 0 6.3-1.5 8.8-4l6.8 6.3c-3.8 4.6-9.1 6.8-15.8 6.8zm42.6-25.1h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1z"/></svg>
                 <span>C#</span>
             </div>
 
+            {/* Web Frontend */}
             <SkillBadge icon="https://cdn.simpleicons.org/nextdotjs/white" name="Next.js" />
             <SkillBadge icon="https://cdn.simpleicons.org/react/61DAFB" name="React" />
+            <SkillBadge icon="https://cdn.simpleicons.org/typescript/3178C6" name="TypeScript" />
+            <SkillBadge icon="https://cdn.simpleicons.org/javascript/F7DF1E" name="JavaScript" />
             <SkillBadge icon="https://cdn.simpleicons.org/tailwindcss/06B6D4" name="Tailwind" />
+            
+            {/* Backend & DB */}
             <SkillBadge icon="https://cdn.simpleicons.org/firebase/FFCA28" name="Firebase" />
             <SkillBadge icon="https://cdn.simpleicons.org/php/777BB4" name="PHP" />
             <SkillBadge icon="https://cdn.simpleicons.org/laravel/FF2D20" name="Laravel" />
             <SkillBadge icon="https://cdn.simpleicons.org/mysql/4479A1" name="MySQL" />
+            
+            {/* Data & Design */}
             <SkillBadge icon="https://cdn.simpleicons.org/python/3776AB" name="Python" />
+            <SkillBadge icon="/rstudio.webp" name="RStudio" /> 
+            <SkillBadge icon="/tableau.jpg" name="Tableau" />
             <SkillBadge icon="https://cdn.simpleicons.org/figma/F24E1E" name="Figma" />
-            <SkillBadge icon="https://cdn.simpleicons.org/javascript/F7DF1E" name="JavaScript" />
+            
+            {/* Infrastructure & Security */}
+            <SkillBadge icon="https://cdn.simpleicons.org/linux/FCC624" name="Linux" />
+            <SkillBadge icon="https://cdn.simpleicons.org/kalilinux/557C94" name="Kali Linux" /> 
+            <SkillBadge icon="https://cdn.simpleicons.org/snort/EC1C24" name="Snort" /> 
+            <SkillBadge icon="https://cdn.simpleicons.org/vmware/white" name="VMware" />
+
           </div>
         </div>
-      </section>
+      </section>  
 
       {/* --- PROJECTS SECTION --- */}
       <section id="projects" className="container mx-auto px-6 py-24 relative z-10">
@@ -315,6 +323,44 @@ export default function Home() {
                 </div>
             </div>
           </a>
+         {/* 6. PROJECT: SNORT IDS (No Link + Video Controls) */}
+          <div 
+            className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-red-500/10 transition duration-300 border border-slate-700 relative"
+          >
+            {/* Background Gradient Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-red-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
+            
+            <div className="flex flex-col md:flex-row">
+                {/* VIDEO CONTAINER */}
+                <div className="md:w-2/5 h-auto min-h-[300px] relative bg-black z-20">
+                    <video 
+                      controls // <--- INI KUNCINYA: Memunculkan tombol play/pause/durasi
+                      className="w-full h-full object-cover"
+                    >
+                      {/* Pastikan file video ada di folder public */}
+                      <source src="/snort_demo.mp4" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                {/* Content */}
+                <div className="p-8 md:w-3/5 relative z-20 flex flex-col justify-center">
+                    <div className="flex items-center gap-3 mb-4">
+                        <h3 className="text-2xl font-bold text-white group-hover:text-red-400 transition">SSH Brute Force Detection</h3>
+                    </div>
+                    
+                    <p className="text-slate-400 mb-6 leading-relaxed text-sm">
+                        An experimental cybersecurity project analyzing the effectiveness of Snort IDS in detecting SSH brute force attacks within a controlled local network. The simulation involved using Hydra on Kali Linux to attack an Ubuntu Server, utilizing custom Snort rules to identify and alert on suspicious login patterns in real-time.
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-3">
+                        <span className="badge bg-red-900/30 text-red-300">Snort IDS</span>
+                        <span className="badge bg-red-900/30 text-red-300">Kali Linux</span>
+                        <span className="badge bg-red-900/30 text-red-300">Cybersecurity</span>
+                    </div>
+                </div>
+            </div>
+          </div>
 
         </div>
       </section>
@@ -340,7 +386,7 @@ export default function Home() {
                    <div><h3 className="text-xl font-bold text-white">KSPM UMN</h3><p className="text-cyan-400 font-medium">Member of Internal Education</p></div>
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Apr 2025 - Present</div>
                 </div>
-                <p className="text-slate-400 leading-relaxed text-sm">Aktif berkontribusi dalam divisi edukasi internal. Bertanggung jawab dalam menyusun kurikulum pembelajaran pasar modal.</p>
+                <p className="text-slate-400 leading-relaxed text-sm">Developed weekly investment-related educational content and delivered capital market presentations while simplifying complex financial concepts into practical insights for members.</p>
               </div>
            </div>
            
@@ -356,7 +402,7 @@ export default function Home() {
                    <div><h3 className="text-xl font-bold text-white">COMMFEST UMN</h3><p className="text-cyan-400 font-medium">Member of Hansel (Equipment)</p></div>
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Mar 2025 - Nov 2025</div>
                 </div>
-                <p className="text-slate-400 leading-relaxed text-sm">Mengelola kebutuhan logistik dan perlengkapan acara untuk mendukung kelancaran festival.</p>
+                <p className="text-slate-400 leading-relaxed text-sm">Managed event equipment and logistics to support operational needs and ensure the smooth execution of the festival.</p>
               </div>
            </div>
 
@@ -372,7 +418,7 @@ export default function Home() {
                    <div><h3 className="text-xl font-bold text-white">UMN Festival 2024</h3><p className="text-cyan-400 font-medium">Volunteer of Milan (Competition)</p></div>
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Oct 2024 - Dec 2024</div>
                 </div>
-                <p className="text-slate-400 leading-relaxed text-sm">Menjadi sukarelawan dalam divisi lomba, membantu koordinasi peserta dan pengawasan kompetisi.</p>
+                <p className="text-slate-400 leading-relaxed text-sm">Supported sports competition operations by assisting with match administration and on-field coordination.</p>
               </div>
            </div>
         </div>

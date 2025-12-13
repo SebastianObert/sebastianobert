@@ -1,53 +1,53 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
+  @tailwind components;
+  @tailwind utilities;
 
-:root {
-  --background: #0f172a; /* Slate 900 */
-  --foreground: #ffffff;
-}
+  :root {
+    --background: #0f172a; /* Slate 900 */
+    --foreground: #ffffff;
+  }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
-@layer components {
-  .skill-card {
-    @apply flex flex-col items-center gap-3 p-4 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-cyan-500 hover:bg-slate-800 transition duration-300 cursor-default;
+  body {
+    color: var(--foreground);
+    background: var(--background);
   }
-  .skill-icon {
-    @apply w-10 h-10 group-hover:scale-110 transition duration-300;
+  @layer components {
+    .skill-card {
+      @apply flex flex-col items-center gap-3 p-4 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-cyan-500 hover:bg-slate-800 transition duration-300 cursor-default;
+    }
+    .skill-icon {
+      @apply w-10 h-10 group-hover:scale-110 transition duration-300;
+    }
+    .skill-text {
+      @apply text-slate-300 text-sm font-medium;
+    }
+    .badge {
+      @apply text-xs font-bold px-3 py-1 bg-cyan-900/30 text-cyan-300 rounded-full border border-cyan-500/20;
+    }
+    .skill-pill {
+      @apply flex items-center gap-3 px-6 py-3 bg-slate-800/50 rounded-full border border-slate-700 text-slate-300 font-medium hover:border-cyan-500 hover:text-cyan-400 hover:bg-slate-800 transition duration-300 cursor-default min-w-[140px] justify-center;
+    }
+    
   }
-  .skill-text {
-    @apply text-slate-300 text-sm font-medium;
+  html {
+    scroll-behavior: smooth; /* Bikin scroll jadi halus */
+    scroll-padding-top: 80px; /* Jarak aman agar judul tidak ketutup navbar */
   }
-  .badge {
-    @apply text-xs font-bold px-3 py-1 bg-cyan-900/30 text-cyan-300 rounded-full border border-cyan-500/20;
+  :root {
+    --background: #0f172a;
+    --foreground: #e2e8f0;
   }
-  .skill-pill {
-    @apply flex items-center gap-3 px-6 py-3 bg-slate-800/50 rounded-full border border-slate-700 text-slate-300 font-medium hover:border-cyan-500 hover:text-cyan-400 hover:bg-slate-800 transition duration-300 cursor-default min-w-[140px] justify-center;
-  }
-  
-}
-html {
-  scroll-behavior: smooth; /* Bikin scroll jadi halus */
-  scroll-padding-top: 80px; /* Jarak aman agar judul tidak ketutup navbar */
-}
-:root {
-  --background: #0f172a;
-  --foreground: #ffffff;
-}
 
-@layer utilities {
-  .animate-scroll {
-    animation: scroll 30s linear infinite;
+  @layer utilities {
+    .animate-scroll {
+      animation: scroll 30s linear infinite;
+    }
+    .pause-on-hover:hover {
+      animation-play-state: paused;
+    }
   }
-  .pause-on-hover:hover {
-    animation-play-state: paused;
-  }
-}
 
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }

@@ -35,7 +35,6 @@ export default function Home() {
             {/* DESKTOP MENU (Hidden di HP) */}
             <div className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <NavLink href="#about">About</NavLink>
-              <NavLink href="#skills">Skills</NavLink>
               <NavLink href="#projects">Projects</NavLink>
               <NavLink href="#organization">Organization</NavLink>
             </div>
@@ -59,7 +58,6 @@ export default function Home() {
           {isMobileMenuOpen && (
             <div className="md:hidden absolute top-full left-0 w-full bg-slate-900/95 border-b border-slate-800 p-4 flex flex-col items-center gap-4 shadow-2xl animate-fadeIn">
               <MobileNavLink href="#about" onClick={() => setIsMobileMenuOpen(false)}>About</MobileNavLink>
-              <MobileNavLink href="#skills" onClick={() => setIsMobileMenuOpen(false)}>Skills</MobileNavLink>
               <MobileNavLink href="#projects" onClick={() => setIsMobileMenuOpen(false)}>Projects</MobileNavLink>
               <MobileNavLink href="#organization" onClick={() => setIsMobileMenuOpen(false)}>Organization</MobileNavLink>
             </div>
@@ -272,7 +270,7 @@ export default function Home() {
             {/* Image Container */}
             <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
                <Image 
-                 src="/Aircare.png" 
+                 src="/airCare.png" 
                  alt="AirCare App" 
                  fill 
                  className="object-cover group-hover:scale-105 transition duration-500"
@@ -323,7 +321,7 @@ export default function Home() {
                 </div>
             </div>
           </a>
-         {/* 6. PROJECT: SNORT IDS (No Link + Video Controls) */}
+         {/* 6. PROJECT: SNORT IDS */}
           <div 
             className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-red-500/10 transition duration-300 border border-slate-700 relative"
           >
@@ -421,6 +419,84 @@ export default function Home() {
                 <p className="text-slate-400 leading-relaxed text-sm">Supported sports competition operations by assisting with match administration and on-field coordination.</p>
               </div>
            </div>
+        </div>
+
+        {/* --- SOFT SKILLS SECTION (Updated: Generic & Responsibility) --- */}
+        <div className="max-w-5xl mx-auto mb-20 px-6">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+              Personal Attributes & Soft Skills
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Skill 1: Analytical Thinking */}
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
+                <div className="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center mb-4 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Analytical Thinking</h4>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Ability to analyze complex information and simplify it into understandable insights, ensuring clarity and effective knowledge transfer.
+                </p>
+              </div>
+
+              {/* Skill 2: Teamwork */}
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Teamwork</h4>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Proven ability to collaborate effectively in diverse teams, contributing to collective goals through open communication and mutual support.
+                </p>
+              </div>
+
+              {/* Skill 3: Problem Solving */}
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
+                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-4 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Problem Solving</h4>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Adept at troubleshooting technical issues and resolving operational challenges with practical and efficient solutions.
+                </p>
+              </div>
+
+              {/* Skill 4: Time Management */}
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-green-600 dark:text-green-400 group-hover:scale-110 transition duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Time Management</h4>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Highly organized with the ability to prioritize tasks and balance multiple responsibilities effectively under deadlines.
+                </p>
+              </div>
+
+              {/* Skill 5: Responsibility (Replaces Attention to Detail) */}
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition duration-300">
+                  {/* Icon: Clipboard/Check */}
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Responsibility</h4>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Dedicated to fulfilling role obligations with integrity, ensuring tasks are completed accurately and on time regardless of challenges.
+                </p>
+              </div>
+
+              {/* Skill 6: Adaptability */}
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
+                <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center mb-4 text-pink-600 dark:text-pink-400 group-hover:scale-110 transition duration-300">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Adaptability</h4>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Quick to learn new technologies and adjust to dynamic environments, ensuring continuous growth and improvement.
+                </p>
+              </div>
+
+            </div>
         </div>
 
         {/* --- PHOTO GALLERY (MARQUEE) --- */}

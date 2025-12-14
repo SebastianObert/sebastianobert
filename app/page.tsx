@@ -180,7 +180,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-white mb-12">Featured Projects</h2>
         </ScrollElement>
         
-        <ScrollElement animation="scale-blur" delay={0.2} duration={0.9}>
+        <ScrollElement animation="scale-blur" delay={0.1} duration={0.8} triggerMargin="0px 0px -50px 0px">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. AEGIS CALL (Wide Card - Span 2) */}

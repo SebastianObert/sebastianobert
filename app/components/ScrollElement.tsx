@@ -9,6 +9,7 @@ type ScrollProps = {
   animation?: "fade-up" | "fade-down" | "fade-left" | "fade-right" | "zoom-in" | "flip" | "slide-fade" | "scale-blur" | "reveal" | "glitch" | "parallax" | "stagger"; 
   delay?: number;
   duration?: number;
+  triggerMargin?: string;
 };
 
 export default function ScrollElement({ 
@@ -16,7 +17,8 @@ export default function ScrollElement({
   className = "", 
   animation = "fade-up", 
   delay = 0,
-  duration = 0.5 
+  duration = 0.5,
+  triggerMargin = "0px 0px -100px 0px"
 }: ScrollProps) {
 
   const variants = {
@@ -57,7 +59,7 @@ export default function ScrollElement({
       variants={variants[animation]}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.1, margin: "0px 0px -200px 0px" }}
+      viewport={{ once: false, amount: 0.1, margin: triggerMargin }}
       transition={{ 
         duration: duration, 
         delay: delay, 

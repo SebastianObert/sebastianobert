@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react"; // Import useState untuk menu HP
 import Snowfall from "react-snowfall";
+import ScrollElement from "./components/ScrollElement";
 
 export default function Home() {
   // State untuk Mobile Menu
@@ -67,6 +68,7 @@ export default function Home() {
 
       {/* --- HERO SECTION --- */}
       <section id="about" className="container mx-auto px-6 pt-40 pb-20 relative z-10">
+        <ScrollElement animation="slide-fade" duration={0.9}>
         <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-20">
           <div className="flex-1 text-center md:text-left space-y-6">
             <h2 className="text-cyan-400 font-medium text-lg tracking-wide">HELLO, FOLKS! 👋</h2>
@@ -117,16 +119,20 @@ export default function Home() {
             </div>
           </div>
         </div>
+        </ScrollElement>
       </section>
 
 {/* --- SKILLS SECTION (Updated with Security Tools) --- */}
       <section id="skills" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
         <div className="container mx-auto px-6">
+          <ScrollElement animation="fade-down" duration={0.7}>
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">Tech Stack</h2>
             <p className="text-slate-400">Tools and technologies I have used in various projects</p>
           </div>
+          </ScrollElement>
           
+          <ScrollElement animation="zoom-in" delay={0.2} duration={0.7}>
           <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center md:gap-4 max-w-5xl mx-auto">
             
             {/* Mobile & Game */}
@@ -164,13 +170,17 @@ export default function Home() {
             <SkillBadge icon="https://cdn.simpleicons.org/vmware/white" name="VMware" />
 
           </div>
+          </ScrollElement>
         </div>
       </section>  
 
       {/* --- PROJECTS SECTION --- */}
       <section id="projects" className="container mx-auto px-6 py-24 relative z-10">
+        <ScrollElement animation="glitch" duration={0.7}>
         <h2 className="text-3xl font-bold text-white mb-12">Featured Projects</h2>
+        </ScrollElement>
         
+        <ScrollElement animation="scale-blur" delay={0.2} duration={0.9}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. AEGIS CALL (Wide Card - Span 2) */}
@@ -361,16 +371,20 @@ export default function Home() {
           </div>
 
         </div>
+        </ScrollElement>
       </section>
 
       {/* --- ORGANIZATION & EXPERIENCE --- */}
       <section id="organization" className="container mx-auto px-6 py-24 relative z-10 border-t border-slate-800/50">
+        <ScrollElement animation="parallax" duration={0.8}>
         <div className="mb-12 text-center max-w-3xl mx-auto">
            <h2 className="text-3xl font-bold text-white mb-6">Organization & Experience</h2>
            <p className="text-slate-400 text-lg">Through the many organizations and events I've been a part of, I learned many new skills and got to know a lot of people.</p>
         </div>
+        </ScrollElement>
 
         {/* LIST ORGANISASI */}
+        <ScrollElement animation="slide-fade" delay={0.2} duration={0.8}>
         <div className="space-y-6 max-w-4xl mx-auto mb-20">
            {/* Card KSPM */}
            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 transition duration-300 flex flex-col md:flex-row gap-6">
@@ -420,13 +434,17 @@ export default function Home() {
               </div>
            </div>
         </div>
+        </ScrollElement>
 
         {/* --- SOFT SKILLS SECTION (Updated: Generic & Responsibility) --- */}
         <div className="max-w-5xl mx-auto mb-20 px-6">
+            <ScrollElement animation="fade-up" duration={0.7}>
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center">
               Personal Attributes & Soft Skills
             </h3>
+            </ScrollElement>
             
+            <ScrollElement animation="zoom-in" delay={0.2} duration={0.7}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
               {/* Skill 1: Analytical Thinking */}
@@ -497,11 +515,15 @@ export default function Home() {
               </div>
 
             </div>
+            </ScrollElement>
         </div>
 
         {/* --- PHOTO GALLERY (MARQUEE) --- */}
         <div className="max-w-6xl mx-auto">
+            <ScrollElement animation="glitch" duration={0.6}>
             <h3 className="text-2xl font-bold text-white mb-8 text-center">Documentation & Activities</h3>
+            </ScrollElement>
+            <ScrollElement animation="parallax" delay={0.2} duration={0.8}>
             <div className="flex overflow-hidden w-full relative group">
                 <div className="flex gap-6 animate-scroll group-hover:pause-on-hover w-max">
                   {[...Array(2)].map((_, i) => (
@@ -517,11 +539,13 @@ export default function Home() {
                 <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-slate-900 to-transparent z-10 pointer-events-none"></div>
                 <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-slate-900 to-transparent z-10 pointer-events-none"></div>
             </div>
+            </ScrollElement>
         </div>
       </section>
       
       {/* --- CONTACT SECTION (NEW) --- */}
       <section id="contact" className="container mx-auto px-6 pt-24 pb-12 relative z-10 border-t border-slate-800/50">
+        <ScrollElement animation="scale-blur" duration={0.9}>
         <div className="text-center max-w-2xl mx-auto">
            <h2 className="text-3xl font-bold text-white mb-6">Let's Connect</h2>
            <p className="text-slate-400 mb-8">
@@ -589,6 +613,7 @@ export default function Home() {
 
            </div>
         </div>
+        </ScrollElement>
       </section>
       
       {/* --- FOOTER --- */}

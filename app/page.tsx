@@ -11,6 +11,12 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // State untuk expanded social button di mobile
   const [expandedSocial, setExpandedSocial] = useState<string | null>(null);
+  // State untuk expanded organization card di mobile
+  const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
+  // State untuk skill badge yang diklik
+  const [clickedSkill, setClickedSkill] = useState<string | null>(null);
+  // State untuk ripple animation pada profile picture - array untuk support spam click
+  const [ripples, setRipples] = useState<number[]>([]);
 
   return (
     <main className="min-h-screen bg-slate-900 text-slate-200 selection:bg-cyan-500 selection:text-white relative overflow-hidden">
@@ -90,7 +96,7 @@ export default function Home() {
                 Specialized in <span className="text-cyan-300 font-medium">cross-platform development</span> with a 
                 user-centric design approach and <span className="text-cyan-300 font-medium">security-first</span> mindset.
               </p>
-              <div className="min-h-[4.5rem] flex items-start">
+              <div className="min-h-[4.5rem] md:min-h-[4.5rem] min-h-[7rem] flex items-start">
                 <p className="text-base text-slate-500 leading-relaxed max-w-2xl mx-auto md:mx-0">
                   <TypeWriter 
                     text="Currently exploring mobile development, game design, and cybersecurity while continuously learning new frameworks and best practices."
@@ -152,11 +158,29 @@ export default function Home() {
           <div className="flex-1 flex justify-center relative group">
             <div className="absolute inset-0 bg-cyan-500 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition duration-500"></div>
             
+            {/* Ripple effect */}
+            {ripples.map((rippleId) => (
+              <div key={rippleId} className="absolute inset-0 flex items-center justify-center z-0">
+                <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-cyan-400 animate-ripple"></div>
+                <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-cyan-400 animate-ripple" style={{ animationDelay: '0.7s' }}></div>
+                <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-cyan-400 animate-ripple" style={{ animationDelay: '1.4s' }}></div>
+              </div>
+            ))}
+            
             {/*  
                 w-48 h-48 (Mobile)
                 md:w-60 md:h-60 (Desktop) 
             */}
-            <div className="relative w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl z-10">
+            <div 
+              className="relative w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl z-10 cursor-pointer active:scale-95 transition-transform"
+              onClick={() => {
+                const rippleId = Date.now();
+                setRipples(prev => [...prev, rippleId]);
+                setTimeout(() => {
+                  setRipples(prev => prev.filter(id => id !== rippleId));
+                }, 2500);
+              }}
+            >
               <Image src="/profil_sebas.jpg" alt="Sebastian Obert" fill className="object-cover" priority />
             </div>
           </div>
@@ -178,38 +202,48 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:justify-center md:gap-4 max-w-5xl mx-auto">
             
             {/* Mobile & Game */}
-            <SkillBadge icon="https://cdn.simpleicons.org/kotlin/7F52FF" name="Kotlin" />
-            <SkillBadge icon="https://cdn.simpleicons.org/android/3DDC84" name="Android" />
-            <SkillBadge icon="https://cdn.simpleicons.org/unity/white" name="Unity" />
-            <div className="skill-pill">
+            <SkillBadge icon="https://cdn.simpleicons.org/kotlin/7F52FF" name="Kotlin" category="Mobile Development" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/unity/white" name="Unity" category="Game Development" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <div 
+              className="skill-pill relative group cursor-pointer"
+              onClick={() => {
+                if (window.innerWidth < 768) {
+                  setClickedSkill(clickedSkill === 'C#' ? null : 'C#');
+                }
+              }}
+            >
                 <svg viewBox="0 0 128 128" className="w-6 h-6 flex-shrink-0"><path fill="#9B4F96" d="M64 0C28.7 0 0 28.7 0 64s28.7 64 64 64 64-28.7 64-64S99.3 0 64 0zm27.4 86.2h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1zm-42.6 7c-13.8 0-21.6-9.6-21.6-26.6s7.8-26.6 21.6-26.6c6.8 0 12.1 2.3 15.6 6.3l-6.8 6.5c-2.3-2.3-5.3-3.8-8.6-3.8-8.1 0-11.9 6.3-11.9 17.6s3.8 17.6 11.9 17.6c3.5 0 6.3-1.5 8.8-4l6.8 6.3c-3.8 4.6-9.1 6.8-15.8 6.8zm42.6-25.1h-7.3v8.3h-8.1v-8.3h-7.6v-8.1h7.6v-7.6h8.1v7.6h7.3v8.1z"/></svg>
                 <span>C#</span>
+                <div className={`absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-700 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap transition-opacity duration-200 pointer-events-none ${
+                  clickedSkill === 'C#' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  Game Development
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-700"></div>
+                </div>
             </div>
 
             {/* Web Frontend */}
-            <SkillBadge icon="https://cdn.simpleicons.org/nextdotjs/white" name="Next.js" />
-            <SkillBadge icon="https://cdn.simpleicons.org/react/61DAFB" name="React" />
-            <SkillBadge icon="https://cdn.simpleicons.org/typescript/3178C6" name="TypeScript" />
-            <SkillBadge icon="https://cdn.simpleicons.org/javascript/F7DF1E" name="JavaScript" />
-            <SkillBadge icon="https://cdn.simpleicons.org/tailwindcss/06B6D4" name="Tailwind" />
+            <SkillBadge icon="https://cdn.simpleicons.org/nextdotjs/white" name="Next.js" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/react/61DAFB" name="React" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/typescript/3178C6" name="TypeScript" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/javascript/F7DF1E" name="JavaScript" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/tailwindcss/06B6D4" name="Tailwind" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             
             {/* Backend & DB */}
-            <SkillBadge icon="https://cdn.simpleicons.org/firebase/FFCA28" name="Firebase" />
-            <SkillBadge icon="https://cdn.simpleicons.org/php/777BB4" name="PHP" />
-            <SkillBadge icon="https://cdn.simpleicons.org/laravel/FF2D20" name="Laravel" />
-            <SkillBadge icon="https://cdn.simpleicons.org/mysql/4479A1" name="MySQL" />
+            <SkillBadge icon="https://cdn.simpleicons.org/firebase/FFCA28" name="Firebase" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/php/777BB4" name="PHP" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/laravel/FF2D20" name="Laravel" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/mysql/4479A1" name="MySQL" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             
             {/* Data & Design */}
-            <SkillBadge icon="https://cdn.simpleicons.org/python/3776AB" name="Python" />
-            <SkillBadge icon="/rstudio.webp" name="RStudio" /> 
-            <SkillBadge icon="/tableau.jpg" name="Tableau" />
-            <SkillBadge icon="https://cdn.simpleicons.org/figma/F24E1E" name="Figma" />
+            <SkillBadge icon="https://cdn.simpleicons.org/python/3776AB" name="Python" category="Data Analysis" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="/rstudio.webp" name="RStudio" category="Data Analysis" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} /> 
+            <SkillBadge icon="/tableau.jpg" name="Tableau" category="Data Visualization" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
+            <SkillBadge icon="https://cdn.simpleicons.org/figma/F24E1E" name="Figma" category="UI/UX Design" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             
             {/* Infrastructure & Security */}
-            <SkillBadge icon="https://cdn.simpleicons.org/linux/FCC624" name="Linux" />
-            <SkillBadge icon="https://cdn.simpleicons.org/kalilinux/557C94" name="Kali Linux" /> 
-            <SkillBadge icon="https://cdn.simpleicons.org/snort/EC1C24" name="Snort" /> 
-            <SkillBadge icon="https://cdn.simpleicons.org/vmware/white" name="VMware" />
+            <SkillBadge icon="https://cdn.simpleicons.org/kalilinux/557C94" name="Kali Linux" category="Cybersecurity" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} /> 
+            <SkillBadge icon="https://cdn.simpleicons.org/snort/EC1C24" name="Snort" category="Cybersecurity" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} /> 
 
           </div>
           </ScrollElement>
@@ -382,10 +416,10 @@ export default function Home() {
             
             <div className="flex flex-col md:flex-row">
                 {/* VIDEO CONTAINER */}
-                <div className="md:w-2/5 h-auto min-h-[300px] relative bg-black z-20">
+                <div className="md:w-2/5 w-full h-64 md:h-auto md:min-h-[300px] relative bg-black z-20">
                     <video 
-                      controls // <--- INI KUNCINYA: Memunculkan tombol play/pause/durasi
-                      className="w-full h-full object-cover"
+                      controls
+                      className="w-full h-full object-contain"
                     >
                       {/* Pastikan file video ada di folder public */}
                       <source src="/snort_demo.mp4" type="video/mp4" />
@@ -414,10 +448,18 @@ export default function Home() {
 
         </div>
         </ScrollElement>
+        
+        {/* Coming Soon Message */}
+        <div className="text-center mt-12">
+          <p className="text-slate-400 text-sm italic">
+            More projects are coming soon as I continue exploring new technologies.
+          </p>
+        </div>
       </section>
 
       {/* --- ORGANIZATION & EXPERIENCE --- */}
-      <section id="organization" className="container mx-auto px-6 py-8 relative z-10 border-t border-slate-800/50">
+      <section id="organization" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
+        <div className="container mx-auto px-6">
         <ScrollElement animation="parallax" duration={0.8}>
         <div className="mb-12 text-center max-w-3xl mx-auto">
            <h2 className="text-3xl font-bold text-white mb-6">Organization & Experience</h2>
@@ -429,7 +471,14 @@ export default function Home() {
         <ScrollElement animation="slide-fade" delay={0.2} duration={0.8}>
         <div className="space-y-6 max-w-4xl mx-auto mb-20">
            {/* Card KSPM */}
-           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer">
+           <div 
+             onClick={() => {
+               if (window.innerWidth < 768) {
+                 setExpandedOrg(expandedOrg === 'kspm' ? null : 'kspm');
+               }
+             }}
+             className="group bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer"
+           >
               <div className="flex-shrink-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-600">
                    <Image src="/kspm.jpg" alt="Logo KSPM" width={64} height={64} className="object-cover" /> 
@@ -437,7 +486,17 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                   <div><h3 className="text-xl font-bold text-white">KSPM UMN</h3><p className="text-cyan-400 font-medium">Member of Internal Education</p></div>
+                   <div>
+                     <h3 className="text-xl font-bold text-white relative">
+                       <span className={`transition-opacity duration-300 ${
+                         expandedOrg === 'kspm' ? 'opacity-0' : 'group-hover:opacity-0'
+                       }`}>KSPM UMN</span>
+                       <span className={`absolute left-0 top-0 transition-opacity duration-300 whitespace-nowrap ${
+                         expandedOrg === 'kspm' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                       }`}>Kelompok Studi Pasar Modal UMN</span>
+                     </h3>
+                     <p className="text-cyan-400 font-medium">Internal Education</p>
+                   </div>
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Apr 2025 - Present</div>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-sm">Developed weekly investment-related educational content and delivered capital market presentations while simplifying complex financial concepts into practical insights for members.</p>
@@ -445,7 +504,14 @@ export default function Home() {
            </div>
            
            {/* Card COMMFEST */}
-           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer">
+           <div 
+             onClick={() => {
+               if (window.innerWidth < 768) {
+                 setExpandedOrg(expandedOrg === 'commfest' ? null : 'commfest');
+               }
+             }}
+             className="group bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer"
+           >
               <div className="flex-shrink-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-600">
                    <Image src="/commfest.jpg" alt="Logo COMMFEST" width={64} height={64} className="object-cover" /> 
@@ -453,7 +519,17 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                   <div><h3 className="text-xl font-bold text-white">COMMFEST UMN</h3><p className="text-cyan-400 font-medium">Member of Hansel (Equipment)</p></div>
+                   <div>
+                     <h3 className="text-xl font-bold text-white relative">
+                       <span className={`transition-opacity duration-300 ${
+                         expandedOrg === 'commfest' ? 'opacity-0' : 'group-hover:opacity-0'
+                       }`}>COMMFEST UMN 2025</span>
+                       <span className={`absolute left-0 top-0 transition-opacity duration-300 whitespace-nowrap ${
+                         expandedOrg === 'commfest' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                       }`}>Communication Festival UMN 2025</span>
+                     </h3>
+                     <p className="text-cyan-400 font-medium">Equipment</p>
+                   </div>
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Mar 2025 - Nov 2025</div>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-sm">Managed event equipment and logistics to support operational needs and ensure the smooth execution of the festival.</p>
@@ -461,7 +537,14 @@ export default function Home() {
            </div>
 
            {/* Card UMN Fest */}
-           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer">
+           <div 
+             onClick={() => {
+               if (window.innerWidth < 768) {
+                 setExpandedOrg(expandedOrg === 'umnfest' ? null : 'umnfest');
+               }
+             }}
+             className="group bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer"
+           >
               <div className="flex-shrink-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-600">
                    <Image src="/ufest.jpg" alt="Logo UMN Fest" width={64} height={64} className="object-cover" /> 
@@ -469,7 +552,17 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                   <div><h3 className="text-xl font-bold text-white">UMN Festival 2024</h3><p className="text-cyan-400 font-medium">Volunteer of Milan (Competition)</p></div>
+                   <div>
+                     <h3 className="text-xl font-bold text-white relative">
+                       <span className={`transition-opacity duration-300 ${
+                         expandedOrg === 'umnfest' ? 'opacity-0' : 'group-hover:opacity-0'
+                       }`}>UFEST 2024</span>
+                       <span className={`absolute left-0 top-0 transition-opacity duration-300 whitespace-nowrap ${
+                         expandedOrg === 'umnfest' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                       }`}>UMN Festival 2024</span>
+                     </h3>
+                     <p className="text-cyan-400 font-medium">Competition</p>
+                   </div>
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Oct 2024 - Dec 2024</div>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-sm">Supported sports competition operations by assisting with match administration and on-field coordination.</p>
@@ -477,6 +570,7 @@ export default function Home() {
            </div>
         </div>
         </ScrollElement>
+        </div>
       </section>
 
       {/* --- ORGANIZATION & EXPERIENCE SECTION CONTINUED --- */}
@@ -638,7 +732,7 @@ export default function Home() {
       <footer className="bg-slate-950 py-12 border-t border-slate-900 text-center relative z-10">
         {/* Motto */}
         <p className="text-slate-300 font-medium text-lg mb-4 tracking-wide italic">
-          "In Progress, Always."
+          "In progress, always."
         </p>
         
         {/* Copyright */}
@@ -670,11 +764,27 @@ function MobileNavLink({ href, onClick, children }: { href: string; onClick: () 
   );
 }
 
-function SkillBadge({ icon, name }: { icon: string; name: string }) {
+function SkillBadge({ icon, name, category, clickedSkill, setClickedSkill }: { icon: string; name: string; category: string; clickedSkill: string | null; setClickedSkill: (skill: string | null) => void }) {
+  const isClicked = clickedSkill === name;
+  
   return (
-    <div className="skill-pill">
+    <div 
+      className="skill-pill relative group cursor-pointer"
+      onClick={() => {
+        if (window.innerWidth < 768) {
+          setClickedSkill(isClicked ? null : name);
+        }
+      }}
+    >
       <img src={icon} alt={name} className="w-6 h-6" />
       <span>{name}</span>
+      {/* Category tooltip - show on hover (desktop) or click (mobile) */}
+      <div className={`absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-700 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap transition-opacity duration-200 pointer-events-none ${
+        isClicked ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+      }`}>
+        {category}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-700"></div>
+      </div>
     </div>
   );
 }

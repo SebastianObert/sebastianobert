@@ -4,10 +4,13 @@ import Image from "next/image";
 import { useState } from "react"; // Import useState untuk menu HP
 import Snowfall from "react-snowfall";
 import ScrollElement from "./components/ScrollElement";
+import TypeWriter from "./components/TypeWriter";
 
 export default function Home() {
   // State untuk Mobile Menu
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // State untuk expanded social button di mobile
+  const [expandedSocial, setExpandedSocial] = useState<string | null>(null);
 
   return (
     <main className="min-h-screen bg-slate-900 text-slate-200 selection:bg-cyan-500 selection:text-white relative overflow-hidden">
@@ -75,30 +78,59 @@ export default function Home() {
             <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
               I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Sebastian Obert</span>
             </h1>
-            <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto md:mx-0">
-            <b>an Informatics Engineering student passionate about Android apps, games, and modern web development</b>.
-            </p>
-            <div className="flex gap-6 mt-6 justify-center md:justify-start">
-               {/* Github & LinkedIn Icons (Sama seperti sebelumnya) */}
-               <a href="https://github.com/SebastianObert" target="_blank" className="text-slate-400 hover:text-white hover:scale-110 transition"><svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.896-.014 3.293 0 .319.22.694.825.576C20.566 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-              
+            
+            {/* 🎯 UPDATED SECTION - More Professional & Descriptive */}
+            <div className="space-y-4">
+              <p className="text-lg md:text-xl font-medium text-slate-300">
+                A third-year <span className="font-bold text-white">Informatics</span> student at Multimedia Nusantara University.
+              </p>
+              <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto md:mx-0">
+                I build <span className="text-cyan-300 font-medium">end-to-end digital solutions</span>, from 
+                Android applications and interactive web platforms to backend systems. 
+                Specialized in <span className="text-cyan-300 font-medium">cross-platform development</span> with a 
+                user-centric design approach and <span className="text-cyan-300 font-medium">security-first</span> mindset.
+              </p>
+              <div className="min-h-[4.5rem] flex items-start">
+                <p className="text-base text-slate-500 leading-relaxed max-w-2xl mx-auto md:mx-0">
+                  <TypeWriter 
+                    text="Currently exploring mobile development, game design, and cybersecurity while continuously learning new frameworks and best practices."
+                    speed={30}
+                    delay={800}
+                    loop={true}
+                  />
+                </p>
+              </div>
             </div>
-           {/* --- ACTION BUTTONS (Updated) --- */}
-            <div className="flex gap-4 justify-center md:justify-start pt-6">
+            
+            {/* --- SOCIAL LINKS & ACTION BUTTONS (Combined & Aligned) --- */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 mt-6 justify-center md:justify-start">
+               {/* Github Icon with Expandable Text */}
+               <a 
+                 href="https://github.com/SebastianObert" 
+                 target="_blank" 
+                 className="group relative flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-400 transition-all duration-300 overflow-hidden"
+               >
+                 <svg className="w-6 h-6 fill-current text-slate-400 group-hover:text-white transition flex-shrink-0" viewBox="0 0 24 24">
+                   <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.896-.014 3.293 0 .319.22.694.825.576C20.566 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                 </svg>
+                 <span className="max-w-0 group-hover:max-w-[100px] overflow-hidden whitespace-nowrap text-slate-400 group-hover:text-white font-medium transition-all duration-300 text-sm sm:text-base">
+                   GitHub
+                 </span>
+               </a>
               
-              {/* Tombol 1: Ke Projects */}
+              {/* View My Works Button */}
               <a 
                 href="#projects" 
-                className="px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-full font-bold transition shadow-lg shadow-cyan-500/30 flex items-center gap-2"
+                className="px-6 sm:px-8 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-full font-bold transition shadow-lg shadow-cyan-500/30 flex items-center gap-2 text-sm sm:text-base"
               >
                 View My Works
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
               </a>
 
-              {/* Tombol 2: Ke Contact (Paling Bawah) */}
+              {/* Contact Me Button */}
               <a 
                 href="#contact" 
-                className="px-8 py-3 border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 rounded-full font-medium transition flex items-center gap-2"
+                className="px-6 sm:px-8 py-3 border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 rounded-full font-medium transition flex items-center gap-2 text-sm sm:text-base"
               >
                 Contact Me
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
@@ -111,10 +143,10 @@ export default function Home() {
             <div className="absolute inset-0 bg-cyan-500 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition duration-500"></div>
             
             {/*  
-                w-56 h-56 (Mobile)
-                md:w-72 md:h-72 (Desktop) 
+                w-48 h-48 (Mobile)
+                md:w-60 md:h-60 (Desktop) 
             */}
-            <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl z-10">
+            <div className="relative w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl z-10">
               <Image src="/profil_sebas.jpg" alt="Sebastian Obert" fill className="object-cover" priority />
             </div>
           </div>
@@ -180,7 +212,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-white mb-12">Featured Projects</h2>
         </ScrollElement>
         
-        <ScrollElement animation="scale-blur" delay={0.1} duration={0.8} triggerMargin="0px 0px -50px 0px">
+        <ScrollElement animation="scale-blur" delay={0} duration={0.7} triggerMargin="0px 0px 100px 0px">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. AEGIS CALL (Wide Card - Span 2) */}
@@ -375,7 +407,7 @@ export default function Home() {
       </section>
 
       {/* --- ORGANIZATION & EXPERIENCE --- */}
-      <section id="organization" className="container mx-auto px-6 py-24 relative z-10 border-t border-slate-800/50">
+      <section id="organization" className="container mx-auto px-6 py-8 relative z-10 border-t border-slate-800/50">
         <ScrollElement animation="parallax" duration={0.8}>
         <div className="mb-12 text-center max-w-3xl mx-auto">
            <h2 className="text-3xl font-bold text-white mb-6">Organization & Experience</h2>
@@ -387,7 +419,7 @@ export default function Home() {
         <ScrollElement animation="slide-fade" delay={0.2} duration={0.8}>
         <div className="space-y-6 max-w-4xl mx-auto mb-20">
            {/* Card KSPM */}
-           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 transition duration-300 flex flex-col md:flex-row gap-6">
+           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer">
               <div className="flex-shrink-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-600">
                    <Image src="/kspm.jpg" alt="Logo KSPM" width={64} height={64} className="object-cover" /> 
@@ -403,7 +435,7 @@ export default function Home() {
            </div>
            
            {/* Card COMMFEST */}
-           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 transition duration-300 flex flex-col md:flex-row gap-6">
+           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer">
               <div className="flex-shrink-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-600">
                    <Image src="/commfest.jpg" alt="Logo COMMFEST" width={64} height={64} className="object-cover" /> 
@@ -419,7 +451,7 @@ export default function Home() {
            </div>
 
            {/* Card UMN Fest */}
-           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 transition duration-300 flex flex-col md:flex-row gap-6">
+           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 hover:scale-105 transition-all duration-300 flex flex-col md:flex-row gap-6 cursor-pointer">
               <div className="flex-shrink-0">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-600">
                    <Image src="/ufest.jpg" alt="Logo UMN Fest" width={64} height={64} className="object-cover" /> 
@@ -435,89 +467,10 @@ export default function Home() {
            </div>
         </div>
         </ScrollElement>
+      </section>
 
-        {/* --- SOFT SKILLS SECTION (Updated: Generic & Responsibility) --- */}
-        <div className="max-w-5xl mx-auto mb-20 px-6">
-            <ScrollElement animation="fade-up" duration={0.7}>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 text-center">
-              Personal Attributes & Soft Skills
-            </h3>
-            </ScrollElement>
-            
-            <ScrollElement animation="zoom-in" delay={0.2} duration={0.7}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
-              {/* Skill 1: Analytical Thinking */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
-                <div className="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center mb-4 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition duration-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Analytical Thinking</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Ability to analyze complex information and simplify it into understandable insights, ensuring clarity and effective knowledge transfer.
-                </p>
-              </div>
-
-              {/* Skill 2: Teamwork */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition duration-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Teamwork</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Proven ability to collaborate effectively in diverse teams, contributing to collective goals through open communication and mutual support.
-                </p>
-              </div>
-
-              {/* Skill 3: Problem Solving */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-4 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition duration-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Problem Solving</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Adept at troubleshooting technical issues and resolving operational challenges with practical and efficient solutions.
-                </p>
-              </div>
-
-              {/* Skill 4: Time Management */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4 text-green-600 dark:text-green-400 group-hover:scale-110 transition duration-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Time Management</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Highly organized with the ability to prioritize tasks and balance multiple responsibilities effectively under deadlines.
-                </p>
-              </div>
-
-              {/* Skill 5: Responsibility (Replaces Attention to Detail) */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition duration-300">
-                  {/* Icon: Clipboard/Check */}
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Responsibility</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Dedicated to fulfilling role obligations with integrity, ensuring tasks are completed accurately and on time regardless of challenges.
-                </p>
-              </div>
-
-              {/* Skill 6: Adaptability */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition duration-300 group">
-                <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center mb-4 text-pink-600 dark:text-pink-400 group-hover:scale-110 transition duration-300">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Adaptability</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Quick to learn new technologies and adjust to dynamic environments, ensuring continuous growth and improvement.
-                </p>
-              </div>
-
-            </div>
-            </ScrollElement>
-        </div>
-
+      {/* --- ORGANIZATION & EXPERIENCE SECTION CONTINUED --- */}
+      <section id="organization-continued" className="container mx-auto px-6 pt-12 pb-12 relative z-10 border-t border-slate-800">
         {/* --- PHOTO GALLERY (MARQUEE) --- */}
         <div className="max-w-6xl mx-auto">
             <ScrollElement animation="glitch" duration={0.6}>
@@ -559,56 +512,111 @@ export default function Home() {
               <a 
                 href="https://instagram.com/sebasobet" 
                 target="_blank" 
-                className="group flex flex-col items-center gap-2"
+                onClick={(e) => {
+                  if (window.innerWidth < 768 && expandedSocial !== 'instagram') {
+                    e.preventDefault();
+                    setExpandedSocial('instagram');
+                  }
+                }}
+                className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300 overflow-hidden ${
+                  expandedSocial === 'instagram' ? 'w-[130px]' : 'w-[50px] hover:w-[130px]'
+                }`}
               >
-                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-pink-500 group-hover:shadow-lg group-hover:shadow-pink-500/20 transition duration-300">
-                  <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="Instagram" className="w-7 h-7" />
+                <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                  expandedSocial === 'instagram' ? 'left-4 translate-x-0' : 'group-hover:left-4 group-hover:translate-x-0'
+                }`}>
+                  <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="Instagram" className="w-6 h-6" />
                 </div>
-                <span className="text-xs text-slate-500 group-hover:text-pink-400 transition">Instagram</span>
+                <span className={`ml-auto pr-4 whitespace-nowrap text-slate-400 group-hover:text-pink-400 font-medium transition-all duration-300 text-sm ${
+                  expandedSocial === 'instagram' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  Instagram
+                </span>
               </a>
 
               {/* 2. WHATSAPP */}
               <a 
-                href="https://wa.me/6281314412184" // Ganti dengan nomor WA (format: 628...)
+                href="https://wa.me/6281314412184"
                 target="_blank" 
-                className="group flex flex-col items-center gap-2"
+                onClick={(e) => {
+                  if (window.innerWidth < 768 && expandedSocial !== 'whatsapp') {
+                    e.preventDefault();
+                    setExpandedSocial('whatsapp');
+                  }
+                }}
+                className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 overflow-hidden ${
+                  expandedSocial === 'whatsapp' ? 'w-[135px]' : 'w-[50px] hover:w-[135px]'
+                }`}
               >
-                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-green-500 group-hover:shadow-lg group-hover:shadow-green-500/20 transition duration-300">
-                  <img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" className="w-7 h-7" />
+                <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                  expandedSocial === 'whatsapp' ? 'left-4 translate-x-0' : 'group-hover:left-4 group-hover:translate-x-0'
+                }`}>
+                  <img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp" className="w-6 h-6" />
                 </div>
-                <span className="text-xs text-slate-500 group-hover:text-green-400 transition">WhatsApp</span>
+                <span className={`ml-auto pr-4 whitespace-nowrap text-slate-400 group-hover:text-green-400 font-medium transition-all duration-300 text-sm ${
+                  expandedSocial === 'whatsapp' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  WhatsApp
+                </span>
               </a>
 
               {/* 3. LINE */}
               <a 
                 href="https://line.me/ti/p/~sebastianobert" 
                 target="_blank" 
-                className="group flex flex-col items-center gap-2"
+                onClick={(e) => {
+                  if (window.innerWidth < 768 && expandedSocial !== 'line') {
+                    e.preventDefault();
+                    setExpandedSocial('line');
+                  }
+                }}
+                className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-green-400 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 overflow-hidden ${
+                  expandedSocial === 'line' ? 'w-[95px]' : 'w-[50px] hover:w-[95px]'
+                }`}
               >
-                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-green-400 group-hover:shadow-lg group-hover:shadow-green-400/20 transition duration-300">
-                  <img src="https://cdn.simpleicons.org/line/00C300" alt="LINE" className="w-7 h-7" />
+                <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                  expandedSocial === 'line' ? 'left-4 translate-x-0' : 'group-hover:left-4 group-hover:translate-x-0'
+                }`}>
+                  <img src="https://cdn.simpleicons.org/line/00C300" alt="LINE" className="w-6 h-6" />
                 </div>
-                <span className="text-xs text-slate-500 group-hover:text-green-300 transition">LINE</span>
+                <span className={`ml-auto pr-4 whitespace-nowrap text-slate-400 group-hover:text-green-300 font-medium transition-all duration-300 text-sm ${
+                  expandedSocial === 'line' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  LINE
+                </span>
               </a>
 
-              {/* 4. LINKEDIN (Fixed with SVG) */}
+              {/* 4. LINKEDIN */}
               <a 
                 href="https://www.linkedin.com/in/sebastian-obert-cen/" 
                 target="_blank" 
-                className="group flex flex-col items-center gap-2"
+                onClick={(e) => {
+                  if (window.innerWidth < 768 && expandedSocial !== 'linkedin') {
+                    e.preventDefault();
+                    setExpandedSocial('linkedin');
+                  }
+                }}
+                className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 overflow-hidden ${
+                  expandedSocial === 'linkedin' ? 'w-[120px]' : 'w-[50px] hover:w-[120px]'
+                }`}
               >
-                <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-blue-500 group-hover:shadow-lg group-hover:shadow-blue-500/20 transition duration-300">
-                  {/* SVG Code Manual - Dijamin Muncul */}
+                <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
+                  expandedSocial === 'linkedin' ? 'left-4 translate-x-0' : 'group-hover:left-4 group-hover:translate-x-0'
+                }`}>
                   <svg 
                     role="img" 
                     viewBox="0 0 24 24" 
-                    className="w-7 h-7 fill-[#0A66C2]" 
+                    className="w-6 h-6 fill-[#0A66C2]" 
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 21.227.792 22 1.771 22h20.451C23.2 22 24 21.227 24 20.271V1.729C24 .774 23.2 0 22.225 0z"/>
                   </svg>
                 </div>
-                <span className="text-xs text-slate-500 group-hover:text-blue-400 transition">LinkedIn</span>
+                <span className={`ml-auto pr-4 whitespace-nowrap text-slate-400 group-hover:text-blue-400 font-medium transition-all duration-300 text-sm ${
+                  expandedSocial === 'linkedin' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  LinkedIn
+                </span>
               </a>
 
            </div>

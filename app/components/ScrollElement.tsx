@@ -18,7 +18,7 @@ export default function ScrollElement({
   animation = "fade-up", 
   delay = 0,
   duration = 0.5,
-  triggerMargin = "0px 0px -100px 0px"
+  triggerMargin = "0px 0px 0px 0px"
 }: ScrollProps) {
 
   const variants = {
@@ -59,7 +59,7 @@ export default function ScrollElement({
       variants={variants[animation]}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.1, margin: triggerMargin }}
+      viewport={{ once: false, amount: 0, margin: triggerMargin }}
       transition={{ 
         duration: duration, 
         delay: delay, 

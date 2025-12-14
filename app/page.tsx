@@ -493,7 +493,7 @@ export default function Home() {
                        }`}>KSPM UMN</span>
                        <span className={`absolute left-0 top-0 transition-opacity duration-300 whitespace-nowrap ${
                          expandedOrg === 'kspm' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                       }`}>Kelompok Studi Pasar Modal UMN</span>
+                       }`}>Kelompok Studi Pasar Modal</span>
                      </h3>
                      <p className="text-cyan-400 font-medium">Internal Education</p>
                    </div>
@@ -526,7 +526,7 @@ export default function Home() {
                        }`}>COMMFEST UMN 2025</span>
                        <span className={`absolute left-0 top-0 transition-opacity duration-300 whitespace-nowrap ${
                          expandedOrg === 'commfest' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                       }`}>Communication Festival UMN 2025</span>
+                       }`}>Communication Festival</span>
                      </h3>
                      <p className="text-cyan-400 font-medium">Equipment</p>
                    </div>

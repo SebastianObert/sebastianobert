@@ -55,13 +55,17 @@ export default function Home() {
       if (clickedSkill && !target.closest('[data-skill-badge]')) {
         setClickedSkill(null);
       }
+      // Close expanded social media icons
+      if (expandedSocial && !target.closest('[data-social-icon]')) {
+        setExpandedSocial(null);
+      }
     };
 
-    if (expandedOrg || clickedSkill) {
+    if (expandedOrg || clickedSkill || expandedSocial) {
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
-  }, [expandedOrg, clickedSkill]);
+  }, [expandedOrg, clickedSkill, expandedSocial]);
 
   return (
     <>
@@ -370,10 +374,10 @@ export default function Home() {
             <SkillBadge icon="https://cdn.simpleicons.org/nextdotjs/white" name="Next.js" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/react/61DAFB" name="React" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/typescript/3178C6" name="TypeScript" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
-            <SkillBadge icon="https://cdn.simpleicons.org/javascript/F7DF1E" name="JavaScript" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/tailwindcss/06B6D4" name="Tailwind" category="Web Frontend" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             
             {/* Backend & DB */}
+            <SkillBadge icon="/java.png" name="Java" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/firebase/FFCA28" name="Firebase" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/php/777BB4" name="PHP" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/laravel/FF2D20" name="Laravel" category="Backend & Database" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
@@ -844,6 +848,7 @@ export default function Home() {
               
               {/* 1. INSTAGRAM */}
               <a 
+                data-social-icon
                 href="https://instagram.com/sebasobet" 
                 target="_blank" 
                 onClick={(e) => {
@@ -871,6 +876,7 @@ export default function Home() {
 
               {/* 2. WHATSAPP */}
               <a 
+                data-social-icon
                 href="https://wa.me/6281314412184"
                 target="_blank" 
                 onClick={(e) => {
@@ -898,6 +904,7 @@ export default function Home() {
 
               {/* 3. LINE */}
               <a 
+                data-social-icon
                 href="https://line.me/ti/p/~sebastianobert" 
                 target="_blank" 
                 onClick={(e) => {

@@ -512,7 +512,7 @@ export default function Home() {
                  <span className="badge bg-blue-900/30 text-blue-300">MySQL</span>
               </div>
               <a 
-                href="https://children.growcommunity.church/"
+                href="https://share.google/r5Mqn1b554MBURZj2"
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"

@@ -48,7 +48,58 @@
     .animate-ripple {
       animation: ripple 2s ease-out forwards;
     }
+    .animate-fadeOut {
+      animation: fadeOut 2s ease-out forwards;
+    }
+    .animate-slideUpFade {
+      animation: slideUpFade 2s ease-out forwards;
+    }
+    .animate-fadeInUp {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+    .animate-zoomOut {
+      animation: zoomOut 2s ease-out forwards;
+    }
+    .animate-zoomIn {
+      animation: zoomIn 0.8s ease-out forwards;
+    }
+    .animate-spin-slow {
+      animation: spin 3s linear infinite;
+    }
+    .animate-spin-reverse {
+      animation: spin 2s linear infinite reverse;
+    }
+    .animate-pulse-text {
+      animation: pulseText 2s ease-in-out infinite;
+    }
+    .animate-dots {
+      animation: dots 1.5s steps(4) infinite;
+    }
+    .animate-fill-bar {
+      animation: fillBar 1.5s ease-in-out infinite;
+    }
+    .animate-pulsing-glow {
+      animation: pulsingGlow 2s ease-in-out infinite;
+    }
+    .animate-subtle-glow {
+      animation: subtleGlow 2s ease-in-out infinite;
+    }
   }
+
+  /* Hexagon loader styles */
+  .hexagon-loader {
+    width: 12px;
+    height: 14px;
+    background: #22d3ee;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    animation: hexPulse 1.2s ease-in-out infinite;
+  }
+
+  .hex-1 { animation-delay: 0s; }
+  .hex-2 { animation-delay: 0.1s; }
+  .hex-3 { animation-delay: 0.2s; }
+  .hex-4 { animation-delay: 0.3s; }
+  .hex-5 { animation-delay: 0.4s; }
 
   @keyframes scroll {
     0% { transform: translateX(0); }
@@ -63,5 +114,266 @@
     100% {
       transform: scale(2);
       opacity: 0;
+    }
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes slideUpFade {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100px);
+      visibility: hidden;
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes zoomOut {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    80% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(3);
+      visibility: hidden;
+    }
+  }
+
+  @keyframes zoomIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes hexPulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes fillBar {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(300%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes pulseText {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes dots {
+    0%, 20% {
+      content: '.';
+    }
+    40% {
+      content: '..';
+    }
+    60%, 100% {
+      content: '...';
+    }
+  }
+
+  @keyframes pulsingGlow {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.5),
+                   0 0 20px rgba(34, 211, 238, 0.3),
+                   0 0 30px rgba(34, 211, 238, 0.2);
+    }
+    50% {
+      text-shadow: 0 0 20px rgba(34, 211, 238, 0.8),
+                   0 0 40px rgba(34, 211, 238, 0.6),
+                   0 0 60px rgba(34, 211, 238, 0.4),
+                   0 0 80px rgba(34, 211, 238, 0.2);
+    }
+  }
+
+  @keyframes subtleGlow {
+    0%, 100% {
+      text-shadow: 0 0 5px rgba(34, 211, 238, 0.3),
+                   0 0 10px rgba(34, 211, 238, 0.2);
+    }
+    50% {
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.5),
+                   0 0 20px rgba(34, 211, 238, 0.3),
+                   0 0 30px rgba(34, 211, 238, 0.15);
+    }
+  }
+
+  /* Particle animations */
+  .particle {
+    position: absolute;
+    background: linear-gradient(45deg, #22d3ee, #3b82f6);
+    border-radius: 50%;
+    opacity: 0.3;
+    filter: blur(2px);
+  }
+
+  .particle-1 {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 20%;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .particle-2 {
+    width: 150px;
+    height: 150px;
+    top: 60%;
+    right: 15%;
+    animation: float 8s ease-in-out infinite reverse;
+  }
+
+  .particle-3 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 10%;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  .particle-4 {
+    width: 120px;
+    height: 120px;
+    top: 30%;
+    right: 25%;
+    animation: float 9s ease-in-out infinite reverse;
+  }
+
+  .particle-5 {
+    width: 90px;
+    height: 90px;
+    bottom: 10%;
+    right: 40%;
+    animation: float 5s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(20px, -20px) scale(1.1);
+    }
+    50% {
+      transform: translate(-15px, 20px) scale(0.9);
+    }
+    75% {
+      transform: translate(15px, 15px) scale(1.05);
+    }
+  }
+
+  /* Glitch effect */
+  .glitch-text {
+    position: relative;
+    display: inline-block;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 #00ffff;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim 3s infinite linear alternate-reverse;
+  }
+
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: -2px 0 #ff00ff;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+  }
+
+  @keyframes glitch-anim {
+    0% {
+      clip: rect(61px, 9999px, 90px, 0);
+    }
+    20% {
+      clip: rect(89px, 9999px, 23px, 0);
+    }
+    40% {
+      clip: rect(65px, 9999px, 56px, 0);
+    }
+    60% {
+      clip: rect(17px, 9999px, 105px, 0);
+    }
+    80% {
+      clip: rect(93px, 9999px, 47px, 0);
+    }
+    100% {
+      clip: rect(38px, 9999px, 78px, 0);
     }
   }

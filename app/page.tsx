@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react"; // Import useState untuk menu HP
+import { useState, useEffect } from "react";
 import Snowfall from "react-snowfall";
 import ScrollElement from "./components/ScrollElement";
 import TypeWriter from "./components/TypeWriter";
 
 export default function Home() {
+  // State untuk Loading Screen
+  const [isLoading, setIsLoading] = useState(true);
   // State untuk Mobile Menu
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // State untuk expanded social button di mobile
@@ -17,20 +19,146 @@ export default function Home() {
   const [clickedSkill, setClickedSkill] = useState<string | null>(null);
   // State untuk ripple animation pada profile picture - array untuk support spam click
   const [ripples, setRipples] = useState<number[]>([]);
+  // State untuk image modal
+  const [selectedImage, setSelectedImage] = useState<{src: string, alt: string} | null>(null);
+  // State untuk zoom level pada modal image
+  const [zoomLevel, setZoomLevel] = useState(1);
+  // State untuk transform origin (zoom follows cursor)
+  const [transformOrigin, setTransformOrigin] = useState({ x: 50, y: 50 });
+
+  // UseEffect untuk loading animation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Loading selama 2 detik
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Reset zoom dan transform origin ketika modal ditutup
+  useEffect(() => {
+    if (!selectedImage) {
+      setZoomLevel(1);
+      setTransformOrigin({ x: 50, y: 50 });
+    }
+  }, [selectedImage]);
+
+  // Close expanded cards when clicking outside (mobile)
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // Close expanded organization cards
+      if (expandedOrg && !target.closest('[data-org-card]')) {
+        setExpandedOrg(null);
+      }
+      // Close expanded skill badges
+      if (clickedSkill && !target.closest('[data-skill-badge]')) {
+        setClickedSkill(null);
+      }
+    };
+
+    if (expandedOrg || clickedSkill) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [expandedOrg, clickedSkill]);
 
   return (
-    <main className="min-h-screen bg-slate-900 text-slate-200 selection:bg-cyan-500 selection:text-white relative overflow-hidden">
-      
-      {/* --- EFEK SALJU (SNOW) --- */}
-      <Snowfall 
-        style={{ position: 'fixed', width: '100vw', height: '100vh', zIndex: 0 }}
-        snowflakeCount={80}
-        color="#ffffff"
-        radius={[0.5, 2.5]} 
-        speed={[0.5, 2.0]}
-        wind={[-0.5, 1.0]}
-        opacity={[0.3, 0.7]} 
-      />
+    <>
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center">
+            <div 
+              className="relative inline-block cursor-default"
+              onMouseMove={(e) => {
+                if (zoomLevel >= 1) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setTransformOrigin({ x, y });
+                }
+              }}
+              onWheel={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setZoomLevel(prev => {
+                  const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                  const newZoom = prev + delta;
+                  return Math.min(Math.max(newZoom, 0.5), 3);
+                });
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div 
+                className="relative transition-transform duration-200"
+                style={{ 
+                  transform: `scale(${zoomLevel})`,
+                  transformOrigin: zoomLevel >= 1 ? `${transformOrigin.x}% ${transformOrigin.y}%` : '50% 50%'
+                }}
+              >
+                <Image 
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  width={1200}
+                  height={800}
+                  className="object-contain max-h-[90vh]"
+                />
+              </div>
+            </div>
+            {/* Close button */}
+            <button 
+              className="absolute top-4 right-4 w-10 h-10 bg-slate-800/80 hover:bg-slate-700 rounded-full flex items-center justify-center text-white transition z-10"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage(null);
+              }}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            {/* Zoom indicator */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-800/80 px-4 py-2 rounded-full text-white text-sm pointer-events-none">
+              {Math.round(zoomLevel * 100)}%
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Screen */}
+      {isLoading && (
+        <div className="fixed inset-0 z-[100] bg-slate-900 flex items-center justify-center animate-zoomOut overflow-hidden">
+          {/* Animated background particles */}
+          <div className="absolute inset-0">
+            <div className="particle particle-1"></div>
+            <div className="particle particle-2"></div>
+            <div className="particle particle-3"></div>
+            <div className="particle particle-4"></div>
+            <div className="particle particle-5"></div>
+          </div>
+          
+          <div className="flex flex-col items-center gap-8 md:gap-12 relative z-10 px-6">
+            {/* Center logo with glitch effect */}
+            <div className="relative">
+              <span className="text-4xl md:text-6xl font-bold text-white glitch-text" data-text="SoC">
+                So<span className="text-cyan-400 animate-pulsing-glow">C</span>
+              </span>
+            </div>
+            
+            {/* Progress bar with sliding animation */}
+            <div className="w-48 md:w-64 h-1.5 bg-slate-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-slate-700/30 relative">
+              <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-fill-bar rounded-full"></div>
+            </div>
+            
+            {/* Loading text with typing effect */}
+            <p className="text-cyan-400 text-xs md:text-sm font-medium tracking-widest animate-pulse-text">
+              INITIALIZING<span className="animate-dots">...</span>
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* --- NAVBAR RESPONSIVE --- */}
       <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-800 transition-all duration-300">
@@ -39,7 +167,7 @@ export default function Home() {
             
             {/* Logo */}
             <h1 className="text-xl font-bold text-white tracking-tighter cursor-pointer z-50" onClick={() => window.scrollTo(0,0)}>
-              So<span className="text-cyan-400">C</span>
+              So<span className="text-cyan-400 animate-subtle-glow">C</span>
             </h1>
 
             {/* DESKTOP MENU (Hidden di HP) */}
@@ -75,6 +203,19 @@ export default function Home() {
         </div>
       </nav>
 
+      <main className={`min-h-screen bg-slate-900 text-slate-200 selection:bg-cyan-500 selection:text-white relative overflow-hidden ${!isLoading ? 'animate-zoomIn' : 'opacity-0'}`}>
+      
+      {/* --- EFEK SALJU (SNOW) --- */}
+      <Snowfall 
+        style={{ position: 'fixed', width: '100vw', height: '100vh', zIndex: 0 }}
+        snowflakeCount={80}
+        color="#ffffff"
+        radius={[0.5, 2.5]} 
+        speed={[0.5, 2.0]}
+        wind={[-0.5, 1.0]}
+        opacity={[0.3, 0.7]} 
+      />
+
       {/* --- HERO SECTION --- */}
       <section id="about" className="container mx-auto px-6 pt-40 pb-20 relative z-10">
         <ScrollElement animation="slide-fade" duration={0.9}>
@@ -98,9 +239,10 @@ export default function Home() {
               </p>
               <div className="min-h-[4.5rem] md:min-h-[4.5rem] min-h-[7rem] flex items-start">
                 <p className="text-base text-slate-500 leading-relaxed max-w-2xl mx-auto md:mx-0">
+                  Currently focused on continuous learning and practical implementation in{' '}
                   <TypeWriter 
-                    text="Currently exploring mobile development, game design, and cybersecurity while continuously learning new frameworks and best practices."
-                    speed={30}
+                    text="mobile development, game logic, and AI/Machine Learning."
+                    speed={40}
                     delay={800}
                     loop={true}
                   />
@@ -117,11 +259,12 @@ export default function Home() {
                  onClick={(e) => {
                    if (window.innerWidth < 768 && expandedSocial !== 'github') {
                      e.preventDefault();
+                     e.stopPropagation();
                      setExpandedSocial('github');
                    }
                  }}
                  className={`group relative flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-400 transition-all duration-300 overflow-hidden ${
-                   expandedSocial === 'github' ? '' : ''
+                   expandedSocial === 'github' ? 'min-w-[180px]' : 'min-w-[72px]'
                  }`}
                >
                  <svg className="w-6 h-6 fill-current text-slate-400 group-hover:text-white transition flex-shrink-0" viewBox="0 0 24 24">
@@ -205,6 +348,7 @@ export default function Home() {
             <SkillBadge icon="https://cdn.simpleicons.org/kotlin/7F52FF" name="Kotlin" category="Mobile Development" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <SkillBadge icon="https://cdn.simpleicons.org/unity/white" name="Unity" category="Game Development" clickedSkill={clickedSkill} setClickedSkill={setClickedSkill} />
             <div 
+              data-skill-badge
               className="skill-pill relative group cursor-pointer"
               onClick={() => {
                 if (window.innerWidth < 768) {
@@ -260,14 +404,16 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. AEGIS CALL (Wide Card - Span 2) */}
-          <a 
-            href="https://www.figma.com/proto/qLd5xU8g1rZm0nehm53wqV/UAS-HCI?node-id=605-4407&t=ZrwxJHFBdqvFLnBZ-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=52%3A363" // GANTI LINK INI
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group md:col-span-2 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 border border-slate-700 flex flex-col md:flex-row cursor-pointer"
+          <div 
+            className="group md:col-span-2 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 transition duration-300 border border-slate-700 flex flex-col md:flex-row relative"
           >
+            {/* Background Gradient Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
             {/* Image Container */}
-            <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
+            <div 
+              className="md:w-1/2 h-64 md:h-auto relative overflow-hidden cursor-pointer z-20"
+              onClick={() => setSelectedImage({src: '/aegis.png', alt: 'Aegis Call UI'})}
+            >
                <Image 
                  src="/aegis.png" 
                  alt="Aegis Call UI" 
@@ -276,27 +422,38 @@ export default function Home() {
                />
             </div>
             {/* Content */}
-            <div className="p-8 md:w-1/2 flex flex-col justify-center">
+            <div className="p-8 md:w-1/2 flex flex-col justify-center relative z-20">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-orange-400 transition">Aegis Call</h3>
               <p className="text-slate-400 mb-6 text-sm leading-relaxed">
                 Aegis Call is an integrated emergency response application prototype designed using a User-Centered Design approach to ensure ease of use, speed, and clarity in critical situations. The application consolidates multiple emergency services into a single platform, featuring direct emergency calls, media-based incident reporting, and real-time assistance tracking. With a strong focus on usability, accessibility, and user experience under extreme conditions, Aegis Call aims to reduce user panic and enable faster, more accurate, and well-coordinated emergency responses.
               </p>
-               <div className="flex flex-wrap gap-2">
+               <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-orange-900/30 text-orange-300">Figma</span>
                  <span className="badge bg-orange-900/30 text-orange-300">UI/UX</span>
               </div>
+              <a 
+                href="https://www.figma.com/proto/qLd5xU8g1rZm0nehm53wqV/UAS-HCI?node-id=605-4407&t=ZrwxJHFBdqvFLnBZ-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=52%3A363"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+              >
+                View Project
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
             </div>
-          </a>
+          </div>
 
           {/* 2. JEBS (Narrow Card - Span 1) */}
-          <a 
-            href="https://drive.google.com/drive/folders/1A8fhJf-ewu6nw2PLgsoxEmFnadou6D0v" // GANTI LINK INI
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group md:col-span-1 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-purple-500/10 transition duration-300 border border-slate-700 flex flex-col cursor-pointer"
+          <div 
+            className="group md:col-span-1 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-purple-500/10 transition duration-300 border border-slate-700 flex flex-col relative"
           >
+            {/* Background Gradient Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
             {/* Image Container */}
-            <div className="h-56 relative overflow-hidden">
+            <div 
+              className="h-56 relative overflow-hidden cursor-pointer z-20"
+              onClick={() => setSelectedImage({src: '/jebs.png', alt: 'JEBS Game'})}
+            >
                <Image 
                  src="/jebs.png" 
                  alt="JEBS Game" 
@@ -305,27 +462,38 @@ export default function Home() {
                />
             </div>
             {/* Content */}
-            <div className="p-6 flex-1">
+            <div className="p-6 flex-1 flex flex-col relative z-20">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition">JEBS</h3>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className="text-slate-400 text-sm mb-4 flex-1">
                 JEBS is a third-person Action-RPG combat prototype that successfully delivers an intense, skill-based sword-fighting experience. The game emphasizes timing, precision, and mastery of defensive mechanics, particularly parry and posture management—over traditional health-based combat.
               </p>
-               <div className="flex flex-wrap gap-2 mt-auto">
+               <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-purple-900/30 text-purple-300">Unity</span>
                  <span className="badge bg-purple-900/30 text-purple-300">C#</span>
               </div>
+              <a 
+                href="https://drive.google.com/drive/folders/1A8fhJf-ewu6nw2PLgsoxEmFnadou6D0v"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+              >
+                View Project
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
             </div>
-          </a>
+          </div>
 
           {/* 3. GROW COMMUNITY (Narrow Card - Span 1) */}
-          <a 
-            href="https://children.growcommunity.church/" // GANTI LINK INI
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group md:col-span-1 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 transition duration-300 border border-slate-700 flex flex-col cursor-pointer"
+          <div 
+            className="group md:col-span-1 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 transition duration-300 border border-slate-700 flex flex-col relative"
           >
+            {/* Background Gradient Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
             {/* Image Container */}
-            <div className="h-56 relative overflow-hidden">
+            <div 
+              className="h-56 relative overflow-hidden cursor-pointer z-20"
+              onClick={() => setSelectedImage({src: '/grow_church.png', alt: 'Grow Community'})}
+            >
                <Image 
                  src="/grow_church.png" 
                  alt="Grow Community" 
@@ -334,27 +502,38 @@ export default function Home() {
                />
             </div>
             {/* Content */}
-            <div className="p-6 flex-1">
+            <div className="p-6 flex-1 flex flex-col relative z-20">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition">Grow Community</h3>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className="text-slate-400 text-sm mb-4 flex-1">
                 This application provides an integrated, secure, and efficient solution for managing children’s check-in and check-out activities in a church environment. By replacing manual processes with a centralized web-based system, it improves accuracy, enhances child safety through identity verification, and enables real-time attendance monitoring. The system streamlines operations for administrators and staff while offering transparency and peace of mind for parents, ultimately supporting a more organized, reliable, and trustworthy church activity management experience.
               </p>
-               <div className="flex flex-wrap gap-2 mt-auto">
+               <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-blue-900/30 text-blue-300">PHP</span>
                  <span className="badge bg-blue-900/30 text-blue-300">MySQL</span>
               </div>
+              <a 
+                href="https://children.growcommunity.church/"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+              >
+                View Project
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
             </div>
-          </a>
+          </div>
 
           {/* 4. AIRCARE (Wide Card - Span 2) */}
-          <a 
-            href="https://github.com/SebastianObert/AirCare" // GANTI LINK INI
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group md:col-span-2 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-cyan-500/10 transition duration-300 border border-slate-700 flex flex-col md:flex-row-reverse cursor-pointer"
+          <div 
+            className="group md:col-span-2 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-cyan-500/10 transition duration-300 border border-slate-700 flex flex-col md:flex-row-reverse relative"
           >
+            {/* Background Gradient Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
             {/* Image Container */}
-            <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
+            <div 
+              className="md:w-1/2 h-64 md:h-auto relative overflow-hidden cursor-pointer z-20"
+              onClick={() => setSelectedImage({src: '/aircare_mobile.png', alt: 'AirCare App'})}
+            >
                <Image 
                  src="/aircare_mobile.png" 
                  alt="AirCare App" 
@@ -363,29 +542,38 @@ export default function Home() {
                />
             </div>
             {/* Content */}
-            <div className="p-8 md:w-1/2 flex flex-col justify-center">
+            <div className="p-8 md:w-1/2 flex flex-col justify-center relative z-20">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition">AirCare Mobile App</h3>
               <p className="text-slate-400 mb-6 text-sm leading-relaxed">
                 AirCare is a mobile application designed to help users monitor and understand air quality around them in real time, with the main goal of supporting healthier daily decisions. By providing accurate AQI data based on the user’s location, storing air quality history, delivering smart notifications during hazardous conditions, and offering health recommendations, AirCare aims to increase environmental awareness and reduce health risks caused by air pollution. The application focuses on personal tracking, accessibility, and clarity, making air quality information easy to interpret and practically useful for everyday activities, especially for users living in urban environments.
               </p>
-               <div className="flex flex-wrap gap-2">
+               <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge">Kotlin</span>
                  <span className="badge">Firebase</span>
               </div>
+              <a 
+                href="https://github.com/SebastianObert/AirCare"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+              >
+                View Project
+                <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+              </a>
             </div>
-          </a>
+          </div>
 
           {/* 5. AL-JATIM (Full Width - Span 3) */}
-          <a 
-            href="https://all-jatim.vercel.app/" // GANTI LINK INI
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-teal-500/10 transition duration-300 border border-slate-700 relative cursor-pointer"
+          <div 
+            className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-teal-500/10 transition duration-300 border border-slate-700 relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
             <div className="flex flex-col md:flex-row">
                 {/* Image Container */}
-                <div className="md:w-2/5 h-64 md:h-auto relative overflow-hidden">
+                <div 
+                  className="md:w-2/5 h-64 md:h-auto relative overflow-hidden cursor-pointer z-20"
+                  onClick={() => setSelectedImage({src: '/aljatim.png', alt: 'Al-Jatim Web Platform'})}
+                >
                     <Image 
                       src="/aljatim.png" 
                       alt="Al-Jatim Web Platform" 
@@ -394,19 +582,28 @@ export default function Home() {
                     />
                 </div>
                 {/* Content */}
-                <div className="p-8 md:w-3/5 relative z-10">
+                <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-teal-400 transition">Al-Jatim Web Platform</h3>
                     <p className="text-slate-400 mb-6 leading-relaxed">
                        Al-Jatim is a web-based application designed to introduce and showcase East Java (Jawa Timur) through an informative and visually engaging digital platform. The main goal of this website is to provide users with clear and structured information about East Java’s geography, tourist destinations, cultural heritage, traditional cuisine, and iconic symbols in one accessible place. Built using React.js, the application aims to promote regional knowledge and cultural appreciation while delivering a modern, interactive, and user-friendly browsing experience.
                     </p>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-3 mb-6">
                         <span className="badge bg-teal-900/30 text-teal-300">React.js</span>
                         <span className="badge bg-teal-900/30 text-teal-300">Tailwind CSS</span>
                         <span className="badge bg-teal-900/30 text-teal-300">Interactive</span>
                     </div>
+                    <a 
+                      href="https://all-jatim.vercel.app/"
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+                    >
+                      View Project
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </a>
                 </div>
             </div>
-          </a>
+          </div>
          {/* 6. PROJECT: SNORT IDS */}
           <div 
             className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-red-500/10 transition duration-300 border border-slate-700 relative"
@@ -472,6 +669,7 @@ export default function Home() {
         <div className="space-y-6 max-w-4xl mx-auto mb-20">
            {/* Card KSPM */}
            <div 
+             data-org-card
              onClick={() => {
                if (window.innerWidth < 768) {
                  setExpandedOrg(expandedOrg === 'kspm' ? null : 'kspm');
@@ -505,6 +703,7 @@ export default function Home() {
            
            {/* Card COMMFEST */}
            <div 
+             data-org-card
              onClick={() => {
                if (window.innerWidth < 768) {
                  setExpandedOrg(expandedOrg === 'commfest' ? null : 'commfest');
@@ -538,6 +737,7 @@ export default function Home() {
 
            {/* Card UMN Fest */}
            <div 
+             data-org-card
              onClick={() => {
                if (window.innerWidth < 768) {
                  setExpandedOrg(expandedOrg === 'umnfest' ? null : 'umnfest');
@@ -559,7 +759,7 @@ export default function Home() {
                        }`}>UFEST 2024</span>
                        <span className={`absolute left-0 top-0 transition-opacity duration-300 whitespace-nowrap ${
                          expandedOrg === 'umnfest' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                       }`}>UMN Festival 2024</span>
+                       }`}>UMN Festival</span>
                      </h3>
                      <p className="text-cyan-400 font-medium">Competition</p>
                    </div>
@@ -585,11 +785,41 @@ export default function Home() {
                 <div className="flex gap-6 animate-scroll group-hover:pause-on-hover w-max">
                   {[...Array(2)].map((_, i) => (
                     <div key={i} className="flex gap-6">
-                      <div className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700"><Image src="/spm.jpg" alt="Event 1" fill className="object-cover hover:scale-110 transition duration-500" /><div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">Sekolah Pasar Modal</div></div>
-                      <div className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700"><Image src="/closingcommfest.jpg" alt="Event 2" fill className="object-cover hover:scale-110 transition duration-500" /><div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">COMMFEST 2025</div></div>
-                      <div className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700"><Image src="/ufestt.jpg" alt="Event 3" fill className="object-cover hover:scale-110 transition duration-500" /><div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">UMN Festival 2024</div></div>
-                      <div className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700"><Image src="/state.jpg" alt="Event 4" fill className="object-cover hover:scale-110 transition duration-500" /><div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">STATE KSPM</div></div>
-                      <div className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700"><Image src="/pkm.jpg" alt="Event 4" fill className="object-cover hover:scale-110 transition duration-500" /><div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">PKM</div></div>
+                      <div 
+                        className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer"
+                        onClick={() => setSelectedImage({src: '/spm.jpg', alt: 'Sekolah Pasar Modal'})}
+                      >
+                        <Image src="/spm.jpg" alt="Event 1" fill className="object-cover hover:scale-110 transition duration-500" />
+                        <div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">Sekolah Pasar Modal</div>
+                      </div>
+                      <div 
+                        className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer"
+                        onClick={() => setSelectedImage({src: '/closingcommfest.jpg', alt: 'COMMFEST 2025'})}
+                      >
+                        <Image src="/closingcommfest.jpg" alt="Event 2" fill className="object-cover hover:scale-110 transition duration-500" />
+                        <div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">COMMFEST 2025</div>
+                      </div>
+                      <div 
+                        className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer"
+                        onClick={() => setSelectedImage({src: '/ufestt.jpg', alt: 'UMN Festival 2024'})}
+                      >
+                        <Image src="/ufestt.jpg" alt="Event 3" fill className="object-cover hover:scale-110 transition duration-500" />
+                        <div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">UMN Festival 2024</div>
+                      </div>
+                      <div 
+                        className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer"
+                        onClick={() => setSelectedImage({src: '/state.jpg', alt: 'STATE KSPM'})}
+                      >
+                        <Image src="/state.jpg" alt="Event 4" fill className="object-cover hover:scale-110 transition duration-500" />
+                        <div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">STATE KSPM</div>
+                      </div>
+                      <div 
+                        className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer"
+                        onClick={() => setSelectedImage({src: '/pkm.jpg', alt: 'PKM'})}
+                      >
+                        <Image src="/pkm.jpg" alt="Event 4" fill className="object-cover hover:scale-110 transition duration-500" />
+                        <div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">PKM</div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -619,11 +849,12 @@ export default function Home() {
                 onClick={(e) => {
                   if (window.innerWidth < 768 && expandedSocial !== 'instagram') {
                     e.preventDefault();
+                    e.stopPropagation();
                     setExpandedSocial('instagram');
                   }
                 }}
                 className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300 overflow-hidden ${
-                  expandedSocial === 'instagram' ? 'w-[130px]' : 'w-[50px] hover:w-[130px]'
+                  expandedSocial === 'instagram' ? 'w-[130px] min-w-[130px]' : 'w-[50px] min-w-[50px] hover:w-[130px]'
                 }`}
               >
                 <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
@@ -645,11 +876,12 @@ export default function Home() {
                 onClick={(e) => {
                   if (window.innerWidth < 768 && expandedSocial !== 'whatsapp') {
                     e.preventDefault();
+                    e.stopPropagation();
                     setExpandedSocial('whatsapp');
                   }
                 }}
                 className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 overflow-hidden ${
-                  expandedSocial === 'whatsapp' ? 'w-[135px]' : 'w-[50px] hover:w-[135px]'
+                  expandedSocial === 'whatsapp' ? 'w-[135px] min-w-[135px]' : 'w-[50px] min-w-[50px] hover:w-[135px]'
                 }`}
               >
                 <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
@@ -671,11 +903,12 @@ export default function Home() {
                 onClick={(e) => {
                   if (window.innerWidth < 768 && expandedSocial !== 'line') {
                     e.preventDefault();
+                    e.stopPropagation();
                     setExpandedSocial('line');
                   }
                 }}
                 className={`group relative flex items-center justify-center py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:border-green-400 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 overflow-hidden ${
-                  expandedSocial === 'line' ? 'w-[95px]' : 'w-[50px] hover:w-[95px]'
+                  expandedSocial === 'line' ? 'w-[95px] min-w-[95px]' : 'w-[50px] min-w-[50px] hover:w-[95px]'
                 }`}
               >
                 <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-300 ${
@@ -740,6 +973,7 @@ export default function Home() {
         </p>
       </footer>
     </main>
+    </>
   );
 }
 
@@ -769,6 +1003,7 @@ function SkillBadge({ icon, name, category, clickedSkill, setClickedSkill }: { i
   
   return (
     <div 
+      data-skill-badge
       className="skill-pill relative group cursor-pointer"
       onClick={() => {
         if (window.innerWidth < 768) {

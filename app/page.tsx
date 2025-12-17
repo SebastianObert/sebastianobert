@@ -209,19 +209,25 @@ export default function Home() {
 
       <main className={`min-h-screen bg-slate-900 text-slate-200 selection:bg-cyan-500 selection:text-white relative overflow-hidden ${!isLoading ? 'animate-zoomIn' : 'opacity-0'}`}>
       
-      {/* --- EFEK SALJU (SNOW) --- */}
-      <Snowfall 
-        style={{ position: 'fixed', width: '100vw', height: '100vh', zIndex: 0 }}
-        snowflakeCount={80}
-        color="#ffffff"
-        radius={[0.5, 2.5]} 
-        speed={[0.5, 2.0]}
-        wind={[-0.5, 1.0]}
-        opacity={[0.3, 0.7]} 
-      />
-
       {/* --- HERO SECTION --- */}
       <section id="about" className="container mx-auto px-6 pt-40 pb-20 relative z-10">
+      
+        {/* --- EFEK SALJU (SNOW) - Only in About Section with Smooth Fade --- */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
+        }}>
+          <Snowfall 
+            style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 0 }}
+            snowflakeCount={80}
+            color="#ffffff"
+            radius={[0.5, 2.5]} 
+            speed={[0.5, 2.0]}
+            wind={[-0.5, 1.0]}
+            opacity={[0.3, 0.7]} 
+          />
+        </div>
+
         <ScrollElement animation="slide-fade" duration={0.9}>
         <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-20">
           <div className="flex-1 text-center md:text-left space-y-6">
@@ -513,6 +519,7 @@ export default function Home() {
               </p>
                <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-blue-900/30 text-blue-300">PHP</span>
+                 <span className="badge bg-blue-900/30 text-blue-300">Laravel</span>
                  <span className="badge bg-blue-900/30 text-blue-300">MySQL</span>
               </div>
               <a 
@@ -608,7 +615,49 @@ export default function Home() {
                 </div>
             </div>
           </div>
-         {/* 6. PROJECT: SNORT IDS */}
+
+          {/* 6. Air Quality Data Visualization of Jakarta */}
+          <div 
+            className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-pink-400/10 transition duration-300 border border-slate-700 relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-700/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
+            <div className="flex flex-col md:flex-row">
+                {/* Image Container */}
+                <div 
+                  className="md:w-2/5 h-64 md:h-auto relative overflow-hidden cursor-pointer z-20"
+                  onClick={() => setSelectedImage({src: '/datvis.jpg', alt: 'Air Quality Data Visualization'})}
+                >
+                    <Image 
+                      src="/datviz.png" 
+                      alt="Air Quality Data Visualization" 
+                      fill 
+                      className="object-cover group-hover:scale-105 transition duration-500"
+                    />
+                </div>
+                {/* Content */}
+                <div className="p-8 md:w-3/5 relative z-20">
+                    <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-pink-300 transition">Air Quality Data Visualization of Jakarta</h3>
+                    <p className="text-slate-400 mb-6 leading-relaxed">
+                       Analyzes air quality trends in DKI Jakarta (2016-2023) using Tableau. Features interactive dashboards with spatial analysis, trend monitoring, and forecasting. Highlights PM2.5 as the dominant pollutant, with East and North Jakarta showing the highest pollution levels.
+                    </p>
+                    <div className="flex flex-wrap gap-3 mb-6">
+                        <span className="badge bg-pink-800/30 text-pink-200">Tableau</span>
+                        <span className="badge bg-pink-800/30 text-pink-200">Data Visualization</span>
+                    </div>
+                    <a 
+                      href="https://public.tableau.com/app/profile/sebastian.obert/viz/dashboard1_17651964590990/Story1IndeksKualitasUdaraProvinsiJakartaTahun2016-2023Revisi?publish=yes"
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-pink-500 hover:bg-pink-600 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+                    >
+                      View Project
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </a>
+                </div>
+            </div>
+          </div>
+
+         {/* 7. PROJECT: SNORT IDS */}
           <div 
             className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-red-500/10 transition duration-300 border border-slate-700 relative"
           >

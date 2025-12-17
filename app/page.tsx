@@ -197,13 +197,15 @@ export default function Home() {
           </div>
 
           {/* MOBILE MENU DROPDOWN */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 w-full bg-slate-900/95 border-b border-slate-800 p-4 flex flex-col items-center gap-4 shadow-2xl animate-fadeIn">
+          <div className={`md:hidden absolute top-full left-0 w-full bg-slate-900/95 border-b border-slate-800 shadow-2xl overflow-hidden transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+          }`}>
+            <div className="p-4 flex flex-col items-center gap-4">
               <MobileNavLink href="#about" onClick={() => setIsMobileMenuOpen(false)}>About</MobileNavLink>
               <MobileNavLink href="#projects" onClick={() => setIsMobileMenuOpen(false)}>Projects</MobileNavLink>
               <MobileNavLink href="#organization" onClick={() => setIsMobileMenuOpen(false)}>Organization</MobileNavLink>
             </div>
-          )}
+          </div>
         </div>
       </nav>
 
@@ -657,7 +659,50 @@ export default function Home() {
             </div>
           </div>
 
-         {/* 7. PROJECT: SNORT IDS */}
+          {/* 7. Indo-Text Classification */}
+          <div 
+            className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-emerald-500/10 transition duration-300 border border-slate-700 relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
+            <div className="flex flex-col md:flex-row">
+                {/* Image Container */}
+                <div 
+                  className="md:w-2/5 h-64 md:h-auto relative overflow-hidden cursor-pointer z-20"
+                  onClick={() => setSelectedImage({src: '/ml-text.png', alt: 'Indo-Text Classification'})}
+                >
+                    <Image 
+                      src="/machinelearning.png" 
+                      alt="Indo-Text Classification" 
+                      fill 
+                      className="object-cover group-hover:scale-105 transition duration-500"
+                    />
+                </div>
+                {/* Content */}
+                <div className="p-8 md:w-3/5 relative z-20">
+                    <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition">Indo-Text Classification</h3>
+                    <p className="text-slate-400 mb-6 leading-relaxed">
+                       A Natural Language Processing project that analyzes Indonesian forum discussions for sentiment analysis, emotion detection, and toxicity classification. Built with Python and Scikit-learn, using TF-IDF vectorization and comparing SVM vs Naive Bayes models. Includes text preprocessing with Sastrawi stemming and hyperparameter tuning for optimal performance in content moderation and hate speech detection.
+                    </p>
+                    <div className="flex flex-wrap gap-3 mb-6">
+                        <span className="badge bg-emerald-900/30 text-emerald-300">Python</span>
+                        <span className="badge bg-emerald-900/30 text-emerald-300">Scikit-learn</span>
+                        <span className="badge bg-emerald-900/30 text-emerald-300">NLP</span>
+                        <span className="badge bg-emerald-900/30 text-emerald-300">Machine Learning</span>
+                    </div>
+                    <a 
+                      href="https://github.com/SebastianObert/indo-text-classification"
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
+                    >
+                      View Project
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </a>
+                </div>
+            </div>
+          </div>
+
+         {/* 8. PROJECT: SNORT IDS */}
           <div 
             className="group md:col-span-3 bg-slate-800 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-red-500/10 transition duration-300 border border-slate-700 relative"
           >

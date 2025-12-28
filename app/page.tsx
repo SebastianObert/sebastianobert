@@ -412,7 +412,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-white mb-12">Featured Projects</h2>
         </ScrollElement>
         
-        <ScrollElement animation="scale-blur" delay={0} duration={0.7} triggerMargin="0px 0px 100px 0px">
+        <ScrollElement animation="scale-blur" delay={0} duration={0.7} triggerMargin="0px 0px -100px 0px">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. AEGIS CALL (Wide Card - Span 2) */}
@@ -461,17 +461,22 @@ export default function Home() {
           >
             {/* Background Gradient Effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 z-10 pointer-events-none"></div>
-            {/* Image Container */}
-            <div 
-              className="h-56 relative overflow-hidden cursor-pointer z-20"
-              onClick={() => setSelectedImage({src: '/jebs.png', alt: 'JEBS Game'})}
-            >
-               <Image 
-                 src="/jebs.png" 
-                 alt="JEBS Game" 
-                 fill 
-                 className="object-cover group-hover:scale-105 transition duration-500"
-               />
+            {/* Video Container */}
+            <div className="h-48 md:h-56 relative bg-black z-20 -mx-[1px] -mt-[1px]">
+                <video 
+                  controls
+                  preload="metadata"
+                  playsInline
+                  poster="/jebs.png"
+                  onEnded={(e) => {
+                    e.currentTarget.currentTime = 0;
+                    e.currentTarget.load();
+                  }}
+                  className="w-full h-full object-cover rounded-t-2xl"
+                >
+                  <source src="/trailer.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
             </div>
             {/* Content */}
             <div className="p-6 flex-1 flex flex-col relative z-20">
@@ -484,7 +489,7 @@ export default function Home() {
                  <span className="badge bg-purple-900/30 text-purple-300">C#</span>
               </div>
               <a 
-                href="https://drive.google.com/drive/folders/1A8fhJf-ewu6nw2PLgsoxEmFnadou6D0v"
+                href="https://sebastian-obert-95634.itch.io/jebs-umn"
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[10px] md:text-xs font-medium transition w-fit"
@@ -1124,3 +1129,4 @@ function SkillBadge({ icon, name, category, clickedSkill, setClickedSkill }: { i
     </div>
   );
 }
+

@@ -125,6 +125,17 @@
     .animate-subtle-glow {
       animation: subtleGlow 2s ease-in-out infinite;
     }
+    /* Collapsible helper for smooth read-more toggles */
+    .collapsible {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 320ms ease, opacity 240ms ease;
+    }
+    .collapsible.open {
+      max-height: 40rem; /* large enough to fit content */
+      opacity: 1;
+    }
   }
 
   /* Hexagon loader styles */

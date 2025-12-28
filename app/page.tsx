@@ -17,6 +17,8 @@ export default function Home() {
   const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
   // State untuk skill badge yang diklik
   const [clickedSkill, setClickedSkill] = useState<string | null>(null);
+  // State untuk expanded project descriptions di mobile
+  const [expandedProject, setExpandedProject] = useState<string | null>(null);
   // State untuk ripple animation pada profile picture - array untuk support spam click
   const [ripples, setRipples] = useState<number[]>([]);
   // State untuk image modal
@@ -412,7 +414,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-white mb-12">Featured Projects</h2>
         </ScrollElement>
         
-        <ScrollElement animation="scale-blur" delay={0} duration={0.7} triggerMargin="0px 0px -100px 0px">
+        <ScrollElement animation="scale-blur" delay={0} duration={0.7} triggerMargin="0px 0px -100px 0px" disableOnMobile={true}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* 1. AEGIS CALL (Wide Card - Span 2) */}
@@ -436,9 +438,15 @@ export default function Home() {
             {/* Content */}
             <div className="p-8 md:w-1/2 flex flex-col justify-center relative z-20">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-orange-400 transition">Aegis Call</h3>
-              <p className="text-slate-400 mb-6 text-sm leading-relaxed">
+              <p className={`text-slate-400 mb-6 text-sm leading-relaxed md:block ${expandedProject === 'aegis' ? 'block' : 'hidden'}`}>
                 Aegis Call is an integrated emergency response application prototype designed using a User-Centered Design approach to ensure ease of use, speed, and clarity in critical situations. The application consolidates multiple emergency services into a single platform, featuring direct emergency calls, media-based incident reporting, and real-time assistance tracking. With a strong focus on usability, accessibility, and user experience under extreme conditions, Aegis Call aims to reduce user panic and enable faster, more accurate, and well-coordinated emergency responses.
               </p>
+              <button 
+                onClick={() => setExpandedProject(expandedProject === 'aegis' ? null : 'aegis')}
+                className="md:hidden text-orange-400 text-xs mb-4 text-left hover:underline"
+              >
+                {expandedProject === 'aegis' ? 'Show less' : 'Read more'}
+              </button>
                <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-orange-900/30 text-orange-300">Figma</span>
                  <span className="badge bg-orange-900/30 text-orange-300">UI/UX</span>
@@ -481,9 +489,15 @@ export default function Home() {
             {/* Content */}
             <div className="p-6 flex-1 flex flex-col relative z-20">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition">JEBS</h3>
-              <p className="text-slate-400 text-sm mb-4 flex-1">
+              <p className={`text-slate-400 text-sm mb-4 md:block ${expandedProject === 'jebs' ? 'block' : 'hidden'}`}>
                 JEBS is a third-person Action-RPG combat prototype that successfully delivers an intense, skill-based sword-fighting experience. The game emphasizes timing, precision, and mastery of defensive mechanics, particularly parry and posture management—over traditional health-based combat.
               </p>
+              <button 
+                onClick={() => setExpandedProject(expandedProject === 'jebs' ? null : 'jebs')}
+                className="md:hidden text-purple-400 text-xs mb-4 text-left hover:underline"
+              >
+                {expandedProject === 'jebs' ? 'Show less' : 'Read more'}
+              </button>
                <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-purple-900/30 text-purple-300">Unity</span>
                  <span className="badge bg-purple-900/30 text-purple-300">C#</span>
@@ -521,9 +535,15 @@ export default function Home() {
             {/* Content */}
             <div className="p-6 flex-1 flex flex-col relative z-20">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition">Grow Community</h3>
-              <p className="text-slate-400 text-sm mb-4 flex-1">
+              <p className={`text-slate-400 text-sm mb-4 md:block ${expandedProject === 'grow' ? 'block' : 'hidden'}`}>
                 This application provides an integrated, secure, and efficient solution for managing children’s check-in and check-out activities in a church environment. By replacing manual processes with a centralized web-based system, it improves accuracy, enhances child safety through identity verification, and enables real-time attendance monitoring. The system streamlines operations for administrators and staff while offering transparency and peace of mind for parents, ultimately supporting a more organized, reliable, and trustworthy church activity management experience.
               </p>
+              <button 
+                onClick={() => setExpandedProject(expandedProject === 'grow' ? null : 'grow')}
+                className="md:hidden text-blue-400 text-xs mb-4 text-left hover:underline"
+              >
+                {expandedProject === 'grow' ? 'Show less' : 'Read more'}
+              </button>
                <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge bg-blue-900/30 text-blue-300">PHP</span>
                  <span className="badge bg-blue-900/30 text-blue-300">Laravel</span>
@@ -562,9 +582,15 @@ export default function Home() {
             {/* Content */}
             <div className="p-8 md:w-1/2 flex flex-col justify-center relative z-20">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition">AirCare Mobile App</h3>
-              <p className="text-slate-400 mb-6 text-sm leading-relaxed">
+              <p className={`text-slate-400 mb-6 text-sm leading-relaxed md:block ${expandedProject === 'aircare' ? 'block' : 'hidden'}`}>
                 AirCare is a mobile application designed to help users monitor and understand air quality around them in real time, with the main goal of supporting healthier daily decisions. By providing accurate AQI data based on the user’s location, storing air quality history, delivering smart notifications during hazardous conditions, and offering health recommendations, AirCare aims to increase environmental awareness and reduce health risks caused by air pollution. The application focuses on personal tracking, accessibility, and clarity, making air quality information easy to interpret and practically useful for everyday activities, especially for users living in urban environments.
               </p>
+              <button 
+                onClick={() => setExpandedProject(expandedProject === 'aircare' ? null : 'aircare')}
+                className="md:hidden text-cyan-400 text-xs mb-4 text-left hover:underline"
+              >
+                {expandedProject === 'aircare' ? 'Show less' : 'Read more'}
+              </button>
                <div className="flex flex-wrap gap-2 mb-4">
                  <span className="badge">Kotlin</span>
                  <span className="badge">Firebase</span>
@@ -602,9 +628,15 @@ export default function Home() {
                 {/* Content */}
                 <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-teal-400 transition">Al-Jatim Web Platform</h3>
-                    <p className="text-slate-400 mb-6 leading-relaxed">
+                    <p className={`text-slate-400 mb-6 leading-relaxed md:block ${expandedProject === 'aljatim' ? 'block' : 'hidden'}`}>
                        Al-Jatim is a web-based application designed to introduce and showcase East Java (Jawa Timur) through an informative and visually engaging digital platform. The main goal of this website is to provide users with clear and structured information about East Java’s geography, tourist destinations, cultural heritage, traditional cuisine, and iconic symbols in one accessible place. Built using React.js, the application aims to promote regional knowledge and cultural appreciation while delivering a modern, interactive, and user-friendly browsing experience.
                     </p>
+                    <button 
+                      onClick={() => setExpandedProject(expandedProject === 'aljatim' ? null : 'aljatim')}
+                      className="md:hidden text-teal-400 text-xs mb-4 text-left hover:underline"
+                    >
+                      {expandedProject === 'aljatim' ? 'Show less' : 'Read more'}
+                    </button>
                     <div className="flex flex-wrap gap-3 mb-6">
                         <span className="badge bg-teal-900/30 text-teal-300">React.js</span>
                         <span className="badge bg-teal-900/30 text-teal-300">Tailwind CSS</span>
@@ -644,9 +676,15 @@ export default function Home() {
                 {/* Content */}
                 <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-pink-300 transition">Air Quality Data Visualization of Jakarta</h3>
-                    <p className="text-slate-400 mb-6 leading-relaxed">
+                    <p className={`text-slate-400 mb-6 leading-relaxed md:block ${expandedProject === 'dataviz' ? 'block' : 'hidden'}`}>
                        Analyzes air quality trends in DKI Jakarta (2016-2023) using Tableau. Features interactive dashboards with spatial analysis, trend monitoring, and forecasting. Highlights PM2.5 as the dominant pollutant, with East and North Jakarta showing the highest pollution levels.
                     </p>
+                    <button 
+                      onClick={() => setExpandedProject(expandedProject === 'dataviz' ? null : 'dataviz')}
+                      className="md:hidden text-pink-400 text-xs mb-4 text-left hover:underline"
+                    >
+                      {expandedProject === 'dataviz' ? 'Show less' : 'Read more'}
+                    </button>
                     <div className="flex flex-wrap gap-3 mb-6">
                         <span className="badge bg-pink-800/30 text-pink-200">Tableau</span>
                         <span className="badge bg-pink-800/30 text-pink-200">Data Visualization</span>
@@ -685,9 +723,15 @@ export default function Home() {
                 {/* Content */}
                 <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition">Indo-Text Classification</h3>
-                    <p className="text-slate-400 mb-6 leading-relaxed">
+                    <p className={`text-slate-400 mb-6 leading-relaxed md:block ${expandedProject === 'basicmove' ? 'block' : 'hidden'}`}>
                        A Natural Language Processing project that analyzes Indonesian forum discussions for sentiment analysis, emotion detection, and toxicity classification. Built with Python and Scikit-learn, using TF-IDF vectorization and comparing SVM vs Naive Bayes models. Includes text preprocessing with Sastrawi stemming and hyperparameter tuning for optimal performance in content moderation and hate speech detection.
                     </p>
+                    <button 
+                      onClick={() => setExpandedProject(expandedProject === 'basicmove' ? null : 'basicmove')}
+                      className="md:hidden text-emerald-400 text-xs mb-4 text-left hover:underline"
+                    >
+                      {expandedProject === 'basicmove' ? 'Show less' : 'Read more'}
+                    </button>
                     <div className="flex flex-wrap gap-3 mb-6">
                         <span className="badge bg-emerald-900/30 text-emerald-300">Python</span>
                         <span className="badge bg-emerald-900/30 text-emerald-300">Scikit-learn</span>
@@ -733,9 +777,15 @@ export default function Home() {
                         <h3 className="text-2xl font-bold text-white group-hover:text-red-400 transition">SSH Brute Force Detection</h3>
                     </div>
                     
-                    <p className="text-slate-400 mb-6 leading-relaxed text-sm">
+                    <p className={`text-slate-400 mb-6 leading-relaxed text-sm md:block ${expandedProject === 'snort' ? 'block' : 'hidden'}`}>
                         An experimental cybersecurity project analyzing the effectiveness of Snort IDS in detecting SSH brute force attacks within a controlled local network. The simulation involved using Hydra on Kali Linux to attack an Ubuntu Server, utilizing custom Snort rules to identify and alert on suspicious login patterns in real-time.
                     </p>
+                    <button 
+                      onClick={() => setExpandedProject(expandedProject === 'snort' ? null : 'snort')}
+                      className="md:hidden text-red-400 text-xs mb-6 text-left hover:underline"
+                    >
+                      {expandedProject === 'snort' ? 'Show less' : 'Read more'}
+                    </button>
                     
                     <div className="flex flex-wrap gap-3">
                         <span className="badge bg-red-900/30 text-red-300">Snort IDS</span>

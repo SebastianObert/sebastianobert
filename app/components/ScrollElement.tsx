@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 type ScrollProps = {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ type ScrollProps = {
   delay?: number;
   duration?: number;
   triggerMargin?: string;
+  disableOnMobile?: boolean;
 };
 
 export default function ScrollElement({ 
@@ -18,8 +19,22 @@ export default function ScrollElement({
   animation = "fade-up", 
   delay = 0,
   duration = 0.5,
-  triggerMargin = "0px 0px 0px 0px"
+  triggerMargin = "0px 0px 0px 0px",
+  disableOnMobile = false
 }: ScrollProps) {
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const variants = {
     "fade-up": { hidden: { opacity: 0, y: 75 }, visible: { opacity: 1, y: 0 } },
@@ -53,6 +68,11 @@ export default function ScrollElement({
       visible: { opacity: 1, y: 0, rotateZ: 0 } 
     },
   };
+
+  // If disableOnMobile is true and we're on mobile, just return children without animation
+  if (disableOnMobile && isMobile) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div

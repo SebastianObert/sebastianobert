@@ -28,6 +28,14 @@ export default function Home() {
   // State untuk transform origin (zoom follows cursor)
   const [transformOrigin, setTransformOrigin] = useState({ x: 50, y: 50 });
 
+  const getPreview = (text: string) => {
+    if (!text) return '';
+    const firstPeriod = text.indexOf('.');
+    if (firstPeriod !== -1 && firstPeriod < 120) return text.slice(0, firstPeriod + 1);
+    const words = text.split(/\s+/).slice(0, 18).join(' ');
+    return words + (words.length < text.length ? '...' : '');
+  };
+
   // UseEffect untuk loading animation
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -69,36 +77,34 @@ export default function Home() {
     }
   }, [expandedOrg, clickedSkill, expandedSocial]);
 
-  // When a video enters fullscreen on mobile, try to lock orientation to landscape
   useEffect(() => {
-    const handleFullscreenChange = async () => {
-      try {
-        const elem = document.fullscreenElement as HTMLElement | null;
-        const isVideo = elem?.tagName === 'VIDEO' || !!elem?.querySelector?.('video');
-        if (isVideo && window.innerWidth < 768 && (screen as any)?.orientation?.lock) {
-          try {
-            await (screen as any).orientation.lock('landscape');
-          } catch (err) {
-            // ignore (some browsers require user gesture or don't support lock)
-          }
-        }
+    let lockTimeout: number | null = null;
 
-        // When exiting fullscreen, attempt to unlock orientation
-        if (!document.fullscreenElement && (screen as any)?.orientation?.unlock) {
-          try { (screen as any).orientation.unlock(); } catch { }
-        }
-      } catch (e) {
-        // no-op
+    const lockOrientation = async () => {
+      try {
+        if ((screen as any)?.orientation?.lock) await (screen as any).orientation.lock('landscape');
+      } catch {}
+    };
+
+    const onFullscreenChange = () => {
+      const elem = document.fullscreenElement as HTMLElement | null;
+      const isVideo = elem?.tagName === 'VIDEO' || !!elem?.querySelector?.('video');
+      if (isVideo && window.innerWidth < 768) {
+        if (lockTimeout) window.clearTimeout(lockTimeout);
+        lockTimeout = window.setTimeout(lockOrientation, 350);
+      } else {
+        if (lockTimeout) { window.clearTimeout(lockTimeout); lockTimeout = null; }
+        if ((screen as any)?.orientation?.unlock) { try { (screen as any).orientation.unlock(); } catch {} }
       }
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    // legacy webkit event
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange as EventListener);
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange as EventListener);
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange as EventListener);
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', onFullscreenChange as EventListener);
+      if (lockTimeout) window.clearTimeout(lockTimeout);
     };
   }, []);
 
@@ -471,6 +477,9 @@ export default function Home() {
             {/* Content */}
             <div className="p-8 md:w-1/2 flex flex-col justify-center relative z-20">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-orange-400 transition">Aegis Call</h3>
+              <p className="text-slate-400 mb-2 text-sm leading-relaxed md:hidden">
+                {expandedProject === 'aegis' ? '' : getPreview("Aegis Call is an integrated emergency response application prototype designed using a User-Centered Design approach to ensure ease of use, speed, and clarity in critical situations. The application consolidates multiple emergency services into a single platform, featuring direct emergency calls, media-based incident reporting, and real-time assistance tracking. With a strong focus on usability, accessibility, and user experience under extreme conditions, Aegis Call aims to reduce user panic and enable faster, more accurate, and well-coordinated emergency responses.")}
+              </p>
               <div className={`collapsible md:block ${expandedProject === 'aegis' ? 'open' : ''}`}>
                 <p className="text-slate-400 mb-6 text-sm leading-relaxed">
                 Aegis Call is an integrated emergency response application prototype designed using a User-Centered Design approach to ensure ease of use, speed, and clarity in critical situations. The application consolidates multiple emergency services into a single platform, featuring direct emergency calls, media-based incident reporting, and real-time assistance tracking. With a strong focus on usability, accessibility, and user experience under extreme conditions, Aegis Call aims to reduce user panic and enable faster, more accurate, and well-coordinated emergency responses.
@@ -524,6 +533,9 @@ export default function Home() {
             {/* Content */}
             <div className="p-6 flex-1 flex flex-col relative z-20">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-400 transition">JEBS</h3>
+              <p className="text-slate-400 mb-2 text-sm leading-relaxed md:hidden">
+                {expandedProject === 'jebs' ? '' : getPreview("JEBS is a third-person Action-RPG combat prototype that successfully delivers an intense, skill-based sword-fighting experience. The game emphasizes timing, precision, and mastery of defensive mechanics, particularly parry and posture management—over traditional health-based combat.")}
+              </p>
               <div className={`collapsible md:block ${expandedProject === 'jebs' ? 'open' : ''}`}>
                 <p className="text-slate-400 text-sm mb-4">
                 JEBS is a third-person Action-RPG combat prototype that successfully delivers an intense, skill-based sword-fighting experience. The game emphasizes timing, precision, and mastery of defensive mechanics, particularly parry and posture management—over traditional health-based combat.
@@ -572,6 +584,9 @@ export default function Home() {
             {/* Content */}
             <div className="p-6 flex-1 flex flex-col relative z-20">
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition">Grow Community</h3>
+              <p className="text-slate-400 mb-2 text-sm leading-relaxed md:hidden">
+                {expandedProject === 'grow' ? '' : getPreview("This application provides an integrated, secure, and efficient solution for managing children’s check-in and check-out activities in a church environment. By replacing manual processes with a centralized web-based system, it improves accuracy, enhances child safety through identity verification, and enables real-time attendance monitoring.")}
+              </p>
               <div className={`collapsible md:block ${expandedProject === 'grow' ? 'open' : ''}`}>
                 <p className="text-slate-400 text-sm mb-4">
                 This application provides an integrated, secure, and efficient solution for managing children’s check-in and check-out activities in a church environment. By replacing manual processes with a centralized web-based system, it improves accuracy, enhances child safety through identity verification, and enables real-time attendance monitoring. The system streamlines operations for administrators and staff while offering transparency and peace of mind for parents, ultimately supporting a more organized, reliable, and trustworthy church activity management experience.
@@ -621,6 +636,9 @@ export default function Home() {
             {/* Content */}
             <div className="p-8 md:w-1/2 flex flex-col justify-center relative z-20">
               <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-cyan-400 transition">AirCare Mobile App</h3>
+              <p className="text-slate-400 mb-2 text-sm leading-relaxed md:hidden">
+                {expandedProject === 'aircare' ? '' : getPreview("AirCare is a mobile application designed to help users monitor and understand air quality around them in real time, with the main goal of supporting healthier daily decisions. By providing accurate AQI data based on the user’s location, storing air quality history, delivering smart notifications during hazardous conditions, and offering health recommendations, AirCare aims to increase environmental awareness and reduce health risks caused by air pollution.")}
+              </p>
               <div className={`collapsible md:block ${expandedProject === 'aircare' ? 'open' : ''}`}>
                 <p className="text-slate-400 mb-6 text-sm leading-relaxed">
                 AirCare is a mobile application designed to help users monitor and understand air quality around them in real time, with the main goal of supporting healthier daily decisions. By providing accurate AQI data based on the user’s location, storing air quality history, delivering smart notifications during hazardous conditions, and offering health recommendations, AirCare aims to increase environmental awareness and reduce health risks caused by air pollution. The application focuses on personal tracking, accessibility, and clarity, making air quality information easy to interpret and practically useful for everyday activities, especially for users living in urban environments.
@@ -669,8 +687,11 @@ export default function Home() {
                 {/* Content */}
                 <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-teal-400 transition">Al-Jatim Web Platform</h3>
+                    <p className="text-slate-400 mb-2 leading-relaxed text-sm md:hidden">
+                      {expandedProject === 'aljatim' ? '' : getPreview("Al-Jatim is a web-based application designed to introduce and showcase East Java (Jawa Timur) through an informative and visually engaging digital platform. The main goal of this website is to provide users with clear and structured information about East Java’s geography, tourist destinations, cultural heritage, traditional cuisine, and iconic symbols in one accessible place.")}
+                    </p>
                     <div className={`collapsible md:block ${expandedProject === 'aljatim' ? 'open' : ''}`}>
-                      <p className="text-slate-400 mb-6 leading-relaxed">
+                      <p className="text-slate-400 text-sm mb-6 leading-relaxed">
                        Al-Jatim is a web-based application designed to introduce and showcase East Java (Jawa Timur) through an informative and visually engaging digital platform. The main goal of this website is to provide users with clear and structured information about East Java’s geography, tourist destinations, cultural heritage, traditional cuisine, and iconic symbols in one accessible place. Built using React.js, the application aims to promote regional knowledge and cultural appreciation while delivering a modern, interactive, and user-friendly browsing experience.
                       </p>
                     </div>
@@ -719,9 +740,14 @@ export default function Home() {
                 {/* Content */}
                 <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-pink-300 transition">Air Quality Data Visualization of Jakarta</h3>
-                    <p className={`text-slate-400 mb-6 leading-relaxed md:block ${expandedProject === 'dataviz' ? 'block' : 'hidden'}`}>
-                       Analyzes air quality trends in DKI Jakarta (2016-2023) using Tableau. Features interactive dashboards with spatial analysis, trend monitoring, and forecasting. Highlights PM2.5 as the dominant pollutant, with East and North Jakarta showing the highest pollution levels.
-                    </p>
+                      <p className="text-slate-400 mb-2 leading-relaxed text-sm md:hidden">
+                       {expandedProject === 'dataviz' ? '' : getPreview('Analyzes air quality trends in DKI Jakarta (2016-2023) using Tableau. Features interactive dashboards with spatial analysis, trend monitoring, and forecasting. Highlights PM2.5 as the dominant pollutant, with East and North Jakarta showing the highest pollution levels.')}
+                      </p>
+                      <div className={`collapsible md:block ${expandedProject === 'dataviz' ? 'open' : ''}`}>
+                        <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                         Analyzes air quality trends in DKI Jakarta (2016-2023) using Tableau. Features interactive dashboards with spatial analysis, trend monitoring, and forecasting. Highlights PM2.5 as the dominant pollutant, with East and North Jakarta showing the highest pollution levels.
+                        </p>
+                      </div>
                     <button 
                       onClick={() => setExpandedProject(expandedProject === 'dataviz' ? null : 'dataviz')}
                       className="md:hidden text-pink-400 text-xs mb-4 text-left hover:underline"
@@ -766,14 +792,19 @@ export default function Home() {
                 {/* Content */}
                 <div className="p-8 md:w-3/5 relative z-20">
                     <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition">Indo-Text Classification</h3>
-                    <p className={`text-slate-400 mb-6 leading-relaxed md:block ${expandedProject === 'basicmove' ? 'block' : 'hidden'}`}>
+                      <p className="text-slate-400 mb-2 leading-relaxed text-sm md:hidden">
+                       {expandedProject === 'indotext' ? '' : getPreview('A Natural Language Processing project that analyzes Indonesian forum discussions for sentiment analysis, emotion detection, and toxicity classification. Built with Python and Scikit-learn, using TF-IDF vectorization and comparing SVM vs Naive Bayes models.')}
+                      </p>
+                    <div className={`collapsible md:block ${expandedProject === 'indotext' ? 'open' : ''}`}>
+                      <p className="text-slate-400 text-sm mb-6 leading-relaxed">
                        A Natural Language Processing project that analyzes Indonesian forum discussions for sentiment analysis, emotion detection, and toxicity classification. Built with Python and Scikit-learn, using TF-IDF vectorization and comparing SVM vs Naive Bayes models. Includes text preprocessing with Sastrawi stemming and hyperparameter tuning for optimal performance in content moderation and hate speech detection.
-                    </p>
+                      </p>
+                    </div>
                     <button 
-                      onClick={() => setExpandedProject(expandedProject === 'basicmove' ? null : 'basicmove')}
+                      onClick={() => setExpandedProject(expandedProject === 'indotext' ? null : 'indotext')}
                       className="md:hidden text-emerald-400 text-xs mb-4 text-left hover:underline"
                     >
-                      {expandedProject === 'basicmove' ? 'Show less' : 'Read more'}
+                      {expandedProject === 'indotext' ? 'Show less' : 'Read more'}
                     </button>
                     <div className="flex flex-wrap gap-3 mb-6">
                         <span className="badge bg-emerald-900/30 text-emerald-300">Python</span>
@@ -820,9 +851,14 @@ export default function Home() {
                         <h3 className="text-2xl font-bold text-white group-hover:text-red-400 transition">SSH Brute Force Detection</h3>
                     </div>
                     
-                    <p className={`text-slate-400 mb-6 leading-relaxed text-sm md:block ${expandedProject === 'snort' ? 'block' : 'hidden'}`}>
-                        An experimental cybersecurity project analyzing the effectiveness of Snort IDS in detecting SSH brute force attacks within a controlled local network. The simulation involved using Hydra on Kali Linux to attack an Ubuntu Server, utilizing custom Snort rules to identify and alert on suspicious login patterns in real-time.
+                    <p className="text-slate-400 mb-2 leading-relaxed text-sm md:hidden">
+                      {expandedProject === 'snort' ? '' : getPreview('An experimental cybersecurity project analyzing the effectiveness of Snort IDS in detecting SSH brute force attacks within a controlled local network. The simulation involved using Hydra on Kali Linux to attack an Ubuntu Server, utilizing custom Snort rules to identify and alert on suspicious login patterns in real-time.')}
                     </p>
+                    <div className={`collapsible md:block ${expandedProject === 'snort' ? 'open' : ''}`}>
+                        <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                        An experimental cybersecurity project analyzing the effectiveness of Snort IDS in detecting SSH brute force attacks within a controlled local network. The simulation involved using Hydra on Kali Linux to attack an Ubuntu Server, utilizing custom Snort rules to identify and alert on suspicious login patterns in real-time.
+                      </p>
+                    </div>
                     <button 
                       onClick={() => setExpandedProject(expandedProject === 'snort' ? null : 'snort')}
                       className="md:hidden text-red-400 text-xs mb-6 text-left hover:underline"

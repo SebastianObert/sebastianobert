@@ -136,6 +136,14 @@
       max-height: 40rem; /* large enough to fit content */
       opacity: 1;
     }
+    @media (min-width: 768px) {
+      .collapsible {
+        max-height: none !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+        transition: none !important;
+      }
+    }
   }
 
   /* Hexagon loader styles */

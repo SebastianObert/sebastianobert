@@ -206,7 +206,7 @@ export default function Home() {
       )}
 
       {/* --- NAVBAR RESPONSIVE --- */}
-      <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-800 transition-all duration-300">
+      <nav className="fixed top-0 w-full site-header z-50 transition-all duration-300">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             
@@ -238,7 +238,7 @@ export default function Home() {
           </div>
 
           {/* MOBILE MENU DROPDOWN */}
-          <div className={`md:hidden absolute top-full left-0 w-full bg-slate-900/95 border-b border-slate-800 shadow-2xl overflow-hidden transition-all duration-300 ease-in-out ${
+          <div className={`md:hidden absolute top-full left-0 w-full site-header border-b border-slate-800 shadow-2xl overflow-hidden transition-all duration-300 ease-in-out ${
             isMobileMenuOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
           }`}>
             <div className="p-4 flex flex-col items-center gap-4">
@@ -300,6 +300,31 @@ export default function Home() {
                     loop={true}
                   />
                 </p>
+              </div>
+              <div className="mt-2 flex items-center justify-center md:justify-start gap-3 text-slate-400">
+                <div className="keyboard-anim" aria-hidden="true">
+                  <svg viewBox="0 0 120 60" role="img" focusable="false">
+                    <rect x="4" y="10" width="112" height="40" rx="8" className="kb-shell" />
+                    <rect x="12" y="18" width="12" height="8" rx="2" className="kb-key kb-key-1" />
+                    <rect x="28" y="18" width="12" height="8" rx="2" className="kb-key kb-key-2" />
+                    <rect x="44" y="18" width="12" height="8" rx="2" className="kb-key kb-key-3" />
+                    <rect x="60" y="18" width="12" height="8" rx="2" className="kb-key kb-key-4" />
+                    <rect x="76" y="18" width="12" height="8" rx="2" className="kb-key kb-key-5" />
+                    <rect x="92" y="18" width="12" height="8" rx="2" className="kb-key kb-key-6" />
+                    <rect x="12" y="30" width="16" height="8" rx="2" className="kb-key kb-key-3" />
+                    <rect x="32" y="30" width="16" height="8" rx="2" className="kb-key kb-key-1" />
+                    <rect x="52" y="30" width="16" height="8" rx="2" className="kb-key kb-key-5" />
+                    <rect x="72" y="30" width="16" height="8" rx="2" className="kb-key kb-key-2" />
+                    <rect x="92" y="30" width="12" height="8" rx="2" className="kb-key kb-key-4" />
+                    <rect x="28" y="42" width="64" height="6" rx="3" className="kb-key kb-space" />
+                  </svg>
+                </div>
+                <div className="mouse-anim" aria-hidden="true">
+                  <svg viewBox="0 0 36 54" role="img" focusable="false">
+                    <rect x="6" y="4" width="24" height="46" rx="12" className="mouse-shell" />
+                    <rect x="17" y="12" width="2" height="10" rx="1" className="mouse-wheel" />
+                  </svg>
+                </div>
               </div>
             </div>
             
@@ -377,7 +402,7 @@ export default function Home() {
                 }, 2500);
               }}
             >
-              <Image src="/profil_sebas.jpg" alt="Sebastian Obert" fill className="object-cover" priority />
+              <Image src="/profil_sebastian.jpeg" alt="Sebastian Obert" fill className="object-cover" priority />
             </div>
           </div>
         </div>
@@ -386,11 +411,94 @@ export default function Home() {
 
 {/* --- SKILLS SECTION (Updated with Security Tools) --- */}
       <section id="skills" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
+        <div className="skills-clouds" aria-hidden="true">
+          <div className="skills-cloud cloud-1">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill" d="M22 34h26a10 10 0 0 0 0-20c-.8 0-1.6.1-2.4.3A14 14 0 0 0 13 20a9 9 0 0 0 9 14z" />
+              <path className="cloud-lightning" d="M30 26l-6 10h6l-2 8 8-12h-6l2-6z" />
+            </svg>
+          </div>
+          <div className="skills-cloud cloud-2">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill" d="M20 34h28a9 9 0 0 0 0-18c-.9 0-1.8.1-2.6.4A12 12 0 0 0 16 22a8 8 0 0 0 4 12z" />
+              <path className="cloud-lightning" d="M32 25l-5 9h5l-2 7 7-10h-5l2-6z" />
+            </svg>
+          </div>
+          <div className="skills-cloud cloud-3">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill" d="M18 34h30a9 9 0 0 0 0-18c-1 0-2 .2-3 .5A13 13 0 0 0 14 22a8 8 0 0 0 4 12z" />
+              <path className="cloud-lightning" d="M28 26l-6 10h6l-2 8 8-12h-6l2-6z" />
+            </svg>
+          </div>
+          <div className="skills-cloud cloud-4 cloud-soft">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill-soft" d="M20 34h28a9 9 0 0 0 0-18c-1 0-2 .2-3 .5A12 12 0 0 0 16 22a8 8 0 0 0 4 12z" />
+            </svg>
+          </div>
+          <div className="skills-cloud cloud-5 cloud-soft">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill-soft" d="M18 34h30a9 9 0 0 0 0-18c-1 0-2 .2-3 .5A13 13 0 0 0 14 22a8 8 0 0 0 4 12z" />
+            </svg>
+          </div>
+          <div className="skills-cloud cloud-6 cloud-soft">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill-soft" d="M22 34h26a10 10 0 0 0 0-20c-.8 0-1.6.1-2.4.3A14 14 0 0 0 13 20a9 9 0 0 0 9 14z" />
+            </svg>
+          </div>
+          <div className="skills-cloud cloud-7 cloud-soft">
+            <svg viewBox="0 0 64 40" role="img" focusable="false">
+              <path className="cloud-fill-soft" d="M21 34h27a9 9 0 0 0 0-18c-.9 0-1.8.1-2.6.4A12 12 0 0 0 16 22a8 8 0 0 0 5 12z" />
+            </svg>
+          </div>
+        </div>
+        <div className="skills-skyline skills-skyline-left" aria-hidden="true">
+          <svg viewBox="0 0 420 220" role="img" focusable="false">
+            <path className="skyline-fill" d="M8 210L8 70L60 70L60 40L110 40L110 22L150 22L150 80L210 80L210 48L250 48L250 90L300 90L300 30L340 30L340 210Z" />
+            <path className="skyline-fill-secondary" d="M36 210L36 96L84 96L84 68L138 68L138 46L184 46L184 92L238 92L238 62L282 62L282 110L326 110L326 52L370 52L370 210Z" />
+            <path className="skyline-side" d="M340 30L370 52L370 210L340 210Z" />
+            <path className="skyline-side" d="M300 90L326 110L326 210L300 210Z" />
+            <path className="skyline-side" d="M250 48L282 62L282 210L250 210Z" />
+            <path className="skyline-side" d="M110 40L138 68L138 210L110 210Z" />
+            <path className="skyline-roof" d="M110 40L138 68L150 68L122 40Z" />
+            <path className="skyline-roof" d="M250 48L282 62L292 62L260 48Z" />
+          </svg>
+        </div>
+        <div className="skills-skyline skills-skyline-right" aria-hidden="true">
+          <svg viewBox="0 0 420 220" role="img" focusable="false">
+            <path className="skyline-fill" d="M412 210L412 60L366 60L366 26L314 26L314 50L258 50L258 18L210 18L210 68L160 68L160 40L110 40L110 94L70 94L70 210Z" />
+            <path className="skyline-fill-secondary" d="M384 210L384 86L340 86L340 46L280 46L280 26L226 26L226 78L170 78L170 50L120 50L120 112L80 112L80 210Z" />
+            <path className="skyline-side" d="M314 26L340 46L340 210L314 210Z" />
+            <path className="skyline-side" d="M258 50L280 46L280 210L258 210Z" />
+            <path className="skyline-side" d="M160 68L170 78L170 210L160 210Z" />
+            <path className="skyline-roof" d="M314 26L340 46L352 46L326 26Z" />
+            <path className="skyline-roof" d="M210 18L226 26L240 26L224 18Z" />
+          </svg>
+        </div>
         <div className="container mx-auto px-6">
           <ScrollElement animation="fade-down" duration={0.7}>
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 relative">
+            <div className="skills-title-icons" aria-hidden="true">
+              <span className="skills-icon">
+                <svg viewBox="0 0 24 24" role="img" focusable="false">
+                  <path d="M4 6h16M4 12h16M4 18h16" className="skills-icon-stroke" />
+                  <circle cx="6" cy="6" r="1" className="skills-icon-dot" />
+                </svg>
+              </span>
+              <span className="skills-icon">
+                <svg viewBox="0 0 24 24" role="img" focusable="false">
+                  <rect x="5" y="5" width="14" height="14" rx="2" className="skills-icon-stroke" />
+                  <path d="M9 9h6v6H9z" className="skills-icon-fill" />
+                </svg>
+              </span>
+              <span className="skills-icon">
+                <svg viewBox="0 0 24 24" role="img" focusable="false">
+                  <path d="M7 8l-3 4 3 4M17 8l3 4-3 4" className="skills-icon-stroke" />
+                </svg>
+              </span>
+            </div>
             <h2 className="text-3xl font-bold text-white mb-4">Tech Stack</h2>
             <p className="text-slate-400">Tools and technologies I have used in various projects</p>
+            <div className="skills-scanline" aria-hidden="true"></div>
           </div>
           </ScrollElement>
           
@@ -927,9 +1035,20 @@ export default function Home() {
                      </h3>
                      <p className="text-cyan-400 font-medium">Internal Education</p>
                    </div>
-                   <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Apr 2025 - Present</div>
+                   <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Apr 2025 - Dec 2025</div>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-sm">Developed weekly investment-related educational content and delivered capital market presentations while simplifying complex financial concepts into practical insights for members.</p>
+              </div>
+              <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
+                <svg viewBox="0 0 120 80" role="img" focusable="false">
+                  <path d="M12 60H108" stroke="rgba(148,163,184,0.4)" strokeWidth="2" />
+                  <path d="M12 40H108" stroke="rgba(148,163,184,0.2)" strokeWidth="2" />
+                  <path d="M18 58L38 42L56 48L74 30L96 36" fill="none" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect x="24" y="50" width="8" height="10" fill="rgba(56,189,248,0.5)" />
+                  <rect x="44" y="46" width="8" height="14" fill="rgba(56,189,248,0.35)" />
+                  <rect x="64" y="38" width="8" height="22" fill="rgba(56,189,248,0.45)" />
+                  <rect x="84" y="34" width="8" height="26" fill="rgba(56,189,248,0.55)" />
+                </svg>
               </div>
            </div>
            
@@ -965,6 +1084,16 @@ export default function Home() {
                 </div>
                 <p className="text-slate-400 leading-relaxed text-sm">Managed event equipment and logistics to support operational needs and ensure the smooth execution of the festival.</p>
               </div>
+              <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
+                <svg viewBox="0 0 120 80" role="img" focusable="false">
+                  <rect x="12" y="22" width="30" height="20" rx="3" fill="rgba(56,189,248,0.35)" stroke="rgba(56,189,248,0.7)" strokeWidth="2" />
+                  <rect x="78" y="22" width="30" height="20" rx="3" fill="rgba(56,189,248,0.25)" stroke="rgba(56,189,248,0.6)" strokeWidth="2" />
+                  <rect x="34" y="48" width="52" height="18" rx="4" fill="rgba(56,189,248,0.18)" stroke="rgba(56,189,248,0.55)" strokeWidth="2" />
+                  <path d="M42 32H72" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M68 28L76 32L68 36" fill="none" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M56 42V48" stroke="rgba(56,189,248,0.6)" strokeWidth="3" strokeLinecap="round" />
+                </svg>
+              </div>
            </div>
 
            {/* Card UMN Fest */}
@@ -998,6 +1127,17 @@ export default function Home() {
                    <div className="text-slate-400 text-sm mt-2 md:mt-0 font-mono bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700">Oct 2024 - Dec 2024</div>
                 </div>
                 <p className="text-slate-400 leading-relaxed text-sm">Supported sports competition operations by assisting with match administration and on-field coordination.</p>
+              </div>
+              <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
+                <svg viewBox="0 0 120 80" role="img" focusable="false">
+                  <circle cx="60" cy="40" r="20" fill="rgba(56,189,248,0.22)" />
+                  <circle cx="60" cy="40" r="18" fill="rgba(56,189,248,0.12)" />
+                  <path d="M60 28L70 34L66 46L54 46L50 34Z" fill="rgba(125,211,252,0.85)" />
+                  <circle cx="44" cy="40" r="3" fill="rgba(125,211,252,0.55)" />
+                  <circle cx="76" cy="40" r="3" fill="rgba(125,211,252,0.55)" />
+                  <circle cx="60" cy="24" r="3" fill="rgba(125,211,252,0.55)" />
+                  <circle cx="60" cy="56" r="3" fill="rgba(125,211,252,0.55)" />
+                </svg>
               </div>
            </div>
         </div>

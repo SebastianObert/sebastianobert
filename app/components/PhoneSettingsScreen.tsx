@@ -43,7 +43,7 @@ export default function PhoneSettingsScreen({ onBack, onBgChange, bgColor }: Pho
   }, [selected, onBgChange]);
 
   return (
-    <div className={`flex-1 flex flex-col overflow-hidden ${bgColor || ""}`}>
+    <div className={`flex-1 flex flex-col overflow-hidden min-h-0 ${bgColor || ""}`}>
       <div className="px-3 py-2 border-b border-slate-700 flex items-center gap-2">
         <button onClick={onBack} className="p-1 rounded hover:bg-slate-700 transition" aria-label="Back">
           <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>

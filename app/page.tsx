@@ -81,7 +81,7 @@ export default function Home() {
 
       <Navbar />
 
-      <main className={`min-h-screen bg-slate-900 text-slate-200 selection:bg-cyan-500 selection:text-white relative overflow-hidden ${!isLoading ? 'animate-zoomIn' : 'opacity-0'}`}>
+      <main className={`min-h-screen relative overflow-hidden ${!isLoading ? 'animate-zoomIn' : 'opacity-0'}`} style={{ color: "var(--text-secondary)" }}>
         <HeroSection 
           expandedSocial={expandedSocial}
           setExpandedSocial={setExpandedSocial}

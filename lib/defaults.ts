@@ -80,6 +80,7 @@ export interface ChatResponse {
   reply: string;
   sessionId: string;
   chips: string[];
+  limitReached?: boolean;
 }
 
 export interface SessionDto {

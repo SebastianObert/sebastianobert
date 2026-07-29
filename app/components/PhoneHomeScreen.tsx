@@ -122,8 +122,8 @@ const DOCK_APPS: { name: string; icon: string; color: string; action: string; ur
 
 export default function PhoneHomeScreen({ onOpenChat, onOpenLuckyBox, onOpenSettings, bgColor }: PhoneHomeScreenProps) {
   return (
-    <div className={`flex-1 flex flex-col ${bgColor || ""}`}>
-      <div className="flex-1 overflow-y-auto py-3 px-4 scrollbar-thin">
+    <div className={`flex-1 flex flex-col min-h-0 ${bgColor || ""}`}>
+      <div className="flex-1 overflow-y-auto py-3 px-4 scrollbar-thin min-h-0">
         <div className="grid grid-cols-4 gap-x-3 gap-y-4">
           {MAIN_APPS.map((app) => {
             const isClickable = app.action === "chat" || app.action === "luckybox" || app.action === "link";

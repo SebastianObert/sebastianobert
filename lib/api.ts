@@ -44,20 +44,91 @@ export const api = {
   getNavLinks: async (): Promise<NavLink[]> => DEFAULT_NAV,
   getSeo: async (): Promise<SeoMetadata> => DEFAULT_SEO,
 
-  sendChat: async (message: string, sessionId?: string): Promise<ChatResponse> => ({
-    reply: "Chatbot sedang offline. Coba lagi nanti.",
-    sessionId: sessionId || "",
-    chips: [],
-  }),
+  sendChat: async (messages: { role: string; content: string }[], sessionId?: string, userId?: string): Promise<ChatResponse> => {
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages,
+          sessionId,
+          userId,
+        }),
+      });
+      if (res.status === 429) {
+        const data = await res.json();
+        return {
+          reply: data.reply,
+          sessionId: sessionId || "",
+          chips: [],
+          limitReached: true,
+        };
+      }
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Chat API error:", res.status, text);
+        throw new Error(`API ${res.status}: ${text}`);
+      }
+      const data = await res.json();
+      return {
+        reply: data.reply,
+        sessionId: data.sessionId,
+        chips: [],
+      };
+    } catch (e) {
+      console.error("sendChat catch:", e);
+      return {
+        reply: "Maaf, lagi ada gangguan. Coba lagi ya!",
+        sessionId: sessionId || "",
+        chips: [],
+      };
+    }
+  },
 
-  getSessions: async (): Promise<SessionDto[]> => [],
+  getSessions: async (userId?: string): Promise<SessionDto[]> => {
+    try {
+      const params = new URLSearchParams({ action: "sessions" });
+      if (userId) params.set("userId", userId);
+      const res = await fetch(`/api/chat?${params}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
 
-  getChatHistory: async (_sessionId: string): Promise<MessageDto[]> => [],
+  fetchQuota: async (userId?: string): Promise<{ used: number; limit: number; remaining: number }> => {
+    try {
+      const params = new URLSearchParams({ action: "quota" });
+      if (userId) params.set("userId", userId);
+      const res = await fetch(`/api/chat?${params}`);
+      if (!res.ok) return { used: 0, limit: 3, remaining: 0 };
+      return await res.json();
+    } catch {
+      return { used: 0, limit: 3, remaining: 0 };
+    }
+  },
 
-  createSession: async (title: string): Promise<{ id: string; title: string }> => ({
-    id: crypto.randomUUID(),
-    title,
-  }),
+  getChatHistory: async (sessionId: string): Promise<MessageDto[]> => {
+    try {
+      const res = await fetch(`/api/chat?action=history&id=${encodeURIComponent(sessionId)}`);
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
 
-  deleteSession: async (_id: string): Promise<boolean> => false,
+  createSession: async (_title: string): Promise<{ id: string; title: string }> => {
+    return { id: "", title: "" };
+  },
+
+  deleteSession: async (id: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/chat?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
 };

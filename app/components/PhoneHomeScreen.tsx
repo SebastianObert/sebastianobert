@@ -2,6 +2,7 @@
 
 interface PhoneHomeScreenProps {
   onOpenChat: () => void;
+  onOpenLuckyBox: () => void;
 }
 
 function AppIcon({ icon }: { icon: string }) {
@@ -34,6 +35,10 @@ function AppIcon({ icon }: { icon: string }) {
       return (
         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
       );
+    case "luckybox":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+      );
     case "settings":
       return (
         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -48,7 +53,7 @@ const MAIN_APPS: { name: string; icon: string; color: string; action: string; ur
   { name: "Instagram", icon: "instagram", color: "bg-gradient-to-br from-pink-500 via-purple-500 to-orange-400", action: "link", url: "https://instagram.com/sebasobet" },
   { name: "LinkedIn", icon: "linkedin", color: "bg-blue-600", action: "link", url: "https://www.linkedin.com/in/sebastian-obert-cen/" },
   { name: "Gallery", icon: "gallery", color: "bg-sky-500", action: "none" },
-  { name: "Settings", icon: "settings", color: "bg-slate-500", action: "none" },
+  { name: "Lucky Box", icon: "luckybox", color: "bg-amber-600", action: "luckybox" },
 ];
 
 const DOCK_APPS: { name: string; icon: string; color: string; action: string; url?: string }[] = [
@@ -57,18 +62,19 @@ const DOCK_APPS: { name: string; icon: string; color: string; action: string; ur
   { name: "Chat", icon: "chat", color: "bg-emerald-500", action: "chat" },
 ];
 
-export default function PhoneHomeScreen({ onOpenChat }: PhoneHomeScreenProps) {
+export default function PhoneHomeScreen({ onOpenChat, onOpenLuckyBox }: PhoneHomeScreenProps) {
   return (
     <div className="flex-1 flex flex-col justify-between py-3 px-4">
       {/* Main apps — top aligned */}
       <div className="grid grid-cols-4 gap-x-3 gap-y-4">
         {MAIN_APPS.map((app) => {
-          const isClickable = app.action === "chat" || app.action === "link";
+          const isClickable = app.action === "chat" || app.action === "luckybox" || app.action === "link";
           return (
             <button
               key={app.name}
               onClick={() => {
                 if (app.action === "chat") onOpenChat();
+                else if (app.action === "luckybox") onOpenLuckyBox();
                 else if (app.action === "link" && app.url) window.open(app.url, "_blank");
               }}
               disabled={!isClickable}

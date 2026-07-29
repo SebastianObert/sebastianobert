@@ -5,8 +5,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { api, MessageDto, SessionDto } from "../../lib/api";
 import ChatMessage from "./ChatMessage";
 import PhoneHomeScreen from "./PhoneHomeScreen";
+import LuckyBoxScreen from "./LuckyBoxScreen";
 
-type Screen = "home" | "chat";
+type Screen = "home" | "chat" | "luckybox";
 
 function StatusBar() {
   const [time, setTime] = useState("");
@@ -46,7 +47,7 @@ function NavBar({ onBack, onHome }: { onBack: () => void; onHome: () => void }) 
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [screen, setScreen] = useState<Screen>("chat");
+  const [screen, setScreen] = useState<Screen>("home");
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +71,8 @@ export default function ChatWidget() {
 
   const goHome = () => setScreen("home");
   const goChat = () => setScreen("chat");
-  const goBack = () => { if (screen === "chat") goHome(); };
+  const goLuckyBox = () => setScreen("luckybox");
+  const goBack = () => { if (screen === "chat" || screen === "luckybox") goHome(); };
 
   const newChat = () => {
     setMessages([]);
@@ -128,18 +130,18 @@ export default function ChatWidget() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110"
-        aria-label="Toggle chat"
+        aria-label="Toggle phone"
       >
         {isOpen ? (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
         ) : (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
         )}
       </button>
 
       {/* Phone mockup */}
       <div
-        className={`fixed bottom-20 right-6 z-50 w-[290px] max-w-[calc(100vw-3rem)] bg-black rounded-[2rem] shadow-2xl shadow-black/50 border-2 border-slate-700 overflow-hidden transition-all duration-300 origin-bottom-right ${
+        className={`fixed bottom-20 right-6 z-50 w-[290px] max-w-[calc(100vw-3rem)] bg-slate-800 rounded-[2rem] shadow-2xl shadow-black/50 border-2 border-slate-700 overflow-hidden transition-all duration-300 origin-bottom-right ${
           isOpen ? "scale-100 opacity-100" : "scale-90 opacity-0 pointer-events-none"
         }`}
       >
@@ -151,7 +153,11 @@ export default function ChatWidget() {
           {/* Screen */}
           <div className="flex-1 bg-slate-900 flex flex-col overflow-hidden relative">
             {screen === "home" && (
-              <PhoneHomeScreen onOpenChat={goChat} />
+              <PhoneHomeScreen onOpenChat={goChat} onOpenLuckyBox={goLuckyBox} />
+            )}
+
+            {screen === "luckybox" && (
+              <LuckyBoxScreen onBack={goHome} />
             )}
 
             {screen === "chat" && (

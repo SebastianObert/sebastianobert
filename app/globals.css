@@ -780,7 +780,47 @@
     0% {
       stroke-dashoffset: 0;
     }
-    100% {
+     100% {
       stroke-dashoffset: 100;
     }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10% { transform: translateX(-4px) rotate(-2deg); }
+    20% { transform: translateX(4px) rotate(2deg); }
+    30% { transform: translateX(-4px) rotate(-2deg); }
+    40% { transform: translateX(4px) rotate(2deg); }
+    50% { transform: translateX(-2px) rotate(-1deg); }
+    60% { transform: translateX(2px) rotate(1deg); }
+    70% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+    90% { transform: translateX(-1px); }
+  }
+
+  .animate-shake {
+    animation: shake 0.6s ease-in-out;
+  }
+
+  @keyframes sparkle-fade {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes bounce-gentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .animate-bounce-gentle {
+    animation: bounce-gentle 1s ease-in-out infinite;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
   }

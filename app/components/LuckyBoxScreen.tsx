@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useMemo } from "react";
+import { useAuth } from "../../lib/auth";
 
 type Rarity = "Common" | "Rare" | "Epic" | "Legendary" | "Mythic";
 type Phase = "idle" | "spinning" | "reveal";
@@ -189,6 +190,7 @@ function SparkleBurst({ color }: { color: string }) {
 }
 
 export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
+  const { user } = useAuth();
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState<ItemDef | null>(null);
   const [rotation, setRotation] = useState(0);
@@ -268,11 +270,19 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
               Pull a random item from the box. Each spin has a different set of prizes!
             </p>
             <button
-              onClick={spin}
-              className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-[12px] font-bold rounded-xl shadow-lg shadow-amber-700/30 border border-amber-500/50 active:scale-95 transition-all"
+              onClick={user ? spin : () => {}}
+              disabled={phase !== "idle" || !user}
+              className={`px-6 py-2.5 text-white text-[12px] font-bold rounded-xl shadow-lg transition-all active:scale-95 ${
+                user
+                  ? "bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 shadow-amber-700/30 border border-amber-500/50"
+                  : "bg-slate-700 cursor-not-allowed shadow-slate-800/30 border border-slate-600"
+              }`}
             >
               PULL
             </button>
+            {!user && (
+              <p className="text-[9px] text-slate-600 -mt-3">Login untuk spin</p>
+            )}
           </div>
           </>
         )}

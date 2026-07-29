@@ -13,6 +13,20 @@ export default function SkillsSection() {
     api.getSkills().then(setSkills);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (clickedSkill && !target.closest('[data-skill-badge]')) {
+        setClickedSkill(null);
+      }
+    };
+
+    if (clickedSkill) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [clickedSkill]);
+
   return (
     <section id="skills" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
       <div className="skills-clouds" aria-hidden="true">

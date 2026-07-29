@@ -5,7 +5,11 @@ import { useState, useEffect } from "react";
 import ScrollElement from "./ScrollElement";
 import { api, Organization, GalleryItem } from "../../lib/api";
 
-export default function OrganizationSection() {
+interface OrganizationSectionProps {
+  setSelectedImage: (image: { src: string; alt: string } | null) => void;
+}
+
+export default function OrganizationSection({ setSelectedImage }: OrganizationSectionProps) {
   const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
@@ -14,6 +18,20 @@ export default function OrganizationSection() {
     api.getOrganizations().then(setOrganizations);
     api.getGallery().then(setGallery);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (expandedOrg && !target.closest('[data-org-card]')) {
+        setExpandedOrg(null);
+      }
+    };
+
+    if (expandedOrg) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [expandedOrg]);
 
   return (
     <>
@@ -53,15 +71,38 @@ export default function OrganizationSection() {
                     <p className="text-slate-400 leading-relaxed text-sm">{org.description}</p>
                   </div>
                   <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
-                    <svg viewBox="0 0 120 80" role="img" focusable="false">
-                      <path d="M12 60H108" stroke="rgba(148,163,184,0.4)" strokeWidth="2" />
-                      <path d="M12 40H108" stroke="rgba(148,163,184,0.2)" strokeWidth="2" />
-                      <path d="M18 58L38 42L56 48L74 30L96 36" fill="none" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                      <rect x="24" y="50" width="8" height="10" fill="rgba(56,189,248,0.5)" />
-                      <rect x="44" y="46" width="8" height="14" fill="rgba(56,189,248,0.35)" />
-                      <rect x="64" y="38" width="8" height="22" fill="rgba(56,189,248,0.45)" />
-                      <rect x="84" y="34" width="8" height="26" fill="rgba(56,189,248,0.55)" />
-                    </svg>
+                    {org.slug === "kspm" && (
+                      <svg viewBox="0 0 120 80" role="img" focusable="false">
+                        <path d="M12 60H108" stroke="rgba(148,163,184,0.4)" strokeWidth="2" />
+                        <path d="M12 40H108" stroke="rgba(148,163,184,0.2)" strokeWidth="2" />
+                        <path d="M18 58L38 42L56 48L74 30L96 36" fill="none" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                        <rect x="24" y="50" width="8" height="10" fill="rgba(56,189,248,0.5)" />
+                        <rect x="44" y="46" width="8" height="14" fill="rgba(56,189,248,0.35)" />
+                        <rect x="64" y="38" width="8" height="22" fill="rgba(56,189,248,0.45)" />
+                        <rect x="84" y="34" width="8" height="26" fill="rgba(56,189,248,0.55)" />
+                      </svg>
+                    )}
+                    {org.slug === "commfest" && (
+                      <svg viewBox="0 0 120 80" role="img" focusable="false">
+                        <rect x="12" y="22" width="30" height="20" rx="3" fill="rgba(56,189,248,0.35)" stroke="rgba(56,189,248,0.7)" strokeWidth="2" />
+                        <rect x="78" y="22" width="30" height="20" rx="3" fill="rgba(56,189,248,0.25)" stroke="rgba(56,189,248,0.6)" strokeWidth="2" />
+                        <rect x="34" y="48" width="52" height="18" rx="4" fill="rgba(56,189,248,0.18)" stroke="rgba(56,189,248,0.55)" strokeWidth="2" />
+                        <path d="M42 32H72" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M68 28L76 32L68 36" fill="none" stroke="rgba(56,189,248,0.8)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M56 42V48" stroke="rgba(56,189,248,0.6)" strokeWidth="3" strokeLinecap="round" />
+                      </svg>
+                    )}
+                    {org.slug === "umnfest" && (
+                      <svg viewBox="0 0 120 80" role="img" focusable="false">
+                        <circle cx="60" cy="40" r="20" fill="rgba(56,189,248,0.22)" />
+                        <circle cx="60" cy="40" r="18" fill="rgba(56,189,248,0.12)" />
+                        <path d="M60 28L70 34L66 46L54 46L50 34Z" fill="rgba(125,211,252,0.85)" />
+                        <circle cx="44" cy="40" r="3" fill="rgba(125,211,252,0.55)" />
+                        <circle cx="76" cy="40" r="3" fill="rgba(125,211,252,0.55)" />
+                        <circle cx="60" cy="24" r="3" fill="rgba(125,211,252,0.55)" />
+                        <circle cx="60" cy="56" r="3" fill="rgba(125,211,252,0.55)" />
+                      </svg>
+                    )}
                   </div>
                 </div>
               ))}
@@ -81,7 +122,10 @@ export default function OrganizationSection() {
                     {[...Array(2)].map((_, i) => (
                       <div key={i} className="flex gap-6">
                         {gallery.map((item, idx) => (
-                          <div key={`${i}-${idx}`} className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer">
+                          <div key={`${i}-${idx}`}
+                            className="w-72 h-48 relative rounded-xl overflow-hidden border-2 border-slate-700 cursor-pointer"
+                            onClick={() => setSelectedImage({ src: item.image, alt: item.alt })}
+                          >
                             <Image src={item.image} alt={item.alt} fill className="object-cover hover:scale-110 transition duration-500" />
                             {item.caption && <div className="absolute bottom-0 w-full bg-black/60 p-2 text-xs text-center text-white">{item.caption}</div>}
                           </div>

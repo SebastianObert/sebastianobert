@@ -26,6 +26,20 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (expandedSocial && !target.closest('[data-social-icon]')) {
+        setExpandedSocial(null);
+      }
+    };
+
+    if (expandedSocial) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [expandedSocial]);
+
+  useEffect(() => {
     let lockTimeout: number | null = null;
 
     const lockOrientation = async () => {
@@ -78,7 +92,7 @@ export default function Home() {
 
         <ProjectsSection setSelectedImage={setSelectedImage} />
 
-        <OrganizationSection />
+        <OrganizationSection setSelectedImage={setSelectedImage} />
 
         <ContactSection 
           expandedSocial={expandedSocial}

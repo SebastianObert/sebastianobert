@@ -3,6 +3,8 @@
 interface PhoneHomeScreenProps {
   onOpenChat: () => void;
   onOpenLuckyBox: () => void;
+  onOpenSettings: () => void;
+  bgColor?: string;
 }
 
 function AppIcon({ icon }: { icon: string }) {
@@ -37,11 +39,58 @@ function AppIcon({ icon }: { icon: string }) {
       );
     case "luckybox":
       return (
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+        <svg viewBox="0 0 64 64" className="w-7 h-7">
+          <rect x="14" y="30" width="36" height="26" rx="3" fill="#f59e0b" />
+          <rect x="10" y="24" width="44" height="8" rx="3" fill="#fbbf24" />
+          <rect x="30" y="24" width="4" height="32" rx="1" fill="#ef4444" />
+          <rect x="14" y="30" width="4" height="26" rx="1" fill="#ef4444" />
+          <rect x="46" y="30" width="4" height="26" rx="1" fill="#ef4444" />
+          <ellipse cx="32" cy="24" rx="7" ry="4.5" fill="#f87171" />
+          <ellipse cx="27" cy="22" rx="4.5" ry="3.5" fill="#f87171" transform="rotate(-20 27 22)" />
+          <ellipse cx="37" cy="22" rx="4.5" ry="3.5" fill="#f87171" transform="rotate(20 37 22)" />
+          <circle cx="32" cy="22" r="2" fill="#b91c1c" />
+          <text x="32" y="48" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="monospace">?</text>
+        </svg>
       );
     case "settings":
       return (
         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+      );
+    case "calendar":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+      );
+    case "maps":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+      );
+    case "notes":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+      );
+    case "clock":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      );
+    case "weather":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+      );
+    case "calculator":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+      );
+    case "email":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      );
+    case "music":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+      );
+    case "photos":
+      return (
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
       );
     default:
       return null;
@@ -51,53 +100,64 @@ function AppIcon({ icon }: { icon: string }) {
 const MAIN_APPS: { name: string; icon: string; color: string; action: string; url?: string }[] = [
   { name: "WhatsApp", icon: "whatsapp", color: "bg-green-500", action: "link", url: "https://wa.me/6281314412184" },
   { name: "Instagram", icon: "instagram", color: "bg-gradient-to-br from-pink-500 via-purple-500 to-orange-400", action: "link", url: "https://instagram.com/sebasobet" },
+  { name: "Calendar", icon: "calendar", color: "bg-red-500", action: "none" },
+  { name: "Maps", icon: "maps", color: "bg-emerald-600", action: "none" },
   { name: "LinkedIn", icon: "linkedin", color: "bg-blue-600", action: "link", url: "https://www.linkedin.com/in/sebastian-obert-cen/" },
-  { name: "Gallery", icon: "gallery", color: "bg-sky-500", action: "none" },
-  { name: "Lucky Box", icon: "luckybox", color: "bg-amber-600", action: "luckybox" },
-];
-
-const DOCK_APPS: { name: string; icon: string; color: string; action: string; url?: string }[] = [
-  { name: "Phone", icon: "phone", color: "bg-green-600", action: "none" },
-  { name: "Camera", icon: "camera", color: "bg-slate-600", action: "none" },
+  { name: "Notes", icon: "notes", color: "bg-yellow-600", action: "none" },
+  { name: "Clock", icon: "clock", color: "bg-blue-500", action: "none" },
+  { name: "Weather", icon: "weather", color: "bg-sky-400", action: "none" },
+  { name: "Calculator", icon: "calculator", color: "bg-gray-600", action: "none" },
+  { name: "Email", icon: "email", color: "bg-indigo-500", action: "none" },
+  { name: "Music", icon: "music", color: "bg-rose-500", action: "none" },
+  { name: "Photos", icon: "photos", color: "bg-violet-500", action: "none" },
+  { name: "Lucky Box", icon: "luckybox", color: "bg-amber-800/70", action: "luckybox" },
   { name: "Chat", icon: "chat", color: "bg-emerald-500", action: "chat" },
 ];
 
-export default function PhoneHomeScreen({ onOpenChat, onOpenLuckyBox }: PhoneHomeScreenProps) {
+const DOCK_APPS: { name: string; icon: string; color: string; action: string; url?: string }[] = [
+  { name: "Settings", icon: "settings", color: "bg-slate-500", action: "settings" },
+  { name: "Phone", icon: "phone", color: "bg-green-600", action: "none" },
+  { name: "Camera", icon: "camera", color: "bg-slate-600", action: "none" },
+];
+
+export default function PhoneHomeScreen({ onOpenChat, onOpenLuckyBox, onOpenSettings, bgColor }: PhoneHomeScreenProps) {
   return (
-    <div className="flex-1 flex flex-col justify-between py-3 px-4">
-      {/* Main apps — top aligned */}
-      <div className="grid grid-cols-4 gap-x-3 gap-y-4">
-        {MAIN_APPS.map((app) => {
-          const isClickable = app.action === "chat" || app.action === "luckybox" || app.action === "link";
-          return (
-            <button
-              key={app.name}
-              onClick={() => {
-                if (app.action === "chat") onOpenChat();
-                else if (app.action === "luckybox") onOpenLuckyBox();
-                else if (app.action === "link" && app.url) window.open(app.url, "_blank");
-              }}
-              disabled={!isClickable}
-              className={`flex flex-col items-center gap-1 ${isClickable ? "cursor-pointer active:scale-90 transition-transform" : "opacity-30 pointer-events-none"}`}
-            >
-              <div className={`w-12 h-12 rounded-[14px] ${app.color} flex items-center justify-center shadow-lg`}>
-                <AppIcon icon={app.icon} />
-              </div>
-              <span className="text-[10px] text-slate-300 leading-tight text-center">{app.name}</span>
-            </button>
-          );
-        })}
+    <div className={`flex-1 flex flex-col ${bgColor || ""}`}>
+      <div className="flex-1 overflow-y-auto py-3 px-4 scrollbar-thin">
+        <div className="grid grid-cols-4 gap-x-3 gap-y-4">
+          {MAIN_APPS.map((app) => {
+            const isClickable = app.action === "chat" || app.action === "luckybox" || app.action === "link";
+            return (
+              <button
+                key={app.name}
+                onClick={() => {
+                  if (app.action === "chat") onOpenChat();
+                  else if (app.action === "luckybox") onOpenLuckyBox();
+                  else if (app.action === "link" && app.url) window.open(app.url, "_blank");
+                }}
+                disabled={!isClickable}
+                className={`flex flex-col items-center gap-1 ${isClickable ? "cursor-pointer active:scale-90 transition-transform" : "opacity-30 pointer-events-none"}`}
+              >
+                <div className={`w-12 h-12 rounded-[14px] ${app.color} flex items-center justify-center shadow-lg`}>
+                  <AppIcon icon={app.icon} />
+                </div>
+                <span className="text-[10px] text-slate-300 leading-tight text-center">{app.name}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Dock — bottom */}
-      <div className="flex items-center justify-center gap-5 pt-3 pb-1">
+      <div className="flex items-center justify-center gap-5 pt-3 pb-1 flex-shrink-0">
         {DOCK_APPS.map((app) => {
-          const isClickable = app.action === "chat" || app.action === "link";
+          const isClickable = app.action === "chat" || app.action === "link" || app.action === "settings";
           return (
             <button
               key={app.name}
               onClick={() => {
                 if (app.action === "chat") onOpenChat();
+                else if (app.action === "settings") onOpenSettings();
                 else if (app.action === "link" && app.url) window.open(app.url, "_blank");
               }}
               disabled={!isClickable}

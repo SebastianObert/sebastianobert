@@ -5,9 +5,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { api, MessageDto, SessionDto } from "../../lib/api";
 import ChatMessage from "./ChatMessage";
 import PhoneHomeScreen from "./PhoneHomeScreen";
+import PhoneSettingsScreen from "./PhoneSettingsScreen";
 import LuckyBoxScreen from "./LuckyBoxScreen";
+import LoginModal from "./LoginModal";
+import { useAuth } from "../../lib/auth";
 
-type Screen = "home" | "chat" | "luckybox";
+type Screen = "home" | "chat" | "luckybox" | "settings";
 
 function StatusBar() {
   const [time, setTime] = useState("");
@@ -29,7 +32,7 @@ function StatusBar() {
   );
 }
 
-function NavBar({ onBack, onHome }: { onBack: () => void; onHome: () => void }) {
+function NavBar({ onBack, onHome, onFullscreen, isFullscreen }: { onBack: () => void; onHome: () => void; onFullscreen: () => void; isFullscreen: boolean }) {
   return (
     <div className="flex items-center justify-around px-6 py-2 bg-black border-t border-slate-800">
       <button onClick={onBack} className="p-1.5 rounded-full hover:bg-slate-800 transition" aria-label="Back">
@@ -38,8 +41,12 @@ function NavBar({ onBack, onHome }: { onBack: () => void; onHome: () => void }) 
       <button onClick={onHome} className="p-1.5 rounded-full hover:bg-slate-800 transition" aria-label="Home">
         <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" strokeWidth="2" /></svg>
       </button>
-      <button className="p-1.5 rounded-full hover:bg-slate-800 transition" aria-label="Recent">
-        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" strokeWidth="2" /></svg>
+      <button onClick={onFullscreen} className="p-1.5 rounded-full hover:bg-slate-800 transition" aria-label="Fullscreen">
+        {isFullscreen ? (
+          <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        ) : (
+          <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+        )}
       </button>
     </div>
   );
@@ -54,7 +61,37 @@ export default function ChatWidget() {
   const [sessionId, setSessionId] = useState<string | undefined>();
   const [sessions, setSessions] = useState<SessionDto[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [bgColor, setBgColor] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBgColor(localStorage.getItem("phoneBg") || "");
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      setIsOpen(true);
+      if (user) setScreen("chat");
+      else setShowLoginModal(true);
+    };
+    window.addEventListener("open-chat", handler);
+    return () => window.removeEventListener("open-chat", handler);
+  }, [user]);
+
+  const goChatIfAuth = () => {
+    if (user) goChat();
+    else setShowLoginModal(true);
+  };
+
+  const goLuckyBoxIfAuth = () => {
+    if (user) goLuckyBox();
+    else setShowLoginModal(true);
+  };
 
   const loadSessions = useCallback(async () => {
     const s = await api.getSessions();
@@ -72,7 +109,8 @@ export default function ChatWidget() {
   const goHome = () => setScreen("home");
   const goChat = () => setScreen("chat");
   const goLuckyBox = () => setScreen("luckybox");
-  const goBack = () => { if (screen === "chat" || screen === "luckybox") goHome(); };
+  const goSettings = () => setScreen("settings");
+  const goBack = () => { if (screen === "chat" || screen === "luckybox" || screen === "settings") goHome(); };
 
   const newChat = () => {
     setMessages([]);
@@ -141,26 +179,35 @@ export default function ChatWidget() {
 
       {/* Phone mockup */}
       <div
-        className={`fixed bottom-20 right-6 z-50 w-[290px] max-w-[calc(100vw-3rem)] bg-slate-800 rounded-[2rem] shadow-2xl shadow-black/50 border-2 border-slate-700 overflow-hidden transition-all duration-300 origin-bottom-right ${
+        className={`fixed z-40 bg-slate-800 rounded-[2rem] shadow-2xl shadow-black/50 border-2 border-slate-700 overflow-hidden transition-all duration-300 overscroll-contain ${
+          isFullscreen
+            ? "inset-x-2 top-16 bottom-2 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[calc(100vw-6rem)] md:h-[calc(100vh-8rem)] md:max-w-[800px] md:max-h-[700px]"
+            : "bottom-20 right-6 w-[290px] max-w-[calc(100vw-3rem)] origin-bottom-right"
+        } ${
           isOpen ? "scale-100 opacity-100" : "scale-90 opacity-0 pointer-events-none"
         }`}
       >
         {/* Bezel inner padding */}
-        <div className="flex flex-col h-[34rem]">
+        <div className={`flex flex-col overscroll-contain ${isFullscreen ? "h-full" : "h-[34rem]"}`}>
           {/* Status bar */}
           <StatusBar />
 
           {/* Screen */}
           <div className="flex-1 bg-slate-900 flex flex-col overflow-hidden relative">
-            {screen === "home" && (
-              <PhoneHomeScreen onOpenChat={goChat} onOpenLuckyBox={goLuckyBox} />
-            )}
+            <div key={screen} className="flex-1 flex flex-col animate-screenIn">
+              {screen === "home" && (
+                <PhoneHomeScreen onOpenChat={goChatIfAuth} onOpenLuckyBox={goLuckyBoxIfAuth} onOpenSettings={goSettings} bgColor={bgColor} />
+              )}
 
-            {screen === "luckybox" && (
-              <LuckyBoxScreen onBack={goHome} />
-            )}
+              {screen === "settings" && (
+                <PhoneSettingsScreen onBack={goHome} onBgChange={(bg) => setBgColor(bg)} bgColor={bgColor} />
+              )}
 
-            {screen === "chat" && (
+              {screen === "luckybox" && (
+                <LuckyBoxScreen onBack={goHome} isFullscreen={isFullscreen} />
+              )}
+
+              {screen === "chat" && (
               <>
                 {/* Chat header */}
                 <div className="bg-slate-800 px-3 py-2 border-b border-slate-700">
@@ -281,12 +328,14 @@ export default function ChatWidget() {
                 </div>
               </>
             )}
-          </div>
+          </div></div>
 
           {/* Navigation bar */}
-          <NavBar onBack={goBack} onHome={goHome} />
+          <NavBar onBack={goBack} onHome={goHome} onFullscreen={() => setIsFullscreen(!isFullscreen)} isFullscreen={isFullscreen} />
         </div>
       </div>
+
+      {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
     </>
   );
 }

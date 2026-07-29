@@ -165,6 +165,7 @@ export const DEFAULT_NAV: NavLink[] = [
   { label: "About", href: "#about", sortOrder: 1 },
   { label: "Projects", href: "#projects", sortOrder: 2 },
   { label: "Organization", href: "#organization", sortOrder: 3 },
+  { label: "Ask AI", href: "#ask-ai", sortOrder: 4 },
 ];
 
 export const DEFAULT_SEO: SeoMetadata = {

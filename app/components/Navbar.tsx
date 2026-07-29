@@ -16,6 +16,13 @@ export default function Navbar() {
     api.getNavLinks().then(setNavLinks);
   }, []);
 
+  const handleNavClick = (link: NavLink, e: React.MouseEvent) => {
+    if (link.label === "Ask AI") {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent("open-chat"));
+    }
+  };
+
   return (
     <>
       <nav className="fixed top-0 w-full site-header z-50 transition-all duration-300">
@@ -27,7 +34,7 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
               {navLinks.map((link) => (
-                <a key={link.href} href={link.href} className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors duration-200 relative group">
+                <a key={link.href} href={link.href} onClick={(e) => handleNavClick(link, e)} className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors duration-200 relative group">
                   {link.label}
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-cyan-400 group-hover:w-3/4 transition-all duration-300"></span>
                 </a>
@@ -86,7 +93,7 @@ export default function Navbar() {
                 </button>
               )}
               {navLinks.map((link) => (
-                <a key={link.href} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+                <a key={link.href} href={link.href} onClick={(e) => { handleNavClick(link, e); setIsMobileMenuOpen(false); }} className="text-slate-400 hover:text-white transition-colors">
                   {link.label}
                 </a>
               ))}

@@ -2,12 +2,15 @@
 
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useAuth } from "../../lib/auth";
+import { fetchInventory, addToInventory, recordSpin, fetchSpinHistory } from "../../lib/luckybox";
+import type { InventoryItem, SpinRecord } from "../../lib/luckybox";
 
-type Rarity = "Common" | "Rare" | "Epic" | "Legendary" | "Mythic";
-type Phase = "idle" | "spinning" | "reveal";
+export type Rarity = "Common" | "Rare" | "Epic" | "Legendary" | "Mythic";
+type Phase = "idle" | "spinning" | "reveal" | "catalogue" | "inventory";
 
 interface LuckyBoxScreenProps {
   onBack: () => void;
+  isFullscreen?: boolean;
 }
 
 interface ItemDef {
@@ -16,30 +19,31 @@ interface ItemDef {
 }
 
 const ITEM_POOL: ItemDef[] = [
-  { name: "Bronze Cog", rarity: "Common" },
-  { name: "Steel Byte", rarity: "Common" },
-  { name: "Iron Pixel", rarity: "Common" },
-  { name: "Tin Frame", rarity: "Common" },
-  { name: "Copper Wire", rarity: "Common" },
-  { name: "Silver Circuit", rarity: "Rare" },
-  { name: "Cyan Shard", rarity: "Rare" },
-  { name: "Neon Coil", rarity: "Rare" },
-  { name: "Crystal Node", rarity: "Rare" },
-  { name: "Plasma Core", rarity: "Rare" },
-  { name: "Golden Core", rarity: "Epic" },
-  { name: "Mystic Orb", rarity: "Epic" },
-  { name: "Ruby Heart", rarity: "Epic" },
-  { name: "Void Gem", rarity: "Epic" },
-  { name: "Thunder Pearl", rarity: "Epic" },
-  { name: "Dragon's Eye", rarity: "Legendary" },
-  { name: "Celestial Wings", rarity: "Legendary" },
-  { name: "Eternal Code", rarity: "Legendary" },
-  { name: "Phoenix Crest", rarity: "Legendary" },
-  { name: "Titan Soul", rarity: "Legendary" },
-  { name: "\u2605 Naga \u2605", rarity: "Mythic" },
-  { name: "\u2605 Cosmic Soul \u2605", rarity: "Mythic" },
-  { name: "\u2605 Phoenix \u2605", rarity: "Mythic" },
-  { name: "\u2605 Leviathan \u2605", rarity: "Mythic" },
+  { name: "The Seeker", rarity: "Common" },
+  { name: "The Observer", rarity: "Common" },
+  { name: "The Drifter", rarity: "Common" },
+  { name: "The Scholar", rarity: "Common" },
+  { name: "The Wanderer", rarity: "Common" },
+  { name: "The Rebel", rarity: "Rare" },
+  { name: "The Survivor", rarity: "Rare" },
+  { name: "The Challenger", rarity: "Rare" },
+  { name: "The Outcast", rarity: "Rare" },
+  { name: "Those Who Adapt", rarity: "Rare" },
+  { name: "The Artificial", rarity: "Legendary" },
+  { name: "The Awakened One", rarity: "Epic" },
+  { name: "Those Who Remain", rarity: "Epic" },
+  { name: "The Catalyst", rarity: "Epic" },
+  { name: "The Vanguard", rarity: "Epic" },
+  { name: "The Visionary", rarity: "Epic" },
+  { name: "The King", rarity: "Legendary" },
+  { name: "The Chosen One", rarity: "Legendary" },
+  { name: "Divine General", rarity: "Legendary" },
+  { name: "The Mastermind", rarity: "Legendary" },
+  { name: "The Emperor", rarity: "Legendary" },
+  { name: "\u2605 The Absolute \u2605", rarity: "Mythic" },
+  { name: "\u2605 The Anomaly \u2605", rarity: "Mythic" },
+  { name: "\u2605 The Singularity \u2605", rarity: "Mythic" },
+  { name: "\u2605 The Origin \u2605", rarity: "Mythic" },
 ];
 
 function pickByRarity(): ItemDef {
@@ -119,10 +123,10 @@ function buildSegments(items: ItemDef[]) {
   return segs;
 }
 
-function WheelSvg({ items }: { items: ItemDef[] }) {
+function WheelSvg({ items, isFullscreen }: { items: ItemDef[]; isFullscreen?: boolean }) {
   const segs = useMemo(() => buildSegments(items), [items]);
   return (
-    <svg viewBox="0 0 200 200" className="w-48 h-48" style={{ display: "block" }}>
+    <svg viewBox="0 0 200 200" className={`${isFullscreen ? "w-80 h-80" : "w-48 h-48"}`} style={{ display: "block" }}>
       {segs.map((seg, i) => (
         <path key={i} d={seg.path} fill={seg.color} stroke={seg.stroke} strokeWidth="1.5" />
       ))}
@@ -189,14 +193,21 @@ function SparkleBurst({ color }: { color: string }) {
   );
 }
 
-export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
+export default function LuckyBoxScreen({ onBack, isFullscreen }: LuckyBoxScreenProps) {
   const { user } = useAuth();
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState<ItemDef | null>(null);
   const [rotation, setRotation] = useState(0);
   const [wheelItems, setWheelItems] = useState<ItemDef[]>([]);
-  const [history, setHistory] = useState<ItemDef[]>([]);
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [spinHistory, setSpinHistory] = useState<SpinRecord[]>([]);
   const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchInventory(user.id).then(setInventory);
+    fetchSpinHistory(user.id).then(setSpinHistory);
+  }, [user]);
 
   useEffect(() => {
     if (phase !== "spinning" || !result || wheelItems.length === 0) return;
@@ -215,7 +226,7 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
       setRotation((prev) => prev + addRotation);
     }, 50);
 
-    const revealTimer = setTimeout(() => setPhase("reveal"), 3200);
+    const revealTimer = setTimeout(() => setPhase("reveal"), 3600);
 
     return () => { clearTimeout(rotTimer); clearTimeout(revealTimer); };
   }, [phase, result, wheelItems]);
@@ -233,23 +244,39 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
   }, [phase]);
 
   const collect = () => {
-    if (result) setHistory((prev) => [result, ...prev]);
+    if (result && user) {
+      addToInventory(user.id, result.name, result.rarity);
+      recordSpin(user.id, result.name, result.rarity, true);
+      fetchInventory(user.id).then(setInventory);
+      fetchSpinHistory(user.id).then(setSpinHistory);
+    }
     setPhase("idle");
     setResult(null);
     setWheelItems([]);
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-900 overflow-hidden relative">
+    <div className="flex-1 flex flex-col bg-slate-900 overflow-hidden relative min-h-0">
       <div className="px-3 py-2 border-b border-slate-700 flex items-center gap-2">
-        <button onClick={onBack} className="p-1 rounded hover:bg-slate-700 transition" aria-label="Back">
+        <button onClick={phase === "catalogue" || phase === "inventory" ? () => setPhase("idle") : onBack} className="p-1 rounded hover:bg-slate-700 transition" aria-label="Back">
           <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
         </button>
         <h3 className="text-white font-semibold text-[11px]">Lucky Box</h3>
-        <span className="text-[9px] text-slate-500 ml-auto">Free Roll</span>
+        {phase === "idle" && (
+          <>
+            <button onClick={() => setPhase("catalogue")} className="ml-auto p-1 rounded bg-blue-500/15 hover:bg-blue-500/30 transition" aria-label="Catalogue" title="All Items">
+              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            </button>
+            <button onClick={() => setPhase("inventory")} className="p-1 rounded bg-emerald-500/15 hover:bg-emerald-500/30 transition" aria-label="Inventory" title="My Items">
+              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+            </button>
+          </>
+        )}
+        {phase === "catalogue" && <span className="text-[9px] text-slate-500 ml-auto">Catalogue</span>}
+        {phase === "inventory" && <span className="text-[9px] text-slate-500 ml-auto">Inventory</span>}
       </div>
 
-      <div className="flex-1 flex flex-col px-4 relative">
+      <div className="flex-1 flex flex-col px-4 relative min-h-0">
         {phase === "idle" && (
           <>
             <div className="w-full pt-2 flex flex-wrap gap-x-2.5 gap-y-0.5 justify-end">
@@ -263,8 +290,47 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
               ))}
             </div>
           <div className="flex-1 flex flex-col items-center justify-center gap-5">
-            <div className="w-20 h-20 bg-gradient-to-br from-amber-800 to-amber-950 rounded-2xl border-2 border-amber-600/50 shadow-lg shadow-amber-700/30 flex items-center justify-center">
-              <svg className="w-10 h-10 text-amber-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+            <div className={`${isFullscreen ? "w-32 h-32" : "w-20 h-20"} bg-gradient-to-br from-amber-800 to-amber-950 rounded-2xl border-2 border-amber-500/60 shadow-lg shadow-amber-600/30 flex items-center justify-center relative`}>
+              <svg viewBox="0 0 64 64" className={`${isFullscreen ? "w-16 h-16" : "w-11 h-11"}`}>
+                <defs>
+                  <linearGradient id="boxBody" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fbbf24" />
+                    <stop offset="100%" stopColor="#f59e0b" />
+                  </linearGradient>
+                  <linearGradient id="boxLid" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fcd34d" />
+                    <stop offset="100%" stopColor="#f59e0b" />
+                  </linearGradient>
+                  <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#ef4444" />
+                    <stop offset="100%" stopColor="#dc2626" />
+                  </linearGradient>
+                  <linearGradient id="bow" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#f87171" />
+                    <stop offset="100%" stopColor="#ef4444" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="1.5" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                </defs>
+                <rect x="14" y="30" width="36" height="26" rx="3" fill="url(#boxBody)" />
+                <rect x="10" y="24" width="44" height="8" rx="3" fill="url(#boxLid)" />
+                <rect x="30" y="24" width="4" height="32" rx="1" fill="url(#ribbon)" />
+                <rect x="14" y="30" width="4" height="26" rx="1" fill="url(#ribbon)" />
+                <rect x="46" y="30" width="4" height="26" rx="1" fill="url(#ribbon)" />
+                <ellipse cx="32" cy="24" rx="8" ry="5" fill="url(#bow)" />
+                <ellipse cx="27" cy="22" rx="5" ry="4" fill="url(#bow)" transform="rotate(-20 27 22)" />
+                <ellipse cx="37" cy="22" rx="5" ry="4" fill="url(#bow)" transform="rotate(20 37 22)" />
+                <circle cx="32" cy="22" r="2.5" fill="#b91c1c" />
+                <text x="32" y="49" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="monospace" filter="url(#glow)">?</text>
+                <circle cx="50" cy="18" r="1.5" fill="#fde68a" opacity="0.8" />
+                <circle cx="14" cy="14" r="1" fill="#fde68a" opacity="0.6" />
+                <circle cx="56" cy="36" r="1.2" fill="#fde68a" opacity="0.5" />
+                <circle cx="8" cy="40" r="1.3" fill="#fde68a" opacity="0.7" />
+                <circle cx="52" cy="50" r="1" fill="#fde68a" opacity="0.4" />
+                <circle cx="12" cy="52" r="0.8" fill="#fde68a" opacity="0.5" />
+              </svg>
             </div>
             <p className="text-[11px] text-slate-400 text-center max-w-[180px]">
               Pull a random item from the box. Each spin has a different set of prizes!
@@ -272,7 +338,7 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
             <button
               onClick={user ? spin : () => {}}
               disabled={phase !== "idle" || !user}
-              className={`px-6 py-2.5 text-white text-[12px] font-bold rounded-xl shadow-lg transition-all active:scale-95 ${
+              className={`${isFullscreen ? "px-10 py-3.5 text-[16px]" : "px-6 py-2.5 text-[12px]"} text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 ${
                 user
                   ? "bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 shadow-amber-700/30 border border-amber-500/50"
                   : "bg-slate-700 cursor-not-allowed shadow-slate-800/30 border border-slate-600"
@@ -295,7 +361,7 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
                 className="transition-transform duration-[3500ms] will-change-transform"
                 style={{ transform: `rotate(${rotation}deg)`, marginTop: "10px", transitionTimingFunction: "cubic-bezier(0.1, 0.7, 0.25, 1)" }}
               >
-                <WheelSvg items={wheelItems} />
+                <WheelSvg items={wheelItems} isFullscreen={isFullscreen} />
               </div>
             </div>
             {phase === "spinning" && (
@@ -312,7 +378,7 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
                 }`}>
                   {result.rarity.toUpperCase()}
                 </span>
-                <p className="text-white text-[14px] font-bold text-center">{result.name}</p>
+                <p className={`text-white font-bold text-center ${isFullscreen ? "text-[20px]" : "text-[14px]"}`}>{result.name}</p>
                 <button
                   onClick={collect}
                   className="px-5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-medium rounded-lg border border-slate-600 hover:border-cyan-500 transition active:scale-95"
@@ -323,20 +389,86 @@ export default function LuckyBoxScreen({ onBack }: LuckyBoxScreenProps) {
             )}
           </div>
         )}
+
+        {phase === "catalogue" && (
+          <div className="flex-1 overflow-y-auto py-2 px-1 scrollbar-thin min-h-0">
+            <div className="text-[9px] text-slate-500 px-1 mb-2">Collected {inventory.length} items</div>
+            {(["Common", "Rare", "Epic", "Legendary", "Mythic"] as const).map((rarity) => {
+              const items = ITEM_POOL.filter((i) => i.rarity === rarity);
+              const collected = inventory.filter((inv) => inv.rarity === rarity);
+              return (
+                <div key={rarity} className="mb-3">
+                  <div className="flex items-center gap-1.5 mb-1.5 px-1">
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: RARITY_COLORS[rarity] }} />
+                    <span className="text-[10px] font-semibold tracking-wide" style={{ color: RARITY_COLORS[rarity] }}>{rarity}</span>
+                    <span className="text-[8px] text-slate-600 ml-auto">{collected.length}/{items.length} · {rarity === "Common" ? "50%" : rarity === "Rare" ? "30%" : rarity === "Epic" ? "14%" : rarity === "Legendary" ? "5%" : "1%"}</span>
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    {items.map((item) => {
+                      const owned = inventory.some((inv) => inv.item_name === item.name);
+                      return (
+                        <div key={item.name} className={`flex items-center gap-2 px-2 py-1 rounded transition ${owned ? "bg-slate-800/40" : "hover:bg-slate-800/20 opacity-60"}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${owned ? "shadow-sm" : "opacity-40"}`} style={{ backgroundColor: RARITY_COLORS[rarity] }} />
+                          <span className={`text-[10px] ${owned ? "text-slate-200" : "text-slate-500"}`}>{item.name}</span>
+                          {owned && <svg className="w-2.5 h-2.5 ml-auto text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {phase === "inventory" && (
+          <div className="flex-1 overflow-y-auto py-2 px-1 scrollbar-thin min-h-0">
+            {inventory.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <svg className="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                <p className="text-[11px] text-slate-500">Belum ada item</p>
+                <p className="text-[9px] text-slate-600 mt-1">Pull item dari Lucky Box untuk mulai koleksi</p>
+              </div>
+            ) : (
+              ["Common", "Rare", "Epic", "Legendary", "Mythic"].map((rarity) => {
+                const items = inventory.filter((i) => i.rarity === rarity);
+                if (items.length === 0) return null;
+                return (
+                  <div key={rarity} className="mb-3">
+                    <div className="flex items-center gap-1.5 mb-1.5 px-1">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: RARITY_COLORS[rarity as Rarity] }} />
+                      <span className="text-[10px] font-semibold tracking-wide" style={{ color: RARITY_COLORS[rarity as Rarity] }}>{rarity}</span>
+                      <span className="text-[8px] text-slate-600 ml-auto">{items.length}</span>
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      {items.map((item) => (
+                        <div key={item.id} className="flex items-center gap-2 px-2 py-1 rounded bg-slate-800/40">
+                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: RARITY_COLORS[item.rarity] }} />
+                          <span className="text-[10px] text-slate-200">{item.item_name}</span>
+                          <span className="text-[7px] text-slate-600 ml-auto">{new Date(item.collected_at).toLocaleDateString("id-ID")}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
       </div>
 
-      {history.length > 0 && (
+      {phase !== "catalogue" && phase !== "inventory" && spinHistory.length > 0 && (
         <div className="border-t border-slate-700 px-3 py-2 max-h-20 overflow-y-auto">
           <p className="text-[9px] text-slate-500 mb-1">History</p>
           <div className="flex flex-wrap gap-1">
-            {history.map((h, i) => (
-              <span key={i} className={`text-[8px] px-1.5 py-0.5 rounded-full ${
+            {spinHistory.slice(0, 20).map((h) => (
+              <span key={h.id} className={`text-[8px] px-1.5 py-0.5 rounded-full ${
                 h.rarity === "Mythic" ? "text-red-300" :
                 h.rarity === "Legendary" ? "text-yellow-300" :
                 h.rarity === "Epic" ? "text-purple-300" :
                 h.rarity === "Rare" ? "text-blue-300" : "text-slate-300"
               } bg-slate-800 border border-slate-700 truncate max-w-[100px]`}>
-                {h.name}
+                {h.item_name}
               </span>
             ))}
           </div>

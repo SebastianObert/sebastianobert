@@ -71,8 +71,55 @@ export default function StoreScreen({ onBack }: StoreScreenProps) {
           </button>
           <h3 className="text-white font-semibold text-[11px]">Store</h3>
         </div>
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-[12px] text-slate-500">Login untuk menggunakan Store</p>
+
+        <div className="flex border-b border-slate-700 text-[10px]">
+          <button onClick={() => setTab("shop")} className={`flex-1 py-2 text-center font-medium transition ${tab === "shop" ? "text-cyan-400 border-b-2 border-cyan-400" : "text-slate-500 hover:text-slate-300"}`}>Shop</button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-3 px-3 scrollbar-thin min-h-0 space-y-4">
+          <section>
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <h4 className="text-[10px] text-slate-300 font-semibold tracking-wide uppercase">Energy</h4>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {ENERGY_PACKS.map((pack) => (
+                <div key={pack.price}
+                  className="relative flex flex-col items-center gap-1 px-2 py-3 rounded-xl border bg-slate-800/30 border-slate-700/30 opacity-60 cursor-not-allowed"
+                >
+                  <span className="text-[13px] font-bold text-cyan-300">{pack.amount}x</span>
+                  <span className="text-[8px] text-slate-500">Energy</span>
+                  <div className="flex items-center gap-1 mt-1">
+                    <svg className="w-2.5 h-2.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>
+                    <span className="text-[9px] text-slate-400 font-medium">{pack.price}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <h4 className="text-[10px] text-slate-300 font-semibold tracking-wide uppercase">Backgrounds</h4>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {PREMIUM_BGS.map((bg) => (
+                <div key={bg.id}
+                  className="relative flex flex-col rounded-xl overflow-hidden border border-slate-700/50"
+                >
+                  <div className={`h-14 ${bg.value} flex items-center justify-center`} />
+                  <div className="px-2 py-1.5 bg-slate-800/80 flex items-center justify-between">
+                    <span className="text-[9px] text-slate-300 font-medium truncate">{bg.name}</span>
+                    <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[8px] font-medium bg-slate-700 text-slate-600 border border-slate-600 rounded">
+                      <svg className="w-2 h-2" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>
+                      {bg.price}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     );

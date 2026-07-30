@@ -269,7 +269,7 @@ export default function ChatWidget() {
         className={`fixed z-40 rounded-[2rem] shadow-2xl border-2 overflow-hidden transition-all duration-300 overscroll-contain ${
           isFullscreen
             ? "inset-x-2 top-16 bottom-2 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[calc(100vw-6rem)] md:h-[calc(100vh-8rem)] md:max-w-[800px] md:max-h-[700px]"
-            : "bottom-20 right-6 w-[290px] max-w-[calc(100vw-3rem)] origin-bottom-right"
+            : "bottom-20 right-6 w-[290px] max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-10rem)] origin-bottom-right"
         } ${
           isOpen ? "scale-100 opacity-100" : "scale-90 opacity-0 pointer-events-none"
         }`}
@@ -280,7 +280,7 @@ export default function ChatWidget() {
         }}
       >
         {/* Bezel inner padding */}
-        <div className={`flex flex-col overscroll-contain ${isFullscreen ? "h-full" : "h-[40rem]"}`}>
+        <div className={`flex flex-col overscroll-contain ${isFullscreen ? "h-full" : "max-h-[calc(100dvh-10rem)] h-[40rem]"}`}>
           {/* Status bar */}
           <StatusBar />
 

@@ -7,7 +7,7 @@ import {
   DEFAULT_ORGANIZATIONS,
 } from "@/lib/defaults";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const groq = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -140,7 +140,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const completion = await groq.chat.completions.create({
+    const completion = await groq().chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },

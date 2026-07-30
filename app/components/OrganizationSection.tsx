@@ -10,7 +10,7 @@ interface OrganizationSectionProps {
 }
 
 const vignetteMask =
-  "radial-gradient(ellipse 78% 78% at 50% 50%, black 30%, rgba(0,0,0,0.55) 62%, rgba(0,0,0,0.12) 85%, transparent 100%)";
+  "radial-gradient(ellipse 65% 65% at 50% 50%, black 20%, rgba(0,0,0,0.75) 44%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.12) 78%, transparent 100%)";
 
 export default function OrganizationSection({ setSelectedImage }: OrganizationSectionProps) {
   const [expandedOrg, setExpandedOrg] = useState<string | null>(null);
@@ -76,7 +76,7 @@ export default function OrganizationSection({ setSelectedImage }: OrganizationSe
                       </div>
                       <p className="text-slate-400 leading-relaxed text-sm">{org.description}</p>
                     </div>
-                    <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
+                    <div className="org-svg flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
                       {org.slug === "ahm" && (
                         <svg viewBox="0 0 120 80" role="img" focusable="false">
                           <rect x="28" y="14" width="64" height="42" rx="4" fill="rgba(56,189,248,0.12)" stroke="rgba(56,189,248,0.6)" strokeWidth="2" />
@@ -161,7 +161,7 @@ export default function OrganizationSection({ setSelectedImage }: OrganizationSe
                         </div>
                         <p className="text-slate-400 leading-relaxed text-sm">{org.description}</p>
                       </div>
-                      <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
+                      <div className="org-svg flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
                         {org.slug === "ahm" && (
                           <svg viewBox="0 0 120 80" role="img" focusable="false">
                             <rect x="28" y="14" width="64" height="42" rx="4" fill="rgba(56,189,248,0.12)" stroke="rgba(56,189,248,0.6)" strokeWidth="2" />
@@ -233,15 +233,15 @@ export default function OrganizationSection({ setSelectedImage }: OrganizationSe
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background: `
-                      radial-gradient(ellipse 65% 65% at 50% 50%, transparent 35%, rgba(var(--bg-color-rgb),0.75) 100%),
-                      radial-gradient(ellipse 110% 110% at 0% 0%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                      radial-gradient(ellipse 110% 110% at 100% 0%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                      radial-gradient(ellipse 110% 110% at 0% 100%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                      radial-gradient(ellipse 110% 110% at 100% 100%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                      linear-gradient(to bottom, rgba(var(--bg-color-rgb),0.75) 0%, transparent 22%),
-                      linear-gradient(to top, rgba(var(--bg-color-rgb),0.75) 0%, transparent 22%),
-                      linear-gradient(to right, rgba(var(--bg-color-rgb),0.35) 0%, transparent 14%),
-                      linear-gradient(to left, rgba(var(--bg-color-rgb),0.35) 0%, transparent 14%)
+                      radial-gradient(ellipse 62% 62% at 50% 50%, transparent 28%, rgba(var(--bg-color-rgb),0.85) 100%),
+                      radial-gradient(ellipse 115% 115% at 0% 0%, rgba(var(--bg-color-rgb),0.94) 0%, transparent 52%),
+                      radial-gradient(ellipse 115% 115% at 100% 0%, rgba(var(--bg-color-rgb),0.94) 0%, transparent 52%),
+                      radial-gradient(ellipse 115% 115% at 0% 100%, rgba(var(--bg-color-rgb),0.94) 0%, transparent 52%),
+                      radial-gradient(ellipse 115% 115% at 100% 100%, rgba(var(--bg-color-rgb),0.94) 0%, transparent 52%),
+                      linear-gradient(to bottom, rgba(var(--bg-color-rgb),0.84) 0%, transparent 32%),
+                      linear-gradient(to top, rgba(var(--bg-color-rgb),0.84) 0%, transparent 32%),
+                      linear-gradient(to right, rgba(var(--bg-color-rgb),0.72) 0%, transparent 30%),
+                      linear-gradient(to left, rgba(var(--bg-color-rgb),0.72) 0%, transparent 30%)
                     `,
                   }}
                 />

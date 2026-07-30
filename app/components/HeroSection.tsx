@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Snowfall from "react-snowfall";
 import ScrollElement from "./ScrollElement";
 import TypeWriter from "./TypeWriter";
+import FallingLeaves from "./FallingLeaves";
 import { api, Profile } from "../../lib/api";
+import { useTheme } from "../../lib/theme";
 
 interface HeroSectionProps {
   expandedSocial: string | null;
@@ -14,39 +16,23 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ expandedSocial, setExpandedSocial, setSelectedImage }: HeroSectionProps) {
+  const { sunset } = useTheme();
   const [ripples, setRipples] = useState<number[]>([]);
-  const [isInView, setIsInView] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     api.getProfile().then(setProfile);
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   if (!profile) return null;
 
   return (
-    <section id="about" ref={heroRef} className="container mx-auto px-6 pt-40 pb-20 relative z-10">
+    <section id="about" className="container mx-auto px-6 pt-40 pb-20 relative z-10">
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{
         WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)',
         maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
       }}>
-        {isInView && (
+          {!sunset ? (
           <Snowfall 
             style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 0 }}
             snowflakeCount={80}
@@ -54,17 +40,19 @@ export default function HeroSection({ expandedSocial, setExpandedSocial, setSele
             radius={[0.5, 2.5]} 
             speed={[0.5, 2.0]}
             wind={[-0.5, 1.0]}
-            opacity={[0.3, 0.7]} 
+            opacity={[0.3, 0.7]}
           />
-        )}
+          ) : (
+          <FallingLeaves />
+          )}
       </div>
 
       <ScrollElement animation="slide-fade" duration={0.9}>
         <div className="flex flex-col-reverse md:flex-row items-center gap-12 md:gap-20">
           <div className="flex-1 text-center md:text-left space-y-6">
-            <h2 className="text-cyan-400 font-medium text-lg tracking-wide">{profile.greeting}</h2>
+            <h2 className={`font-medium text-lg tracking-wide ${sunset ? 'text-amber-400' : 'text-cyan-400'}`}>{profile.greeting}</h2>
             <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-              I&apos;m <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">{profile.name}</span>
+              I&apos;m <span className={`text-transparent bg-clip-text bg-gradient-to-r ${sunset ? 'from-amber-400 to-orange-600' : 'from-cyan-400 to-blue-600'}`}>{profile.name}</span>
             </h1>
             
             <div className="space-y-4">
@@ -77,10 +65,10 @@ export default function HeroSection({ expandedSocial, setExpandedSocial, setSele
               </p>
               <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto md:mx-0">
                 {profile.description.split('end-to-end digital solutions').length > 1 ? (
-                  <>I build <span className="text-cyan-300 font-medium">end-to-end digital solutions</span>, from 
+                  <>I build <span className={`font-medium ${sunset ? 'text-amber-300' : 'text-cyan-300'}`}>end-to-end digital solutions</span>, from 
                   Android applications and interactive web platforms to backend systems. 
-                  Specialized in <span className="text-cyan-300 font-medium">cross-platform development</span> with a 
-                  user-centric design approach and <span className="text-cyan-300 font-medium">security-first</span> mindset.</>
+                  Specialized in <span className={`font-medium ${sunset ? 'text-amber-300' : 'text-cyan-300'}`}>cross-platform development</span> with a 
+                  user-centric design approach and <span className={`font-medium ${sunset ? 'text-amber-300' : 'text-cyan-300'}`}>security-first</span> mindset.</>
                 ) : (
                   profile.description
                 )}
@@ -134,7 +122,7 @@ export default function HeroSection({ expandedSocial, setExpandedSocial, setSele
                      setExpandedSocial('github');
                    }
                  }}
-                 className={`group relative flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-400 transition-all duration-300 overflow-hidden ${
+                 className={`group relative flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-slate-800 border border-slate-700 ${sunset ? 'hover:border-amber-400' : 'hover:border-cyan-400'} transition-all duration-300 overflow-hidden ${
                    expandedSocial === 'github' ? 'min-w-[180px]' : 'min-w-[72px]'
                  }`}
                >
@@ -148,17 +136,17 @@ export default function HeroSection({ expandedSocial, setExpandedSocial, setSele
                  </span>
                </a>
               
-              <a 
-                href="#projects" 
-                className="w-[180px] sm:w-[200px] py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-full font-bold transition shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 text-sm sm:text-base"
+               <a 
+                 href="#projects" 
+                 className={`w-[180px] sm:w-[200px] py-3 text-white rounded-full font-bold transition shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base ${sunset ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-500/30' : 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-500/30'}`}
               >
                 View My Works
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
               </a>
 
-              <a 
-                href="#contact" 
-                className="w-[180px] sm:w-[200px] py-3 border border-slate-600 hover:border-cyan-400 hover:text-cyan-400 rounded-full font-medium transition flex items-center justify-center gap-2 text-sm sm:text-base"
+               <a 
+                 href="#contact" 
+                 className={`w-[180px] sm:w-[200px] py-3 border border-slate-600 rounded-full font-medium transition flex items-center justify-center gap-2 text-sm sm:text-base ${sunset ? 'hover:border-amber-400 hover:text-amber-400' : 'hover:border-cyan-400 hover:text-cyan-400'}`}
               >
                 Contact Me
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
@@ -167,13 +155,13 @@ export default function HeroSection({ expandedSocial, setExpandedSocial, setSele
           </div>
 
           <div className="flex-1 flex justify-center relative group">
-            <div className="absolute inset-0 bg-cyan-500 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition duration-500"></div>
+            <div className={`absolute inset-0 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition duration-500 ${sunset ? 'bg-amber-500' : 'bg-cyan-500'}`}></div>
             
             {ripples.map((rippleId) => (
               <div key={rippleId} className="absolute inset-0 flex items-center justify-center z-0">
-                <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-cyan-400 animate-ripple"></div>
-                <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-cyan-400 animate-ripple" style={{ animationDelay: '0.7s' }}></div>
-                <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 border-cyan-400 animate-ripple" style={{ animationDelay: '1.4s' }}></div>
+                <div className={`absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 animate-ripple ${sunset ? 'border-amber-400' : 'border-cyan-400'}`}></div>
+                <div className={`absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 animate-ripple ${sunset ? 'border-amber-400' : 'border-cyan-400'}`} style={{ animationDelay: '0.7s' }}></div>
+                <div className={`absolute w-48 h-48 md:w-60 md:h-60 rounded-full border-4 animate-ripple ${sunset ? 'border-amber-400' : 'border-cyan-400'}`} style={{ animationDelay: '1.4s' }}></div>
               </div>
             ))}
             

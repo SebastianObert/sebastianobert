@@ -99,11 +99,7 @@ export default function ChatWidget() {
     setGreetingLoaded(false);
     if (screen === "chat") {
       loadQuota();
-      const name = user?.email?.split("@")[0] || null;
-      const nameParam = name ? `?name=${encodeURIComponent(name)}` : "";
-      fetch(`/api/chat${nameParam}`).then(r => r.json()).then(data => {
-        setMessages([{ id: crypto.randomUUID(), role: "assistant", content: data.reply, createdAt: new Date().toISOString() }]);
-      }).catch(() => {});
+      fetchGreeting();
     }
   }, [user]);
 
@@ -154,29 +150,31 @@ export default function ChatWidget() {
   }, [messages]);
 
   const goHome = () => setScreen("home");
+
+  const fetchGreeting = useCallback(async () => {
+    const name = user?.user_metadata?.username || user?.email?.split("@")[0] || null;
+    const nameParam = name ? `?name=${encodeURIComponent(name)}` : "";
+    try {
+      const res = await fetch(`/api/chat${nameParam}`);
+      const data = await res.json();
+      const greetMsg: MessageDto = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: data.reply,
+        createdAt: new Date().toISOString(),
+      };
+      setMessages([greetMsg]);
+    } catch {
+      // fallback biar ga error
+    }
+  }, [user]);
+
   const goChat = async () => {
     setScreen("chat");
     loadQuota();
     if (messages.length === 0 && !greetingLoaded) {
       setGreetingLoaded(true);
-      const name =
-        user?.user_metadata?.username ||
-        user?.email?.split("@")[0] ||
-        null;
-      const nameParam = name ? `?name=${encodeURIComponent(name)}` : "";
-      try {
-        const res = await fetch(`/api/chat${nameParam}`);
-        const data = await res.json();
-        const greetMsg: MessageDto = {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: data.reply,
-          createdAt: new Date().toISOString(),
-        };
-        setMessages([greetMsg]);
-      } catch {
-        // fallback biar ga error
-      }
+      fetchGreeting();
     }
   };
   const goLuckyBox = () => setScreen("luckybox");
@@ -188,8 +186,8 @@ export default function ChatWidget() {
     setMessages([]);
     setSessionId(undefined);
     setSidebarOpen(false);
-    setGreetingLoaded(false);
     setQuotaExhausted(false);
+    if (screen === "chat") fetchGreeting();
   };
 
   const loadSession = async (id: string) => {
@@ -245,7 +243,9 @@ export default function ChatWidget() {
   };
 
   const formatTime = (iso: string) => {
+    if (!iso) return "";
     const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
     return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
   };
 
@@ -413,12 +413,20 @@ export default function ChatWidget() {
                     </div>
 
                     <div className="border-t border-slate-700 px-2 py-1.5">
+                      {quotaExhausted && user && (
+                        <button onClick={() => { setScreen("store"); setSidebarOpen(false); }}
+                          className="w-full mb-1.5 flex items-center justify-center gap-1.5 py-1 rounded-lg bg-cyan-600/10 hover:bg-cyan-600/20 text-cyan-400 text-[10px] font-medium transition border border-cyan-600/20"
+                        >
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                          Beli Energy di Store
+                        </button>
+                      )}
                       <div className="flex gap-1.5">
                         <input
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
                           onKeyDown={(e) => e.key === "Enter" && send()}
-                          placeholder={!user ? "Login untuk chat" : quotaExhausted ? "Batas chat hari ini habis" : "Ketik pesan..."}
+                          placeholder={!user ? "Login untuk chat" : quotaExhausted ? "Batas habis, beli energy di Store" : "Ketik pesan..."}
                           className="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
                           disabled={isLoading || quotaExhausted || !user}
                         />

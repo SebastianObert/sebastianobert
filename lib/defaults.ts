@@ -181,7 +181,7 @@ export const DEFAULT_SEO: SeoMetadata = {
   canonicalUrl: "https://sebastianobert.vercel.app",
 };
 
-export const CHAT_BASE_LIMIT = 3;
+export const CHAT_BASE_LIMIT = 5;
 
 export const RARITY_COIN_VALUE: Record<string, number> = {
   Common: 1,

@@ -71,9 +71,12 @@ export async function GET(req: Request) {
   const action = searchParams.get("action");
 
   if (action === "sessions") {
+    const userId = searchParams.get("userId");
+    if (!userId) return Response.json([]);
     const { data } = await supabase
       .from("tr_chat_session")
       .select("*")
+      .eq("user_id", userId)
       .order("updated_at", { ascending: false });
     return Response.json(data ?? []);
   }
@@ -124,7 +127,7 @@ export async function POST(req: Request) {
       const title = userMsg?.content?.slice(0, 50) || "Chat Baru";
       const { data: session, error: sessionErr } = await supabase
         .from("tr_chat_session")
-        .insert({ title })
+        .insert({ title, user_id: userId })
         .select()
         .single();
 
@@ -135,6 +138,7 @@ export async function POST(req: Request) {
     if (userMsg) {
       await supabase.from("tr_chat_message").insert({
         session_id: sid,
+        user_id: userId,
         role: "user",
         content: userMsg.content,
       });
@@ -153,6 +157,7 @@ export async function POST(req: Request) {
 
     await supabase.from("tr_chat_message").insert({
       session_id: sid,
+      user_id: userId,
       role: "assistant",
       content: reply,
     });

@@ -28,7 +28,7 @@ export default function SkillsSection() {
   }, [clickedSkill]);
 
   const vignetteMask =
-    "radial-gradient(ellipse 78% 78% at 50% 50%, black 30%, rgba(0,0,0,0.55) 62%, rgba(0,0,0,0.12) 85%, transparent 100%)";
+    "radial-gradient(ellipse 62% 62% at 50% 50%, black 19%, rgba(0,0,0,0.78) 42%, rgba(0,0,0,0.42) 58%, rgba(0,0,0,0.14) 75%, transparent 100%)";
 
   return (
     <section
@@ -87,15 +87,15 @@ export default function SkillsSection() {
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background: `
-                    radial-gradient(ellipse 65% 65% at 50% 50%, transparent 35%, rgba(var(--bg-color-rgb),0.75) 100%),
-                    radial-gradient(ellipse 110% 110% at 0% 0%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                    radial-gradient(ellipse 110% 110% at 100% 0%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                    radial-gradient(ellipse 110% 110% at 0% 100%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                    radial-gradient(ellipse 110% 110% at 100% 100%, rgba(var(--bg-color-rgb),0.85) 0%, transparent 55%),
-                    linear-gradient(to bottom, rgba(var(--bg-color-rgb),0.6) 0%, transparent 18%),
-                    linear-gradient(to top, rgba(var(--bg-color-rgb),0.6) 0%, transparent 18%),
-                    linear-gradient(to right, rgba(var(--bg-color-rgb),0.35) 0%, transparent 14%),
-                    linear-gradient(to left, rgba(var(--bg-color-rgb),0.35) 0%, transparent 14%)
+                    radial-gradient(ellipse 60% 60% at 50% 50%, transparent 26%, rgba(var(--bg-color-rgb),0.87) 100%),
+                    radial-gradient(ellipse 110% 110% at 0% 0%, rgba(var(--bg-color-rgb),0.337) 0%, transparent 54%),
+                    radial-gradient(ellipse 110% 110% at 100% 0%, rgba(var(--bg-color-rgb),0.337) 0%, transparent 54%),
+                    radial-gradient(ellipse 110% 110% at 0% 100%, rgba(var(--bg-color-rgb),0.337) 0%, transparent 54%),
+                    radial-gradient(ellipse 110% 110% at 100% 100%, rgba(var(--bg-color-rgb),0.337) 0%, transparent 54%),
+                    linear-gradient(to bottom, rgba(var(--bg-color-rgb),0.86) 0%, transparent 34%),
+                    linear-gradient(to top, rgba(var(--bg-color-rgb),0.86) 0%, transparent 34%),
+                    linear-gradient(to right, rgba(var(--bg-color-rgb),0.38) 0%, transparent 22%),
+                    linear-gradient(to left, rgba(var(--bg-color-rgb),0.38) 0%, transparent 22%)
                   `,
                 }}
               />

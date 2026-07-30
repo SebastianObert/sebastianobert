@@ -247,7 +247,7 @@ export default function ChatWidget() {
       {/* FAB */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110"
+        className={`fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110 ${isFullscreen ? 'opacity-0 pointer-events-none scale-0 md:opacity-100 md:pointer-events-auto md:scale-100' : ''}`}
         aria-label="Toggle phone"
       >
         {isOpen ? (

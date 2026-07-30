@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../lib/auth";
 import { fetchInventory, removeFromInventory, type InventoryItem } from "../../lib/luckybox";
-import { getCoins, addCoins, spendCoins, getEnergy, addEnergy, getPurchasedBgs, purchaseBg } from "../../lib/store";
+import { getCoins, addCoins, spendCoins, getEnergy, addEnergy, getPurchasedBgs, purchaseBg, syncCoinsFromServer, syncEnergyFromServer, syncBgsFromServer } from "../../lib/store";
 import { RARITY_COIN_VALUE, ENERGY_PACKS, CHAT_BASE_LIMIT, PREMIUM_BGS } from "../../lib/defaults";
 import type { Rarity } from "./LuckyBoxScreen";
 
@@ -29,11 +29,22 @@ export default function StoreScreen({ onBack }: StoreScreenProps) {
   const [tab, setTab] = useState<Tab>("shop");
   const [purchasedBgs, setPurchasedBgs] = useState<string[]>([]);
 
-  const refresh = (uid?: string | null) => {
-    setCoins(getCoins(uid));
-    setEnergy(getEnergy(uid));
-    setPurchasedBgs(getPurchasedBgs(uid));
-    if (uid) fetchInventory(uid).then(setInventory);
+  const refresh = async (uid?: string | null) => {
+    if (uid) {
+      const [c, e, b] = await Promise.all([
+        syncCoinsFromServer(uid),
+        syncEnergyFromServer(uid),
+        syncBgsFromServer(uid),
+      ]);
+      setCoins(c);
+      setEnergy(e);
+      setPurchasedBgs(b);
+      fetchInventory(uid).then(setInventory);
+    } else {
+      setCoins(getCoins(uid));
+      setEnergy(getEnergy(uid));
+      setPurchasedBgs(getPurchasedBgs(uid));
+    }
   };
 
   useEffect(() => {
@@ -42,22 +53,26 @@ export default function StoreScreen({ onBack }: StoreScreenProps) {
 
   const convertItem = async (item: InventoryItem) => {
     const value = RARITY_COIN_VALUE[item.rarity] || 0;
-    addCoins(user?.id, value);
+    if (user?.id) await addCoins(user.id, value);
     setCoins(getCoins(user?.id));
     setInventory((prev) => prev.filter((i) => i.id !== item.id));
     await removeFromInventory(item.id);
   };
 
-  const buyEnergy = (price: number, amount: number) => {
-    if (!spendCoins(user?.id, price)) return;
-    addEnergy(user?.id, amount);
+  const buyEnergy = async (price: number, amount: number) => {
+    if (!user?.id) return;
+    const ok = await spendCoins(user.id, price);
+    if (!ok) return;
+    await addEnergy(user.id, amount);
     setCoins(getCoins(user?.id));
     setEnergy(getEnergy(user?.id));
   };
 
-  const buyBg = (bg: typeof PREMIUM_BGS[number]) => {
-    if (!spendCoins(user?.id, bg.price)) return;
-    purchaseBg(user?.id, bg.value);
+  const buyBg = async (bg: typeof PREMIUM_BGS[number]) => {
+    if (!user?.id) return;
+    const ok = await spendCoins(user.id, bg.price);
+    if (!ok) return;
+    await purchaseBg(user.id, bg.id, bg.value);
     setCoins(getCoins(user?.id));
     setPurchasedBgs(getPurchasedBgs(user?.id));
   };

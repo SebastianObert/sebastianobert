@@ -55,25 +55,27 @@ export const api = {
           userId,
         }),
       });
+      const data = await res.json();
       if (res.status === 429) {
-        const data = await res.json();
         return {
           reply: data.reply,
           sessionId: sessionId || "",
           chips: [],
           limitReached: true,
+          remaining: data.remaining,
+          limit: data.limit,
         };
       }
       if (!res.ok) {
-        const text = await res.text();
-        console.error("Chat API error:", res.status, text);
-        throw new Error(`API ${res.status}: ${text}`);
+        console.error("Chat API error:", res.status, data);
+        throw new Error(`API ${res.status}: ${JSON.stringify(data)}`);
       }
-      const data = await res.json();
       return {
         reply: data.reply,
         sessionId: data.sessionId,
         chips: [],
+        remaining: data.remaining,
+        limit: data.limit,
       };
     } catch (e) {
       console.error("sendChat catch:", e);
@@ -109,9 +111,11 @@ export const api = {
     }
   },
 
-  getChatHistory: async (sessionId: string): Promise<MessageDto[]> => {
+  getChatHistory: async (sessionId: string, userId?: string): Promise<MessageDto[]> => {
     try {
-      const res = await fetch(`/api/chat?action=history&id=${encodeURIComponent(sessionId)}`);
+      const params = new URLSearchParams({ action: "history", id: sessionId });
+      if (userId) params.set("userId", userId);
+      const res = await fetch(`/api/chat?${params}`);
       if (!res.ok) return [];
       return await res.json();
     } catch {

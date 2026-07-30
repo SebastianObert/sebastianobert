@@ -5,6 +5,7 @@ import {
   DEFAULT_PROJECTS,
   DEFAULT_SKILLS,
   DEFAULT_ORGANIZATIONS,
+  CHAT_BASE_LIMIT,
 } from "@/lib/defaults";
 
 const groq = () => new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -83,24 +84,36 @@ export async function GET(req: Request) {
 
   if (action === "history") {
     const id = searchParams.get("id");
-    if (!id) return Response.json([]);
+    const userId = searchParams.get("userId");
+    if (!id || !userId) return Response.json([]);
     const { data } = await supabase
       .from("tr_chat_message")
       .select("*")
       .eq("session_id", id)
+      .eq("user_id", userId)
       .order("created_at", { ascending: true });
     return Response.json(data ?? []);
   }
 
   if (action === "quota") {
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count } = await supabase
-      .from("tr_chat_message")
-      .select("*", { count: "exact", head: true })
-      .eq("role", "user")
-      .gte("created_at", since);
-    const used = count ?? 0;
-    return Response.json({ used, limit: 3, remaining: Math.max(0, 3 - used) });
+    const userId = searchParams.get("userId");
+    if (!userId) return Response.json({ used: 0, limit: 0, remaining: 0 });
+    const today = new Date().toISOString().slice(0, 10);
+    const { data: usageData } = await supabase
+      .from("user_chat_usage")
+      .select("messages_sent")
+      .eq("user_id", userId)
+      .eq("date", today)
+      .maybeSingle();
+    const { data: economyData } = await supabase
+      .from("user_economy")
+      .select("energy")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const used = usageData?.messages_sent ?? 0;
+    const energy = economyData?.energy ?? 0;
+    const limit = CHAT_BASE_LIMIT + energy;
+    return Response.json({ used, limit, remaining: Math.max(0, limit - used) });
   }
 
   const name = searchParams.get("name");
@@ -119,6 +132,33 @@ export async function POST(req: Request) {
         { status: 429 }
       );
     }
+
+    // ── Server-side quota check ──
+    const today = new Date().toISOString().slice(0, 10);
+    const { data: usageData } = await supabase
+      .from("user_chat_usage")
+      .select("messages_sent")
+      .eq("user_id", userId)
+      .eq("date", today)
+      .maybeSingle();
+    const { data: economyData } = await supabase
+      .from("user_economy")
+      .select("energy")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    const messagesSent = usageData?.messages_sent ?? 0;
+    const energy = economyData?.energy ?? 0;
+    const limit = CHAT_BASE_LIMIT + energy;
+    const remaining = Math.max(0, limit - messagesSent);
+
+    if (remaining <= 0) {
+      return Response.json(
+        { reply: "Batas chat hari ini sudah habis. Beli energy di Store ya!", limitReached: true, remaining: 0, limit },
+        { status: 429 }
+      );
+    }
+
     const userMsg = messages[messages.length - 1];
 
     let sid = sessionId;
@@ -167,7 +207,28 @@ export async function POST(req: Request) {
       .update({ updated_at: new Date().toISOString() })
       .eq("id", sid);
 
-    return Response.json({ reply, sessionId: sid });
+    // ── Increment usage + deduct energy if over base ──
+    const newMessagesSent = messagesSent + 1;
+    await supabase
+      .from("user_chat_usage")
+      .upsert(
+        { user_id: userId, date: today, messages_sent: newMessagesSent },
+        { onConflict: "user_id, date" }
+      );
+
+    if (newMessagesSent > CHAT_BASE_LIMIT) {
+      await supabase
+        .from("user_economy")
+        .update({ energy: Math.max(0, energy - 1), updated_at: new Date().toISOString() })
+        .eq("user_id", userId);
+    }
+
+    return Response.json({
+      reply,
+      sessionId: sid,
+      remaining: Math.max(0, limit - newMessagesSent),
+      limit,
+    });
   } catch (error: any) {
     console.error("Chat POST error:", error?.message || error);
     return Response.json(

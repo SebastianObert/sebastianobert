@@ -11,7 +11,7 @@ import StoreScreen from "./StoreScreen";
 import LoginModal from "./LoginModal";
 import { useAuth } from "../../lib/auth";
 import { useTheme } from "../../lib/theme";
-import { getEnergy, useEnergy } from "../../lib/store";
+import { syncEnergyFromServer, syncChatUsageFromServer } from "../../lib/store";
 import { CHAT_BASE_LIMIT } from "../../lib/defaults";
 
 type Screen = "home" | "chat" | "luckybox" | "store" | "settings";
@@ -126,17 +126,13 @@ export default function ChatWidget() {
       setQuotaExhausted(true);
       return;
     }
-    const q = await api.fetchQuota(user?.id);
-    let dynamicLimit = CHAT_BASE_LIMIT;
-    let userUsed = q.used;
-    if (user) {
-      dynamicLimit = CHAT_BASE_LIMIT + getEnergy(user.id);
-      const today = new Date().toISOString().slice(0, 10);
-      const stored = localStorage.getItem(`chat_usage_${user.id}_${today}`);
-      if (stored) userUsed = parseInt(stored, 10) || 0;
-    }
-    const remaining = Math.max(0, dynamicLimit - userUsed);
-    setQuota({ used: userUsed, limit: dynamicLimit, remaining });
+    const [energy, usage] = await Promise.all([
+      syncEnergyFromServer(user.id),
+      syncChatUsageFromServer(user.id),
+    ]);
+    const dynamicLimit = CHAT_BASE_LIMIT + energy;
+    const remaining = Math.max(0, dynamicLimit - usage);
+    setQuota({ used: usage, limit: dynamicLimit, remaining });
     if (remaining <= 0) setQuotaExhausted(true);
     else setQuotaExhausted(false);
   }, [user]);
@@ -192,7 +188,7 @@ export default function ChatWidget() {
 
   const loadSession = async (id: string) => {
     setSessionId(id);
-    const history = await api.getChatHistory(id);
+    const history = await api.getChatHistory(id, user?.id);
     setMessages(history);
     setSidebarOpen(false);
   };
@@ -225,15 +221,12 @@ export default function ChatWidget() {
       }
       const botMsg: MessageDto = { id: crypto.randomUUID(), role: "assistant", content: res.reply, createdAt: new Date().toISOString() };
       setMessages((prev) => [...prev, botMsg]);
-      if (user) {
-        const today = new Date().toISOString().slice(0, 10);
-        const stored = parseInt(localStorage.getItem(`chat_usage_${user.id}_${today}`) || "0", 10);
-        localStorage.setItem(`chat_usage_${user.id}_${today}`, String(stored + 1));
-        if (stored + 1 > CHAT_BASE_LIMIT) {
-          useEnergy(user.id, 1);
-        }
+      if (res.remaining !== undefined && res.limit !== undefined) {
+        setQuota({ used: res.limit - res.remaining, limit: res.limit, remaining: res.remaining });
+        if (res.remaining <= 0) setQuotaExhausted(true);
+      } else {
+        loadQuota();
       }
-      loadQuota();
     } catch {
       const errMsg: MessageDto = { id: crypto.randomUUID(), role: "assistant", content: "Terjadi kesalahan. Coba lagi nanti.", createdAt: new Date().toISOString() };
       setMessages((prev) => [...prev, errMsg]);

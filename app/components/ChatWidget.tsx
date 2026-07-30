@@ -7,11 +7,14 @@ import ChatMessage from "./ChatMessage";
 import PhoneHomeScreen from "./PhoneHomeScreen";
 import PhoneSettingsScreen from "./PhoneSettingsScreen";
 import LuckyBoxScreen from "./LuckyBoxScreen";
+import StoreScreen from "./StoreScreen";
 import LoginModal from "./LoginModal";
 import { useAuth } from "../../lib/auth";
 import { useTheme } from "../../lib/theme";
+import { getEnergy, useEnergy } from "../../lib/store";
+import { CHAT_BASE_LIMIT } from "../../lib/defaults";
 
-type Screen = "home" | "chat" | "luckybox" | "settings";
+type Screen = "home" | "chat" | "luckybox" | "store" | "settings";
 
 function StatusBar() {
   const [time, setTime] = useState("");
@@ -109,8 +112,11 @@ export default function ChatWidget() {
   };
 
   const goLuckyBoxIfAuth = () => {
-    if (user) goLuckyBox();
-    else setShowLoginModal(true);
+    goLuckyBox();
+  };
+
+  const goStoreIfAuth = () => {
+    goStore();
   };
 
   const loadSessions = useCallback(async () => {
@@ -119,9 +125,23 @@ export default function ChatWidget() {
   }, [user]);
 
   const loadQuota = useCallback(async () => {
+    if (!user) {
+      setQuota({ used: 0, limit: 0, remaining: 0 });
+      setQuotaExhausted(true);
+      return;
+    }
     const q = await api.fetchQuota(user?.id);
-    setQuota(q);
-    if (q.remaining <= 0) setQuotaExhausted(true);
+    let dynamicLimit = CHAT_BASE_LIMIT;
+    let userUsed = q.used;
+    if (user) {
+      dynamicLimit = CHAT_BASE_LIMIT + getEnergy(user.id);
+      const today = new Date().toISOString().slice(0, 10);
+      const stored = localStorage.getItem(`chat_usage_${user.id}_${today}`);
+      if (stored) userUsed = parseInt(stored, 10) || 0;
+    }
+    const remaining = Math.max(0, dynamicLimit - userUsed);
+    setQuota({ used: userUsed, limit: dynamicLimit, remaining });
+    if (remaining <= 0) setQuotaExhausted(true);
     else setQuotaExhausted(false);
   }, [user]);
 
@@ -160,8 +180,9 @@ export default function ChatWidget() {
     }
   };
   const goLuckyBox = () => setScreen("luckybox");
+  const goStore = () => setScreen("store");
   const goSettings = () => setScreen("settings");
-  const goBack = () => { if (screen === "chat" || screen === "luckybox" || screen === "settings") goHome(); };
+  const goBack = () => { if (screen === "chat" || screen === "luckybox" || screen === "store" || screen === "settings") goHome(); };
 
   const newChat = () => {
     setMessages([]);
@@ -187,7 +208,7 @@ export default function ChatWidget() {
 
   const send = async () => {
     const text = input.trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading || !user) return;
 
     const userMsg: MessageDto = { id: crypto.randomUUID(), role: "user", content: text, createdAt: new Date().toISOString() };
     setMessages((prev) => [...prev, userMsg]);
@@ -206,6 +227,14 @@ export default function ChatWidget() {
       }
       const botMsg: MessageDto = { id: crypto.randomUUID(), role: "assistant", content: res.reply, createdAt: new Date().toISOString() };
       setMessages((prev) => [...prev, botMsg]);
+      if (user) {
+        const today = new Date().toISOString().slice(0, 10);
+        const stored = parseInt(localStorage.getItem(`chat_usage_${user.id}_${today}`) || "0", 10);
+        localStorage.setItem(`chat_usage_${user.id}_${today}`, String(stored + 1));
+        if (stored + 1 > CHAT_BASE_LIMIT) {
+          useEnergy(user.id, 1);
+        }
+      }
       loadQuota();
     } catch {
       const errMsg: MessageDto = { id: crypto.randomUUID(), role: "assistant", content: "Terjadi kesalahan. Coba lagi nanti.", createdAt: new Date().toISOString() };
@@ -251,7 +280,7 @@ export default function ChatWidget() {
         }}
       >
         {/* Bezel inner padding */}
-        <div className={`flex flex-col overscroll-contain ${isFullscreen ? "h-full" : "h-[34rem]"}`}>
+        <div className={`flex flex-col overscroll-contain ${isFullscreen ? "h-full" : "h-[40rem]"}`}>
           {/* Status bar */}
           <StatusBar />
 
@@ -259,7 +288,7 @@ export default function ChatWidget() {
           <div className="flex-1 flex flex-col overflow-hidden relative" style={{ backgroundColor: "var(--phone-screen)" }}>
             <div key={screen} className="flex-1 flex flex-col animate-screenIn min-h-0">
               {screen === "home" && (
-                <PhoneHomeScreen onOpenChat={goChatIfAuth} onOpenLuckyBox={goLuckyBoxIfAuth} onOpenSettings={goSettings} bgColor={bgColor} />
+                <PhoneHomeScreen onOpenChat={goChatIfAuth} onOpenLuckyBox={goLuckyBoxIfAuth} onOpenStore={goStoreIfAuth} onOpenSettings={goSettings} bgColor={bgColor} />
               )}
 
               {screen === "settings" && (
@@ -268,6 +297,10 @@ export default function ChatWidget() {
 
               {screen === "luckybox" && (
                 <LuckyBoxScreen onBack={goHome} isFullscreen={isFullscreen} />
+              )}
+
+              {screen === "store" && (
+                <StoreScreen onBack={goHome} />
               )}
 
               {screen === "chat" && (
@@ -296,11 +329,12 @@ export default function ChatWidget() {
                           Online
                         </p>
                         {user && (
-                          <p className="text-[9px] flex items-center gap-0.5 text-slate-400">
+                          <p className="text-[9px] flex items-center gap-1 text-slate-400">
                             <svg className="w-2.5 h-2.5 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
                             </svg>
-                            {quota.remaining}/{quota.limit}
+                            <span>{quota.remaining}/{quota.limit}</span>
+                            <span className="text-slate-600">AI Credit</span>
                           </p>
                         )}
                       </div>
@@ -339,13 +373,13 @@ export default function ChatWidget() {
                             <p className="truncate">{s.title}</p>
                             <p className="text-[9px] text-slate-600 mt-0.5">{formatTime(s.createdAt)}</p>
                           </div>
-                          <button
+                          <span
                             onClick={(e) => deleteSession(s.id, e)}
-                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-slate-600 transition flex-shrink-0"
+                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-slate-600 transition flex-shrink-0 cursor-pointer"
                             aria-label="Hapus sesi"
                           >
                             <svg className="w-2.5 h-2.5 text-slate-500 hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                          </button>
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -384,13 +418,13 @@ export default function ChatWidget() {
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
                           onKeyDown={(e) => e.key === "Enter" && send()}
-                          placeholder={quotaExhausted ? "Batas chat hari ini habis" : "Ketik pesan..."}
+                          placeholder={!user ? "Login untuk chat" : quotaExhausted ? "Batas chat hari ini habis" : "Ketik pesan..."}
                           className="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-2.5 py-1.5 text-[11px] text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
-                          disabled={isLoading || quotaExhausted}
+                          disabled={isLoading || quotaExhausted || !user}
                         />
                         <button
                           onClick={send}
-                          disabled={isLoading || !input.trim() || quotaExhausted}
+                          disabled={isLoading || !input.trim() || quotaExhausted || !user}
                           className="w-7 h-7 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white flex items-center justify-center transition disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>

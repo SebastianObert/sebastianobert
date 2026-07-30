@@ -84,7 +84,7 @@ export default function Navbar() {
           </div>
 
           <div className={`md:hidden absolute top-full left-0 w-full site-header border-b border-slate-800 shadow-2xl overflow-hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
+            isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}>
             <div className="p-4 flex flex-col items-center gap-4">
               {/* Mobile auth */}

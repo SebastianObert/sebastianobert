@@ -3,6 +3,7 @@
 interface PhoneHomeScreenProps {
   onOpenChat: () => void;
   onOpenLuckyBox: () => void;
+  onOpenStore: () => void;
   onOpenSettings: () => void;
   bgColor?: string;
 }
@@ -51,6 +52,10 @@ function AppIcon({ icon }: { icon: string }) {
           <circle cx="32" cy="22" r="2" fill="#b91c1c" />
           <text x="32" y="48" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="monospace">?</text>
         </svg>
+      );
+    case "store":
+      return (
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
       );
     case "settings":
       return (
@@ -111,6 +116,7 @@ const MAIN_APPS: { name: string; icon: string; color: string; action: string; ur
   { name: "Music", icon: "music", color: "bg-rose-500", action: "none" },
   { name: "Photos", icon: "photos", color: "bg-violet-500", action: "none" },
   { name: "Lucky Box", icon: "luckybox", color: "bg-amber-800/70", action: "luckybox" },
+  { name: "Store", icon: "store", color: "bg-cyan-700/80", action: "store" },
   { name: "Chat", icon: "chat", color: "bg-emerald-500", action: "chat" },
 ];
 
@@ -120,19 +126,20 @@ const DOCK_APPS: { name: string; icon: string; color: string; action: string; ur
   { name: "Camera", icon: "camera", color: "bg-slate-600", action: "none" },
 ];
 
-export default function PhoneHomeScreen({ onOpenChat, onOpenLuckyBox, onOpenSettings, bgColor }: PhoneHomeScreenProps) {
+export default function PhoneHomeScreen({ onOpenChat, onOpenLuckyBox, onOpenStore, onOpenSettings, bgColor }: PhoneHomeScreenProps) {
   return (
     <div className={`flex-1 flex flex-col min-h-0 ${bgColor || ""}`}>
       <div className="flex-1 overflow-y-auto py-3 px-4 scrollbar-thin min-h-0">
         <div className="grid grid-cols-4 gap-x-3 gap-y-4">
           {MAIN_APPS.map((app) => {
-            const isClickable = app.action === "chat" || app.action === "luckybox" || app.action === "link";
+            const isClickable = app.action === "chat" || app.action === "luckybox" || app.action === "store" || app.action === "link";
             return (
               <button
                 key={app.name}
                 onClick={() => {
                   if (app.action === "chat") onOpenChat();
                   else if (app.action === "luckybox") onOpenLuckyBox();
+                  else if (app.action === "store") onOpenStore();
                   else if (app.action === "link" && app.url) window.open(app.url, "_blank");
                 }}
                 disabled={!isClickable}

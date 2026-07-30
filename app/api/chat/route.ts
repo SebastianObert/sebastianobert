@@ -109,7 +109,13 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const { messages, sessionId } = await req.json();
+    const { messages, sessionId, userId } = await req.json();
+    if (!userId) {
+      return Response.json(
+        { reply: "Kamu harus login dulu biar bisa chat!" },
+        { status: 429 }
+      );
+    }
     const userMsg = messages[messages.length - 1];
 
     let sid = sessionId;

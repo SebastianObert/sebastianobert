@@ -30,6 +30,11 @@ export async function addToInventory(userId: string, itemName: string, rarity: R
   await supabase.from("user_inventory").insert({ user_id: userId, item_name: itemName, rarity });
 }
 
+export async function removeFromInventory(itemId: number): Promise<void> {
+  if (!supabase) return;
+  await supabase.from("user_inventory").delete().eq("id", itemId);
+}
+
 export async function fetchSpinHistory(userId: string): Promise<SpinRecord[]> {
   if (!supabase) return [];
   const { data } = await supabase

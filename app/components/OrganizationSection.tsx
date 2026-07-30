@@ -35,7 +35,7 @@ export default function OrganizationSection({ setSelectedImage }: OrganizationSe
 
   return (
     <>
-      <section id="organization" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
+      <section id="experience" className="bg-slate-800/30 py-24 border-y border-slate-800 relative z-10">
         <div className="container mx-auto px-6">
           <ScrollElement animation="parallax" duration={0.8}>
             <div className="mb-12 text-center max-w-3xl mx-auto">
@@ -71,6 +71,22 @@ export default function OrganizationSection({ setSelectedImage }: OrganizationSe
                     <p className="text-slate-400 leading-relaxed text-sm">{org.description}</p>
                   </div>
                   <div className="flex w-24 h-16 md:w-28 md:h-20 items-center justify-center">
+                    {org.slug === "ahm" && (
+                      <svg viewBox="0 0 120 80" role="img" focusable="false">
+                        <rect x="28" y="14" width="64" height="42" rx="4" fill="rgba(56,189,248,0.12)" stroke="rgba(56,189,248,0.6)" strokeWidth="2" />
+                        <rect x="28" y="14" width="64" height="10" rx="4" fill="rgba(56,189,248,0.2)" />
+                        <circle cx="34" cy="19" r="2" fill="rgba(56,189,248,0.6)" />
+                        <circle cx="40" cy="19" r="2" fill="rgba(56,189,248,0.6)" />
+                        <circle cx="46" cy="19" r="2" fill="rgba(56,189,248,0.6)" />
+                        <rect x="34" y="30" width="22" height="3" rx="1.5" fill="rgba(56,189,248,0.5)" />
+                        <rect x="34" y="37" width="16" height="3" rx="1.5" fill="rgba(56,189,248,0.35)" />
+                        <rect x="34" y="44" width="28" height="3" rx="1.5" fill="rgba(56,189,248,0.25)" />
+                        <rect x="62" y="30" width="24" height="17" rx="3" fill="rgba(56,189,248,0.15)" stroke="rgba(56,189,248,0.4)" strokeWidth="1.5" />
+                        <path d="M52 56L44 68H76L68 56Z" fill="rgba(56,189,248,0.18)" stroke="rgba(56,189,248,0.5)" strokeWidth="2" strokeLinejoin="round" />
+                        <path d="M60 68V62" stroke="rgba(56,189,248,0.6)" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M56 58L60 62L64 58" fill="none" stroke="rgba(56,189,248,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                     {org.slug === "kspm" && (
                       <svg viewBox="0 0 120 80" role="img" focusable="false">
                         <path d="M12 60H108" stroke="rgba(148,163,184,0.4)" strokeWidth="2" />

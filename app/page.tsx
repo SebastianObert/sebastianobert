@@ -6,16 +6,18 @@ import ImageModal from "./components/ImageModal";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import SkillsSection from "./components/SkillsSection";
-import ProjectsSection from "./components/ProjectsSection";
+import ProjectsSection, { LinkModal } from "./components/ProjectsSection";
 import OrganizationSection from "./components/OrganizationSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import ChatWidget from "./components/ChatWidget";
+import type { Project } from "../lib/defaults";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedSocial, setExpandedSocial] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<{src: string, alt: string} | null>(null);
+  const [linkProject, setLinkProject] = useState<Project | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -77,6 +79,8 @@ export default function Home() {
         onClose={() => setSelectedImage(null)} 
       />
 
+      {linkProject && <LinkModal project={linkProject} onClose={() => setLinkProject(null)} />}
+
       {isLoading && <LoadingScreen />}
 
       <Navbar />
@@ -90,7 +94,7 @@ export default function Home() {
 
         <SkillsSection />
 
-        <ProjectsSection setSelectedImage={setSelectedImage} />
+        <ProjectsSection setSelectedImage={setSelectedImage} onOpenLinks={setLinkProject} />
 
         <OrganizationSection setSelectedImage={setSelectedImage} />
 

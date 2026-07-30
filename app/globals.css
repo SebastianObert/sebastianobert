@@ -94,13 +94,25 @@ body {
 :root.sunset .shadow-cyan-500\/30 { box-shadow: 0 0 15px rgba(245,158,11,0.3) !important; }
 :root.sunset .hover\:border-cyan-500:hover { border-color: rgba(245,158,11,0.5) !important; }
 
-:root.sunset .bg-slate-800 { background-color: rgba(30, 41, 59, 0.45) !important; }
-:root.sunset .bg-slate-800\/40 { background-color: rgba(30, 41, 59, 0.25) !important; }
-:root.sunset .bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.3) !important; }
-:root.sunset .bg-slate-800\/80 { background-color: rgba(30, 41, 59, 0.55) !important; }
-:root.sunset .bg-slate-900 { background-color: rgba(15, 23, 42, 0.5) !important; }
-:root.sunset .bg-slate-900\/50 { background-color: rgba(15, 23, 42, 0.35) !important; }
-:root.sunset .bg-slate-900\/70 { background-color: rgba(15, 23, 42, 0.45) !important; }
+:root.sunset .bg-slate-800 { background-color: #1e1b4b !important; }
+:root.sunset .bg-slate-800\/40 { background-color: rgba(30, 27, 75, 0.4) !important; }
+:root.sunset .bg-slate-800\/50 { background-color: rgba(30, 27, 75, 0.5) !important; }
+:root.sunset .bg-slate-800\/80 { background-color: rgba(30, 27, 75, 0.8) !important; }
+:root.sunset .bg-slate-900 { background-color: #1e1b4b !important; }
+:root.sunset .bg-slate-900\/50 { background-color: rgba(30, 27, 75, 0.5) !important; }
+:root.sunset .bg-slate-900\/70 { background-color: rgba(30, 27, 75, 0.7) !important; }
+:root.sunset .bg-slate-700 { background-color: #312e81 !important; }
+:root.sunset .bg-zinc-800 { background-color: #1e1b4b !important; }
+:root.sunset .bg-stone-800 { background-color: #271d1d !important; }
+:root.sunset .bg-neutral-800 { background-color: #1e1b4b !important; }
+:root.sunset .bg-gray-800 { background-color: #1e1b4b !important; }
+:root.sunset .bg-cyan-900 { background-color: #2e1065 !important; }
+:root.sunset .bg-teal-900 { background-color: #2e1065 !important; }
+:root.sunset .bg-emerald-900 { background-color: #271d1d !important; }
+:root.sunset .bg-indigo-900 { background-color: #2e1065 !important; }
+:root.sunset .bg-purple-900 { background-color: #4c1d95 !important; }
+:root.sunset .bg-rose-900 { background-color: #4c0519 !important; }
+:root.sunset .bg-amber-900 { background-color: #451a03 !important; }
 :root.sunset .border-slate-700 { border-color: rgba(51, 65, 85, 0.4) !important; }
 :root.sunset .border-slate-700\/30 { border-color: rgba(51, 65, 85, 0.25) !important; }
 :root.sunset .border-slate-700\/50 { border-color: rgba(51, 65, 85, 0.3) !important; }
@@ -646,3 +658,22 @@ html {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes flash-fade {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+@keyframes rays-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes ring-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+}
+@keyframes zoomPunch {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-zoomPunch { animation: zoomPunch 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }

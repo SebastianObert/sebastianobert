@@ -46,6 +46,9 @@ const ITEM_POOL: ItemDef[] = [
   { name: "\u2605 The Origin \u2605", rarity: "Mythic" },
 ];
 
+const DAILY_SPIN_LIMIT = 3;
+const SPIN_COOLDOWN_HOURS = 24;
+
 function pickByRarity(): ItemDef {
   const r = Math.random() * 100;
   let pool: ItemDef[];
@@ -87,6 +90,25 @@ const RARITY_STROKES: Record<Rarity, string> = {
   Epic: "#9333ea",
   Legendary: "#d97706",
   Mythic: "#dc2626",
+};
+
+interface RarityEffectConfig {
+  particleCount: number;
+  particleSize: string;
+  rays: boolean;
+  shake: boolean;
+  flash: boolean;
+  flashColor: string;
+  glowPulse: boolean;
+  zoomPunch: boolean;
+}
+
+const RARITY_EFFECTS: Record<Rarity, RarityEffectConfig> = {
+  Common:    { particleCount: 6,  particleSize: "w-1 h-1",     rays: false, shake: false, flash: false, flashColor: "",                    glowPulse: false, zoomPunch: false },
+  Rare:      { particleCount: 10, particleSize: "w-1.5 h-1.5", rays: false, shake: false, flash: true,  flashColor: "rgba(59,130,246,0.25)", glowPulse: true,  zoomPunch: false },
+  Epic:      { particleCount: 16, particleSize: "w-1.5 h-1.5", rays: false, shake: false, flash: true,  flashColor: "rgba(168,85,247,0.3)",  glowPulse: true,  zoomPunch: true  },
+  Legendary: { particleCount: 22, particleSize: "w-2 h-2",     rays: true,  shake: true,  flash: true,  flashColor: "rgba(245,158,11,0.35)", glowPulse: true,  zoomPunch: true  },
+  Mythic:    { particleCount: 30, particleSize: "w-2 h-2",     rays: true,  shake: true,  flash: true,  flashColor: "rgba(239,68,68,0.4)",   glowPulse: true,  zoomPunch: true  },
 };
 
 const CX = 100;
@@ -169,27 +191,71 @@ function Pointer() {
   );
 }
 
-function SparkleBurst({ color }: { color: string }) {
+function SparkleBurst({ color, count = 12, size = "w-1.5 h-1.5" }: { color: string; count?: number; size?: string }) {
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {Array.from({ length: 12 }, (_, i) => {
-        const angle = (i / 12) * 360;
+      {Array.from({ length: count }, (_, i) => {
+        const angle = (i / count) * 360;
         return (
           <div
             key={i}
-            className="absolute w-1.5 h-1.5 rounded-full"
+            className={`absolute ${size} rounded-full`}
             style={{
               backgroundColor: color,
               top: "50%",
               left: "50%",
               transform: `rotate(${angle}deg)`,
-              animation: `sparkle-fade 0.7s ease-out ${i * 0.04}s forwards`,
+              animation: `sparkle-fade 0.7s ease-out ${i * (0.5 / count)}s forwards`,
               opacity: 0,
             }}
           />
         );
       })}
     </div>
+  );
+}
+
+function RadialRays({ color, size = 220 }: { color: string; size?: number }) {
+  const rayCount = 16;
+  return (
+    <svg
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+      width={size}
+      height={size}
+      viewBox="0 0 200 200"
+      style={{ animation: "rays-spin 6s linear infinite", opacity: 0.35 }}
+    >
+      {Array.from({ length: rayCount }, (_, i) => {
+        const angle = (i / rayCount) * 360;
+        return <rect key={i} x="99" y="0" width="2" height="100" fill={color} transform={`rotate(${angle}, 100, 100)`} />;
+      })}
+    </svg>
+  );
+}
+
+function ScreenFlash({ color }: { color: string }) {
+  return (
+    <div
+      className="absolute inset-0 pointer-events-none z-20"
+      style={{ backgroundColor: color, animation: "flash-fade 0.5s ease-out forwards" }}
+    />
+  );
+}
+
+function GlowPulseRing({ color }: { color: string }) {
+  return (
+    <div
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        width: 220,
+        height: 220,
+        border: `2px solid ${color}`,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        animation: "ring-pulse 1s ease-out",
+      }}
+    />
   );
 }
 
@@ -202,6 +268,20 @@ export default function LuckyBoxScreen({ onBack, isFullscreen }: LuckyBoxScreenP
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [spinHistory, setSpinHistory] = useState<SpinRecord[]>([]);
   const [key, setKey] = useState(0);
+
+  const todaySpins = useMemo(() => {
+    const since = Date.now() - SPIN_COOLDOWN_HOURS * 60 * 60 * 1000;
+    return spinHistory.filter((h) => new Date(h.spun_at).getTime() > since).length;
+  }, [spinHistory]);
+  const remainingSpins = Math.max(0, DAILY_SPIN_LIMIT - todaySpins);
+
+  const hasNextSpin = !user || remainingSpins > 0;
+  const nextSpinTime = useMemo(() => {
+    if (remainingSpins > 0 || spinHistory.length === 0) return null;
+    const sorted = [...spinHistory].sort((a, b) => new Date(b.spun_at).getTime() - new Date(a.spun_at).getTime());
+    const oldest = new Date(sorted[Math.min(DAILY_SPIN_LIMIT - 1, sorted.length - 1)]?.spun_at || 0);
+    return new Date(oldest.getTime() + SPIN_COOLDOWN_HOURS * 60 * 60 * 1000);
+  }, [spinHistory]);
 
   useEffect(() => {
     if (!user) return;
@@ -244,15 +324,18 @@ export default function LuckyBoxScreen({ onBack, isFullscreen }: LuckyBoxScreenP
   }, [phase]);
 
   const collect = () => {
-    if (result && user) {
-      addToInventory(user.id, result.name, result.rarity);
-      recordSpin(user.id, result.name, result.rarity, true);
-      fetchInventory(user.id).then(setInventory);
-      fetchSpinHistory(user.id).then(setSpinHistory);
+    if (result) {
+      if (user) {
+        addToInventory(user.id, result.name, result.rarity);
+        recordSpin(user.id, result.name, result.rarity, true);
+        fetchInventory(user.id).then(setInventory);
+        fetchSpinHistory(user.id).then(setSpinHistory);
+      }
+      setResult(null);
+      setWheelItems([]);
+      setKey((prev) => prev + 1);
     }
     setPhase("idle");
-    setResult(null);
-    setWheelItems([]);
   };
 
   return (
@@ -335,19 +418,26 @@ export default function LuckyBoxScreen({ onBack, isFullscreen }: LuckyBoxScreenP
             <p className="text-[11px] text-slate-400 text-center max-w-[180px]">
               Pull a random item from the box. Each spin has a different set of prizes!
             </p>
+            {user && (
+              <div className="text-[9px] text-slate-500 flex items-center gap-2">
+                <span>Spins today: <span className={remainingSpins > 0 ? "text-amber-400 font-semibold" : "text-red-400 font-semibold"}>{remainingSpins}</span>/{DAILY_SPIN_LIMIT}</span>
+                <span className="text-slate-700">·</span>
+                <span>{SPIN_COOLDOWN_HOURS}h cooldown</span>
+              </div>
+            )}
             <button
-              onClick={user ? spin : () => {}}
-              disabled={phase !== "idle" || !user}
+              onClick={spin}
+              disabled={!hasNextSpin}
               className={`${isFullscreen ? "px-10 py-3.5 text-[16px]" : "px-6 py-2.5 text-[12px]"} text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 ${
-                user
+                hasNextSpin
                   ? "bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 shadow-amber-700/30 border border-amber-500/50"
                   : "bg-slate-700 cursor-not-allowed shadow-slate-800/30 border border-slate-600"
               }`}
             >
-              PULL
+              {!hasNextSpin ? "HABIS" : "PULL"}
             </button>
             {!user && (
-              <p className="text-[9px] text-slate-600 -mt-3">Login untuk spin</p>
+              <p className="text-[9px] text-slate-500 -mt-3">Unlimited spin · Not saved to inventory</p>
             )}
           </div>
           </>
@@ -367,26 +457,34 @@ export default function LuckyBoxScreen({ onBack, isFullscreen }: LuckyBoxScreenP
             {phase === "spinning" && (
               <p className="mt-2 text-[10px] text-slate-500 animate-pulse">Spinning...</p>
             )}
-            {phase === "reveal" && result && (
-              <div className="mt-2 flex flex-col items-center gap-2 animate-fadeIn">
-                <SparkleBurst color={RARITY_COLORS[result.rarity]} />
-                <span className={`text-[10px] font-bold tracking-widest ${
-                  result.rarity === "Mythic" ? "text-red-300" :
-                  result.rarity === "Legendary" ? "text-yellow-300" :
-                  result.rarity === "Epic" ? "text-purple-300" :
-                  result.rarity === "Rare" ? "text-blue-300" : "text-slate-300"
-                }`}>
-                  {result.rarity.toUpperCase()}
-                </span>
-                <p className={`text-white font-bold text-center ${isFullscreen ? "text-[20px]" : "text-[14px]"}`}>{result.name}</p>
-                <button
-                  onClick={collect}
-                  className="px-5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-medium rounded-lg border border-slate-600 hover:border-cyan-500 transition active:scale-95"
-                >
-                  Collect
-                </button>
-              </div>
-            )}
+            {phase === "reveal" && result && (() => {
+              const fx = RARITY_EFFECTS[result.rarity];
+              return (
+                <div className={`mt-2 flex flex-col items-center gap-2 animate-fadeIn relative ${fx.shake ? "animate-shake" : ""}`}>
+                  {fx.flash && <ScreenFlash color={fx.flashColor} />}
+                  {fx.rays && <RadialRays color={RARITY_COLORS[result.rarity]} size={result.rarity === "Mythic" ? 260 : 220} />}
+                  {fx.glowPulse && <GlowPulseRing color={RARITY_COLORS[result.rarity]} />}
+                  <SparkleBurst color={RARITY_COLORS[result.rarity]} count={fx.particleCount} size={fx.particleSize} />
+                  <span className={`text-[10px] font-bold tracking-widest ${
+                    result.rarity === "Mythic" ? "text-red-300" :
+                    result.rarity === "Legendary" ? "text-yellow-300" :
+                    result.rarity === "Epic" ? "text-purple-300" :
+                    result.rarity === "Rare" ? "text-blue-300" : "text-slate-300"
+                  }`}>
+                    {result.rarity.toUpperCase()}
+                  </span>
+                  <p className={`text-white font-bold text-center ${fx.zoomPunch ? "animate-zoomPunch" : ""} ${isFullscreen ? "text-[20px]" : "text-[14px]"}`}>
+                    {result.name}
+                  </p>
+                  <button
+                    onClick={collect}
+                    className="px-5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-medium rounded-lg border border-slate-600 hover:border-cyan-500 transition active:scale-95"
+                  >
+                    Collect
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         )}
 

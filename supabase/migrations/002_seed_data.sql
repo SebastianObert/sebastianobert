@@ -160,5 +160,5 @@ VALUES (
   'Portfolio of Sebastian Obert - Informatics student at Multimedia Nusantara University. Specialized in cross-platform development with a user-centric design approach.',
   ARRAY['Sebastian Obert', 'portfolio', 'web developer', 'mobile developer', 'Next.js', 'React', 'TypeScript', 'Kotlin', 'UMN', 'Informatics'],
   '/og-image.png',
-  'https://sebastianobert.vercel.app'
+  'https://sebastianobert.site'
 );

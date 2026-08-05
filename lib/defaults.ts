@@ -180,7 +180,7 @@ export const DEFAULT_SEO: SeoMetadata = {
   description: "Portfolio of Sebastian Obert - Informatics student at Multimedia Nusantara University. Specialized in cross-platform development with a user-centric design approach.",
   keywords: ["Sebastian Obert", "portfolio", "web developer", "mobile developer", "Next.js", "React", "TypeScript", "Kotlin", "UMN", "Informatics"],
   ogImage: "/og-image.png",
-  canonicalUrl: "https://sebastianobert.vercel.app",
+  canonicalUrl: "https://sebastianobert.site",
 };
 
 export const CHAT_BASE_LIMIT = 5;

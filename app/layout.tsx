@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://sebastianobert.vercel.app",
+    url: "https://sebastianobert.site",
     siteName: "Sebastian Obert Portfolio",
     title: "Sebastian Obert | Portfolio",
     description: "Portfolio of Sebastian Obert - Informatics student at Multimedia Nusantara University. Specialized in cross-platform development.",
@@ -54,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="canonical" href="https://sebastianobert.vercel.app" />
+        <link rel="canonical" href="https://sebastianobert.site" />
       </head>
       <body className={inter.className}><Providers>{children}</Providers></body>
     </html>

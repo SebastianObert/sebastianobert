@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import ScrollElement from "./ScrollElement";
 import SkillBadge from "./SkillBadge";
+import ConstellationBackground from "./ConstellationBackground";
 import { api, Skill } from "../../lib/api";
 
 export default function SkillsSection() {
@@ -35,7 +36,8 @@ export default function SkillsSection() {
       id="skills"
       className="relative z-10 overflow-hidden border-y border-slate-800 bg-slate-800/30 py-24"
     >
-      <div className="container mx-auto px-6">
+      <ConstellationBackground />
+      <div className="container mx-auto px-6 relative z-10">
         {/* Title - centered */}
         <ScrollElement animation="fade-down" duration={0.7}>
           <div className="text-center mb-16">

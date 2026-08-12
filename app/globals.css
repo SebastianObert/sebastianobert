@@ -608,6 +608,13 @@ html {
   will-change: opacity, transform;
 }
 
+.project-card-stage {
+  position: absolute;
+  width: min(37vw, 480px);
+  height: 375px;
+  will-change: left, top, transform;
+}
+
 .project-story-card {
   position: absolute;
   inset: 50% 0 auto;
@@ -620,7 +627,7 @@ html {
 
 .project-story-media {
   position: relative;
-  height: 145px;
+  height: 138px;
   overflow: hidden;
   background: #020617;
 }
@@ -632,6 +639,13 @@ html {
 .project-canvas-shell {
   position: relative;
   isolation: isolate;
+}
+
+.project-core-stage {
+  position: absolute;
+  width: min(39vw, 500px);
+  height: min(44vh, 430px);
+  will-change: left, top, transform;
 }
 
 .project-canvas-shell::before,

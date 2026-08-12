@@ -30,6 +30,21 @@ const ORBIT_NODES = [
   [-1.45, -1.6, -0.2], [0.1, 2.05, 0.1], [-0.4, -2.15, 0.3],
 ] as const;
 
+type KineticLayout = {
+  card: { x: number; y: number; scale: number };
+  core: { x: number; y: number; scale: number };
+};
+
+// Each project gets a deliberate composition instead of a static left/right split.
+const KINETIC_LAYOUTS: KineticLayout[] = [
+  { card: { x: 24, y: 55, scale: 1.02 }, core: { x: 77, y: 47, scale: 1.14 } },
+  { card: { x: 76, y: 45, scale: 0.98 }, core: { x: 24, y: 53, scale: 1.08 } },
+  { card: { x: 23, y: 30, scale: 0.92 }, core: { x: 78, y: 73, scale: 1.32 } },
+  { card: { x: 77, y: 62, scale: 0.92 }, core: { x: 24, y: 26, scale: 1.02 } },
+  { card: { x: 24, y: 64, scale: 0.94 }, core: { x: 79, y: 25, scale: 1.28 } },
+  { card: { x: 77, y: 28, scale: 0.98 }, core: { x: 23, y: 75, scale: 1.1 } },
+];
+
 function getHue(project: Project) {
   return HUES[project.accentColor as keyof typeof HUES] || HUES.cyan;
 }
@@ -324,6 +339,8 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const cardStageRef = useRef<HTMLDivElement>(null);
+  const sceneStageRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const progress = useRef(0);
   const invalidateScene = useRef<(() => void) | null>(null);
@@ -352,14 +369,32 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
 
     const context = gsap.context(() => {
       const cards = cardRefs.current.filter((card): card is HTMLDivElement => Boolean(card));
+      const layouts = KINETIC_LAYOUTS.slice(0, featuredProjectCount);
+      const cardComposition = (layout: KineticLayout) => ({
+        left: `${layout.card.x}%`,
+        top: `${layout.card.y}%`,
+        scale: layout.card.scale,
+        xPercent: -50,
+        yPercent: -50,
+      });
+      const coreComposition = (layout: KineticLayout) => ({
+        left: `${layout.core.x}%`,
+        top: `${layout.core.y}%`,
+        scale: layout.core.scale,
+        xPercent: -50,
+        yPercent: -50,
+      });
+
       gsap.set(cards, { autoAlpha: 0, y: 28, pointerEvents: "none", force3D: true });
       gsap.set(cards[0], { autoAlpha: 1, y: 0, pointerEvents: "auto" });
+      if (cardStageRef.current) gsap.set(cardStageRef.current, cardComposition(layouts[0]));
+      if (sceneStageRef.current) gsap.set(sceneStageRef.current, coreComposition(layouts[0]));
 
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: () => `+=${window.innerHeight * featuredProjectCount * 0.85}`,
+          end: () => `+=${window.innerHeight * featuredProjectCount * 1.15}`,
           pin: stageRef.current,
           pinReparent: true,
           scrub: 0.65,
@@ -370,6 +405,9 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
             invalidateScene.current?.();
             const nextIndex = Math.min(featuredProjectCount - 1, Math.floor(self.progress * featuredProjectCount));
             if (nextIndex !== activeIndexRef.current) {
+              cards.forEach((card, index) => {
+                card.style.pointerEvents = index === nextIndex ? "auto" : "none";
+              });
               activeIndexRef.current = nextIndex;
               setActiveIndex(nextIndex);
             }
@@ -380,9 +418,12 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
       Array.from({ length: featuredProjectCount - 1 }).forEach((_, index) => {
         const outgoing = cards[index];
         const incoming = cards[index + 1];
+        const nextLayout = layouts[index + 1];
         timeline
-          .to(outgoing, { autoAlpha: 0, y: -28, pointerEvents: "none", duration: 0.28, ease: "power2.in" })
-          .to(incoming, { autoAlpha: 1, y: 0, pointerEvents: "auto", duration: 0.32, ease: "power2.out" });
+          .to(outgoing, { autoAlpha: 0, y: -28, duration: 0.32, ease: "power2.in" })
+          .to(cardStageRef.current, { ...cardComposition(nextLayout), duration: 0.82, ease: "sine.inOut" })
+          .to(sceneStageRef.current, { ...coreComposition(nextLayout), duration: 0.82, ease: "sine.inOut" }, "<")
+          .to(incoming, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power2.out" }, "<0.32");
       });
 
       requestAnimationFrame(() => ScrollTrigger.refresh());
@@ -432,8 +473,8 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
               </button>
             </header>
 
-            <div className="grid min-h-0 flex-1 items-center gap-5 md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:gap-10 lg:gap-20">
-              <div className="relative z-20 order-2 min-h-[270px] md:order-1 md:min-h-[430px]">
+            <div className="project-kinetic-stage relative min-h-0 flex-1 overflow-hidden">
+              <div ref={cardStageRef} className="project-card-stage z-20">
                 {featuredProjects.map((project, index) => (
                   <div
                     key={project.slug}
@@ -445,7 +486,7 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
                 ))}
               </div>
 
-              <div className="project-canvas-shell order-1 h-[24svh] min-h-[145px] md:order-2 md:h-[58vh] md:min-h-[430px]">
+              <div ref={sceneStageRef} className="project-canvas-shell project-core-stage">
                 {!showAll && <ProjectScene progress={progress} color={activeHue.a} invalidateRef={invalidateScene} />}
               </div>
             </div>

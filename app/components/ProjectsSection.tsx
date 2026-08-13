@@ -49,9 +49,10 @@ function getHue(project: Project) {
   return HUES[project.accentColor as keyof typeof HUES] || HUES.cyan;
 }
 
-function DigitalCore({ progress, color }: {
+function DigitalCore({ progress, color, outroScale }: {
   progress: MutableRefObject<number>;
   color: string;
+  outroScale: MutableRefObject<number>;
 }) {
   const core = useRef<THREE.Group>(null);
   const shell = useRef<THREE.Mesh>(null);
@@ -59,6 +60,7 @@ function DigitalCore({ progress, color }: {
   const ringB = useRef<THREE.Mesh>(null);
   const material = useRef<THREE.MeshPhysicalMaterial>(null);
   const targetColor = useRef(new THREE.Color(color));
+  const smoothProgress = useRef(progress.current);
   const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
@@ -66,18 +68,27 @@ function DigitalCore({ progress, color }: {
     invalidate();
   }, [color, invalidate]);
 
-  useFrame(() => {
-    const p = progress.current;
+  useFrame((_, delta) => {
+    const target = progress.current;
+    const next = THREE.MathUtils.damp(smoothProgress.current, target, 5, delta);
+    const isSettled = Math.abs(next - target) < 0.0001;
+
+    smoothProgress.current = isSettled ? target : next;
+    const p = smoothProgress.current;
 
     if (core.current) {
       core.current.rotation.x = p * Math.PI * 1.4;
       core.current.rotation.y = p * Math.PI * 3.2;
       core.current.position.y = (p - 0.5) * 0.3;
+      core.current.scale.setScalar(outroScale.current);
     }
     if (shell.current) shell.current.rotation.z = -p * Math.PI;
     if (ringA.current) ringA.current.rotation.z = p * Math.PI * 2;
     if (ringB.current) ringB.current.rotation.x = -p * Math.PI * 1.5;
     if (material.current) material.current.color.copy(targetColor.current);
+
+    // Keep demand rendering alive only while the core is gliding to its target.
+    if (!isSettled) invalidate();
   });
 
   return (
@@ -101,13 +112,17 @@ function DigitalCore({ progress, color }: {
         <meshBasicMaterial color={color} wireframe transparent opacity={0.22} />
       </mesh>
 
-      <mesh ref={ringA} rotation={[1.1, 0.2, 0.25]}>
+      {/*
+       * Orbit tracks are a UI treatment, not a physical object. Render them after
+       * the core and ignore its depth so the complete path remains visible.
+       */}
+      <mesh ref={ringA} rotation={[1.1, 0.2, 0.25]} renderOrder={2}>
         <torusGeometry args={[1.78, 0.018, 8, 160]} />
-        <meshBasicMaterial color={color} transparent opacity={0.6} />
+        <meshBasicMaterial color={color} transparent opacity={0.6} depthTest={false} depthWrite={false} />
       </mesh>
-      <mesh ref={ringB} rotation={[0.25, 0.55, 1.2]}>
+      <mesh ref={ringB} rotation={[0.25, 0.55, 1.2]} renderOrder={2}>
         <torusGeometry args={[2.08, 0.012, 8, 160]} />
-        <meshBasicMaterial color="#94a3b8" transparent opacity={0.32} />
+        <meshBasicMaterial color="#94a3b8" transparent opacity={0.32} depthTest={false} depthWrite={false} />
       </mesh>
 
       {ORBIT_NODES.map((position, index) => (
@@ -120,14 +135,15 @@ function DigitalCore({ progress, color }: {
   );
 }
 
-function ProjectScene({ progress, color, invalidateRef }: {
+function ProjectScene({ progress, color, invalidateRef, outroScale }: {
   progress: MutableRefObject<number>;
   color: string;
   invalidateRef: MutableRefObject<(() => void) | null>;
+  outroScale: MutableRefObject<number>;
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 5.6], fov: 42 }}
+      camera={{ position: [0, 0, 5.6], fov: 54 }}
       dpr={[1, 1.5]}
       frameloop="demand"
       gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
@@ -136,7 +152,7 @@ function ProjectScene({ progress, color, invalidateRef }: {
       <ambientLight intensity={0.7} />
       <pointLight position={[3, 3, 4]} intensity={22} color={color} />
       <pointLight position={[-4, -2, 2]} intensity={12} color="#334155" />
-      <DigitalCore progress={progress} color={color} />
+      <DigitalCore progress={progress} color={color} outroScale={outroScale} />
     </Canvas>
   );
 }
@@ -343,6 +359,7 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
   const sceneStageRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const progress = useRef(0);
+  const outroScale = useRef(1);
   const invalidateScene = useRef<(() => void) | null>(null);
   const activeIndexRef = useRef(0);
 
@@ -384,26 +401,46 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
         xPercent: -50,
         yPercent: -50,
       });
+      const centerComposition = {
+        left: "50%",
+        top: "50%",
+        x: 0,
+        y: 0,
+        scale: 1,
+        xPercent: -50,
+        yPercent: -50,
+        transformOrigin: "50% 50%",
+      };
+      const introUnits = 1.15;
+      const projectUnits = Math.max(1, featuredProjectCount - 1) * 1.15;
+      const outroUnits = 1.15;
+      const totalUnits = introUnits + projectUnits + outroUnits;
 
-      gsap.set(cards, { autoAlpha: 0, y: 28, pointerEvents: "none", force3D: true });
-      gsap.set(cards[0], { autoAlpha: 1, y: 0, pointerEvents: "auto" });
+      gsap.set(cards, { autoAlpha: 0, scale: 0.97, pointerEvents: "none", force3D: true });
+      gsap.set(cards[0], { autoAlpha: 0, scale: 0.97, pointerEvents: "none" });
+      outroScale.current = 1;
       if (cardStageRef.current) gsap.set(cardStageRef.current, cardComposition(layouts[0]));
-      if (sceneStageRef.current) gsap.set(sceneStageRef.current, coreComposition(layouts[0]));
+      if (sceneStageRef.current) gsap.set(sceneStageRef.current, centerComposition);
 
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: () => `+=${window.innerHeight * featuredProjectCount * 1.15}`,
+          end: () => `+=${window.innerHeight * totalUnits}`,
           pin: stageRef.current,
           pinReparent: true,
-          scrub: 0.65,
+          scrub: 1.05,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             progress.current = self.progress;
             invalidateScene.current?.();
-            const nextIndex = Math.min(featuredProjectCount - 1, Math.floor(self.progress * featuredProjectCount));
+            const projectProgress = THREE.MathUtils.clamp(
+              (self.progress * totalUnits - introUnits) / projectUnits,
+              0,
+              1,
+            );
+            const nextIndex = Math.min(featuredProjectCount - 1, Math.floor(projectProgress * (featuredProjectCount - 1)));
             if (nextIndex !== activeIndexRef.current) {
               cards.forEach((card, index) => {
                 card.style.pointerEvents = index === nextIndex ? "auto" : "none";
@@ -415,6 +452,10 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
         },
       });
 
+      timeline
+        .to(sceneStageRef.current, { ...coreComposition(layouts[0]), duration: 0.82, ease: "sine.inOut" })
+        .to(cards[0], { autoAlpha: 1, scale: 1, pointerEvents: "auto", duration: 0.35, ease: "power2.out" }, "<0.54");
+
       Array.from({ length: featuredProjectCount - 1 }).forEach((_, index) => {
         const outgoing = cards[index];
         const incoming = cards[index + 1];
@@ -425,6 +466,36 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
           .to(sceneStageRef.current, { ...coreComposition(nextLayout), duration: 0.82, ease: "sine.inOut" }, "<")
           .to(incoming, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power2.out" }, "<0.32");
       });
+
+      const lastCard = cards[cards.length - 1];
+      timeline
+        .to({}, { duration: 0.42 })
+        .to(lastCard, {
+          autoAlpha: 0,
+          scale: 0.92,
+          pointerEvents: "none",
+          duration: 0.44,
+          ease: "power2.inOut",
+        })
+        .to(sceneStageRef.current, {
+          left: "50%",
+          top: "50%",
+          x: 0,
+          y: 0,
+          scale: 1,
+          xPercent: -50,
+          yPercent: -50,
+          transformOrigin: "50% 50%",
+          duration: 0.92,
+          ease: "sine.inOut",
+        }, "<0.08")
+        .to(outroScale, {
+          current: 1.3,
+          duration: 0.52,
+          ease: "sine.inOut",
+          onUpdate: () => invalidateScene.current?.(),
+        })
+        .to({}, { duration: 0.18 });
 
       requestAnimationFrame(() => ScrollTrigger.refresh());
     }, sectionRef);
@@ -487,7 +558,7 @@ export default function ProjectsSection({ setSelectedImage, onOpenLinks }: Proje
               </div>
 
               <div ref={sceneStageRef} className="project-canvas-shell project-core-stage">
-                {!showAll && <ProjectScene progress={progress} color={activeHue.a} invalidateRef={invalidateScene} />}
+                {!showAll && <ProjectScene progress={progress} color={activeHue.a} invalidateRef={invalidateScene} outroScale={outroScale} />}
               </div>
             </div>
 
